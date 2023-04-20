@@ -3,11 +3,13 @@ import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/utils/constants.dart';
 import 'package:need_in_choice/views/pages/login/widgets/start_button.dart';
 
-class AddressModalSheet extends StatelessWidget {
+import 'otp_input.dart';
+
+class SigninModalSheet extends StatelessWidget {
   final nameController = TextEditingController();
   final addressController = TextEditingController();
   
-  AddressModalSheet({super.key});
+  SigninModalSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +19,13 @@ class AddressModalSheet extends StatelessWidget {
       height: screenHeight * 0.5,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-              kHeight5,
+        child: 
+        Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                kHeight5,
                 Text(
-                  'Account Details',
+                  'Sign up | Sign in',
                   style: Theme.of(context).textTheme.displayLarge,
                 ),
                 SizedBox(
@@ -36,10 +39,7 @@ class AddressModalSheet extends StatelessWidget {
                 SizedBox(
                   width: screenWidth * .9,
                   child: TextFormField(
-                    controller: nameController,
                     decoration: InputDecoration(
-                      hintText: "Your Name",
-                      hintStyle: Theme.of(context).textTheme.displayLarge!.copyWith(fontSize: 23),
                       filled: true,
                       fillColor: kWhiteColor.withOpacity(.24),
                       border: OutlineInputBorder(
@@ -49,41 +49,55 @@ class AddressModalSheet extends StatelessWidget {
                     ),
                   ),
                 ),
-              
+                kHeight5,
+                Text(
+                  'OTP',
+                  style: Theme.of(context).textTheme.displaySmall,
+                ),
                 kHeight10,
-                SizedBox(
-                  width: screenWidth * .9,
-                  child: TextFormField(
-                    controller: addressController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      hintText: "Your Address",
-                      hintStyle: Theme.of(context).textTheme.displayLarge!.copyWith(fontSize: 23),
-                      filled: true,
-                      fillColor: kWhiteColor.withOpacity(.24),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
+                Row(
+                  children: const [
+                    OtpInput(),
+                    kWidth10,
+                    OtpInput(),
+                    kWidth10,
+                    OtpInput(),
+                    kWidth10,
+                    OtpInput(),
+                    kWidth10,
+                    OtpInput(),
+                    kWidth10,
+                    OtpInput(),
+                  ],
                 ),
-                
+                kHeight10,
+                Row(
+                  children: [
+                    Text(
+                      'Terms and Conditions apply',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: kWhiteColor),
+                    )
+                  ],
+                ),
                 kHeight10,
                 Padding(
-                  padding: const EdgeInsets.only(left: 20),
+                  padding: const EdgeInsets.only(left: 15.0),
                   child: StartButton(
                       screenWidth: screenWidth,
                       ontap: () {},
-                      boldText: "Finishing",
-                      lightText: ' Process',
+                      boldText: "Signin|Signup",
+                      lightText: ' Now',
                       button: kWhiteColor,
                       circle: kPrimaryColor,
                       arrow: kWhiteColor,
-                      textcolor: kPrimaryColor,),
+                      textcolor: kPrimaryColor,
+                      ),
                 ),
-          ],
-        ),
+              ],
+            ),
       ),
     );
   }

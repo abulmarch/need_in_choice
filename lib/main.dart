@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       onGenerateRoute: PageRoutes.generateRoute,
-      initialRoute: detailScreen,
+      initialRoute: signUpScreen,
     );
   }
 }

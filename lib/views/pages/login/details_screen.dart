@@ -21,7 +21,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
     showModalBottomSheet(
       context: context,
       isDismissible: false,
-      isScrollControlled: true,
       backgroundColor: kPrimaryColor,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20),),),
