@@ -20,3 +20,10 @@ const kWidth10 = SizedBox(
 const kWidth20 = SizedBox(
   width: 20,
 );
+
+
+const kHintTextFontFamily = 'Inter';
+
+const double kpadding10 = 10; 
+const double kpadding15 = 15; 
+const double kpadding20 = 20; 

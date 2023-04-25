@@ -32,6 +32,9 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/profile/
+    - assets/images/category/
+    - assets/images/dummy/
 
 
   fonts:

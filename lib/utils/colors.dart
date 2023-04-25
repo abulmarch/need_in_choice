@@ -9,3 +9,9 @@ const kWhiteColor = Color(0XFFFFFFFF);
 const kOffWhiteColor = Color(0XFFF4F3F3);
 const kGreyColor = Color(0XFFA8A5A5);
 const kLightGreyColor = Color(0XFFBDBBBB);
+
+
+const kFadedBlack = Color(0xFF484848);
+const kLightBlueWhite = Color(0xFFF2F5FF);
+const kLightBlueWhiteBorder = Color(0xFFEAEAEA);
+const kDottedBorder = Color(0xFFB8B8B8);
