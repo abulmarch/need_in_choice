@@ -15,3 +15,4 @@ const kFadedBlack = Color(0xFF484848);
 const kLightBlueWhite = Color(0xFFF2F5FF);
 const kLightBlueWhiteBorder = Color(0xFFEAEAEA);
 const kDottedBorder = Color(0xFFB8B8B8);
+const kadBox = Color(0xFFF6F6F6);

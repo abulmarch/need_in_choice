@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
+import 'package:need_in_choice/views/pages/account/account_screen.dart';
 import 'package:need_in_choice/views/pages/login/details_screen.dart';
 import 'package:need_in_choice/views/pages/login/splash_screen.dart';
 
@@ -31,6 +32,11 @@ class PageRoutes {
         settings: routeSettings,
         builder: (_) => MainNavigationScreen(selectIndex: 0),
       );
+      case accountScreen:
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (_) => const AccountScreen(),
+        );
       default:
         return MaterialPageRoute(
           settings: routeSettings,

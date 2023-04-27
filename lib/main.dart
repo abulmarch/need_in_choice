@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:need_in_choice/utils/colors.dart';
 
 import 'config/routes/page_routes.dart';
 import 'config/routes/route_names.dart';
@@ -18,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Need In Choice',
       theme: ThemeDataPrimary.primaryTheme,
       onGenerateRoute: PageRoutes.generateRoute,
-      initialRoute: mainNavigationScreen,
+      initialRoute: accountScreen,
     );
   }
 }
