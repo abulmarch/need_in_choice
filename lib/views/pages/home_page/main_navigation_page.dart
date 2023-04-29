@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:need_in_choice/views/pages/home_page/home_screen.dart';
 import 'package:need_in_choice/views/pages/home_page/widgets.dart/bottom_navigation_bar.dart';
 import '../chat_page/chat_screen.dart';
+import 'show_category_bottomsheet.dart';
 
 class MainNavigationScreen extends StatelessWidget {
-  MainNavigationScreen({super.key, required this.selectIndex});
+  const MainNavigationScreen({super.key, required this.selectIndex});
   final int selectIndex;
-  final _pages = <Widget>[
+  final _pages = const <Widget>[
     HomePageScreen(),
-    const ChatScreen(),
+    ChatScreen(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -32,14 +33,14 @@ class MainNavigationScreen extends StatelessWidget {
           border: Border.all(color: Colors.white, width: 8, style: BorderStyle.solid),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x9AD2D2D2),
-              blurRadius: 6,
-              offset: Offset(0, 8)
+              color: Color(0xB1D2D2D2),
+              blurRadius: 20,
+              offset: Offset(-5, 20)
             ),
             BoxShadow(
-              color: Color(0xDFBBBBBB),
-              blurRadius: 15,
-              offset: Offset(0, 7)
+              color: Color(0xB1D2D2D2),
+              blurRadius: 20,
+              offset: Offset(5, 20)
             ),
           ]
         ),
@@ -53,7 +54,14 @@ class MainNavigationScreen extends StatelessWidget {
               offset: Offset(0, 3),
             ),
           ]),        
-          onPressed: () {},
+          onPressed: () {
+            showModalBottomSheet(
+              context: context, 
+              builder: (context) => const ShowCatogoryBottomSheet(),
+              backgroundColor: Colors.white.withOpacity(0),
+              enableDrag: false,
+            );
+          },
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

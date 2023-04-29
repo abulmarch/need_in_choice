@@ -10,9 +10,13 @@ const kOffWhiteColor = Color(0XFFF4F3F3);
 const kGreyColor = Color(0XFFA8A5A5);
 const kLightGreyColor = Color(0XFFBDBBBB);
 
+const kadBox = Color(0xFFF6F6F6);
 
 const kFadedBlack = Color(0xFF484848);
 const kLightBlueWhite = Color(0xFFF2F5FF);
 const kLightBlueWhiteBorder = Color(0xFFEAEAEA);
 const kDottedBorder = Color(0xFFB8B8B8);
-const kadBox = Color(0xFFF6F6F6);
+const kDisabledText = Color(0xFFBEBFC0);
+const kDisabledBackground = Color(0xFFF1F1F1);
+const kEnabledBackground = Color(0xFFC3E2FF);
+const kDarkBlue = Color(0xFF2B3F6C);

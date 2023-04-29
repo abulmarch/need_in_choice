@@ -4,7 +4,9 @@ List<String> cityName = [
   'Pathanamthitta',
   'Alappuzha',
 ]; 
-List<String> houseFoRentr = [
+
+
+List<String> houseFoRentAd = [
   'assets/images/dummy/house_for_rent1.png',
   'assets/images/dummy/house_for_rent2.png',
   'assets/images/dummy/house_for_rent3.png',

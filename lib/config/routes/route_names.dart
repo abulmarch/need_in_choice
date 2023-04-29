@@ -9,3 +9,4 @@ const String accountScreen = '/account-screen';
 
 
 const String mainNavigationScreen = '/mainNavigation-screen';
+const String collectAdDetails = '/collect-ad-info';

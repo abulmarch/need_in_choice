@@ -16,6 +16,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_bloc: ^8.1.2
   equatable: ^2.0.5
+  smooth_page_indicator: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -34,6 +35,8 @@ flutter:
     - assets/images/
     - assets/images/profile/
     - assets/images/category/
+    - assets/images/category/realestate-buildingForSale/
+    - assets/images/category/realestate-buildingForSale/commercial/
     - assets/images/dummy/
 
 

@@ -4,21 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:need_in_choice/utils/colors.dart';
 
 class RichTextBuilder extends StatelessWidget {
-  const RichTextBuilder({super.key, required this.text}): lastWord = false;
-   const RichTextBuilder.lastWord({super.key, required this.text}) : lastWord = true;
+  const RichTextBuilder({super.key, required this.text, this.fontSize = 9, this.overflow = TextOverflow.clip}): lastWord = false;
+   const RichTextBuilder.lastWord({super.key, required this.text, this.fontSize = 9, this.overflow = TextOverflow.clip}) : lastWord = true;
   final String text;
   final bool lastWord;
+  final double fontSize;
+  final TextOverflow overflow;
   @override
   Widget build(BuildContext context) {
     if (!lastWord) {
       return RichText(
         text: TextSpan(
           text: text.replaceRange(text.length~/2, text.length, ''),
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: 9,color: kFadedBlack),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: fontSize,color: kFadedBlack),
           children: <TextSpan>[
-            TextSpan(text: text.replaceRange(0,text.length~/2, '') ,style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: 9,color: kPrimaryColor)),
+            TextSpan(text: text.replaceRange(0,text.length~/2, '') ,style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: fontSize,color: kPrimaryColor)),
           ],
-        ),
+        ),overflow: overflow,
         textAlign: TextAlign.center,
       );      
     } else {
@@ -27,21 +29,21 @@ class RichTextBuilder extends StatelessWidget {
       RichText(
         text: TextSpan(
           text: text.replaceRange(listOfWords.first.length, text.length, ''),
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: 9,color: kFadedBlack),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: fontSize,color: kFadedBlack),
           children: <TextSpan>[
-            TextSpan(text: text.replaceRange(0, listOfWords.first.length, '') ,style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: 9,color: kPrimaryColor)),
+            TextSpan(text: text.replaceRange(0, listOfWords.first.length, '') ,style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: fontSize,color: kPrimaryColor)),
           ],
-        ),
+        ),overflow: overflow,
         textAlign: TextAlign.center,
       )
       : RichText(
         text: TextSpan(
           text: text,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: 9,color: kFadedBlack),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: fontSize,color: kFadedBlack),
           // children: <TextSpan>[
-          //   TextSpan(text: text.replaceRange(0,text.length~/2, '') ,style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: 9,color: kPrimaryColor)),
+          //   TextSpan(text: text.replaceRange(0,text.length~/2, '') ,style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: fontSize,color: kPrimaryColor)),
           // ],
-        ),
+        ),overflow: overflow,
         textAlign: TextAlign.center,
       );
     }
