@@ -50,6 +50,11 @@ class ThemeDataPrimary{
     scaffoldBackgroundColor: kOffWhiteColor,
     fontFamily: 'Poppins',
     textTheme: const TextTheme(
+      labelLarge: TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: kFadedBlack,
+      ),
       labelSmall: TextStyle(
         color: kWhiteColor,
         fontSize: 12,
@@ -60,11 +65,7 @@ class ThemeDataPrimary{
         fontSize: 17,
         fontWeight: FontWeight.w500,
       ),
-      titleSmall: TextStyle(
-        fontSize: 10,
-        fontWeight: FontWeight.w400,
-        color: kPrimaryColor,
-      ),
+      
       headlineSmall: TextStyle(
         color: kPrimaryColor,
         fontSize: 21,
@@ -74,6 +75,11 @@ class ThemeDataPrimary{
         color: kWhiteColor,
         fontSize: 25,
         fontWeight: FontWeight.w600,
+      ),
+      titleSmall: TextStyle(
+        fontSize: 10,
+        fontWeight: FontWeight.w400,
+        color: kPrimaryColor,
       ),
       bodySmall: TextStyle(
         color: kLightGreyColor,

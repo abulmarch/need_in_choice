@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:need_in_choice/views/pages/account/bloc/account_page_bloc.dart';
 import 'package:need_in_choice/views/pages/account/widgets/ad_tiles.dart';
 import 'package:need_in_choice/views/pages/account/widgets/address_bar.dart';
 import 'package:need_in_choice/views/pages/account/widgets/viewing_tiles.dart';
@@ -11,46 +13,51 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isViewing = false;
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
-          children: [
-            Stack(
-              alignment: Alignment.bottomCenter,
+    final accountpagebloc = AccountPageBloc();
+    return BlocBuilder<AccountPageBloc, AccountPageState>(
+      bloc: accountpagebloc,
+      builder: (context, state) {
+        return SafeArea(
+          child: Scaffold(
+            body: Column(
               children: [
-                AddressBar(ontap: () {
-                  isViewing = true;
-                  print(isViewing);
-                }),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: kpadding20),
-                  child: SearchFormField(
-                    hintText: 'Search your Ads',
+                Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    AddressBar(ontap: () {
+                      accountpagebloc.add(ViewPressedEvent());
+                    }),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: kpadding20),
+                      child: SearchFormField(
+                        hintText: 'Search your Ads',
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 510,
+                  child: ListView.builder(
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      vertical: kpadding15,
+                      horizontal: kpadding15 * 2,
+                    ),
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      if (state is AccountPageInitial) {
+                        return const Adtiles();
+                      } else if (state is ViewPressedState) {
+                        return const ViewingTiles();
+                      }
+                      return Container();
+                    },
                   ),
                 ),
               ],
             ),
-            SizedBox(
-              height: 510,
-              child: ListView.builder(
-                padding: const EdgeInsetsDirectional.symmetric(
-                  vertical: kpadding15,
-                  horizontal: kpadding15 * 2,
-                ),
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  if (isViewing == true) {
-                    return const Adtiles();
-                  } else {
-                    return  const ViewingTiles();
-                  }
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

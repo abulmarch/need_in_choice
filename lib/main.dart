@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeDataPrimary.primaryTheme,
       onGenerateRoute: PageRoutes.generateRoute,
       // initialRoute: accountScreen,
-      initialRoute: mainNavigationScreen,
+      initialRoute: adDetailScreen,
     );
   }
 }
