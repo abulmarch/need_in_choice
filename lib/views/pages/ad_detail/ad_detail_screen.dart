@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/utils/constants.dart';
 import 'package:need_in_choice/views/pages/ad_detail/widgets/bottom_detail_sheet.dart';
 import 'package:need_in_choice/views/pages/ad_detail/widgets/image_card.dart';
@@ -22,22 +24,23 @@ class AdDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TopAccountBar(screenHeight: screenHeight, screenWidth: screenWidth),
+                  TopAccountBar(
+                      screenHeight: screenHeight, screenWidth: screenWidth),
                   kHeight5,
                   ImageCard(
                     imageSize: screenWidth,
                     phouseFoRentr: houseFoRentAd,
                   ),
+                  
                 ],
               ),
             ),
-            BottomDetailsSheet(screenWidth: screenWidth),
+          
+            BottomDetailsSheet(screenWidth: screenWidth, screenHeight: screenHeight,),
+            
           ],
         ),
       ),
     );
   }
 }
-
-
-

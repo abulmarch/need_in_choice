@@ -33,6 +33,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/tools/
     - assets/images/profile/
     - assets/images/category/
     - assets/images/category/realestate-buildingForSale/

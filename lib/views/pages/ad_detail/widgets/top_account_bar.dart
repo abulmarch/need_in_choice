@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../utils/colors.dart';
+import '../../../widgets_refactored/circular_back_button.dart';
+import '../../../widgets_refactored/icon_button.dart';
 
 class TopAccountBar extends StatelessWidget {
   const TopAccountBar({
@@ -26,18 +28,8 @@ class TopAccountBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Container(
-            height: 55,
-            width: 55,
-            decoration: const BoxDecoration(
-              color: kLightBlueWhiteBorder,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: kBlackColor,
-            ),
-          ),
+          CircularBackButton(onPressed: () {  },
+          size: const Size(40, 40),),
           Container(
             height: 35,
             width: 35,
@@ -80,12 +72,16 @@ class TopAccountBar extends StatelessWidget {
                           .copyWith(color: kPrimaryColor)),
                 ]),
           ),
-          Container(
-            height: screenHeight * .055,
-            width: screenWidth * .25,
-            decoration: BoxDecoration(
-                color: kPrimaryColor,
-                borderRadius: BorderRadius.circular(100)),
+          IconWithButton(
+            onpressed: () {
+              
+            },
+            iconData: Icons.share,
+            radius: 100,
+            size: const Size(113, 46),
+            text: "Share",
+            fontWeight: FontWeight.w500,
+            fontsize: 16,
           ),
         ],
       ),

@@ -10,7 +10,6 @@ class DashedLineGenerator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(width);
     return SizedBox(
       width: width,
       height: 2,
