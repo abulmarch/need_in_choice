@@ -11,6 +11,7 @@ const kGreyColor = Color(0XFFA8A5A5);
 const kLightGreyColor = Color(0XFFBDBBBB);
 
 const kadBox = Color(0xFFF6F6F6);
+const bottomSheetcolor = Color(0xFF454C52);
 
 const kFadedBlack = Color(0xFF484848);
 const kLightBlueWhite = Color(0xFFF2F5FF);
