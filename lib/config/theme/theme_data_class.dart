@@ -37,11 +37,11 @@ class ThemeDataPrimary{
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide(width: 1.5, color: kPrimaryColor),
+        borderSide: BorderSide(width: 1.5, color: Color(0xFFCACACA)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide(width: 1.5,color: Color(0xFFCACACA)),
+        borderSide: BorderSide(width: 1.5,color: Color(0xFFF5F5F5)),
       ),
       hintStyle: TextStyle(color: Color(0xFFBCBCBC),fontFamily: kHintTextFontFamily),
       prefixIconColor: Colors.black,

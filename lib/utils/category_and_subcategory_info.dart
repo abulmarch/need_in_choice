@@ -30,13 +30,13 @@ List<Map<String, String>> realEstateBuildingForSale = [//buildingForSaleSubCateg
 ];
 //    Realestate--->Building for sale--->Commercial building
 List<Map<String, String>> building4saleCommercial = [//buildingForSaleSubCategory
-  {'cat_name':'restaurant','cat_img':'assets/images/category/realestate-buildingForSale/commercial/restaurant.png'},
-  {'cat_name':'shop','cat_img':'assets/images/category/realestate-buildingForSale/commercial/shop.png'},
-  {'cat_name':'office','cat_img':'assets/images/category/realestate-buildingForSale/commercial/office.png'},
-  {'cat_name':'factory','cat_img':'assets/images/category/realestate-buildingForSale/commercial/factory.png'},
-  {'cat_name':'warehouse','cat_img':'assets/images/category/realestate-buildingForSale/commercial/restaurant.png'},
-  {'cat_name':'projects','cat_img':'assets/images/category/realestate-buildingForSale/commercial/shop.png'},
-  {'cat_name':'multi store building','cat_img':'assets/images/category/realestate-buildingForSale/commercial/office.png'},
-  {'cat_name':'hotel','cat_img':'assets/images/category/realestate-buildingForSale/commercial/factory.png'},
-  {'cat_name':'sea and lake view building','cat_img':'assets/images/category/realestate-buildingForSale/commercial/restaurant.png'},
+  {'cat_name':'Restaurant','cat_img':'assets/images/category/realestate-buildingForSale/commercial/restaurant.png'},
+  {'cat_name':'Shop','cat_img':'assets/images/category/realestate-buildingForSale/commercial/shop.png'},
+  {'cat_name':'Office','cat_img':'assets/images/category/realestate-buildingForSale/commercial/office.png'},
+  {'cat_name':'Factory','cat_img':'assets/images/category/realestate-buildingForSale/commercial/factory.png'},
+  {'cat_name':'Warehouse','cat_img':'assets/images/category/realestate-buildingForSale/commercial/restaurant.png'},
+  {'cat_name':'Projects','cat_img':'assets/images/category/realestate-buildingForSale/commercial/shop.png'},
+  {'cat_name':'Multi store building','cat_img':'assets/images/category/realestate-buildingForSale/commercial/office.png'},
+  {'cat_name':'Hotel','cat_img':'assets/images/category/realestate-buildingForSale/commercial/factory.png'},
+  {'cat_name':'Sea and lake view building','cat_img':'assets/images/category/realestate-buildingForSale/commercial/restaurant.png'},
 ];

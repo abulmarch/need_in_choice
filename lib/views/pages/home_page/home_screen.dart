@@ -61,7 +61,7 @@ class HomePageScreen extends StatelessWidget {
                 double imageSize = bC.maxWidth*0.5-15;  // subtract padding form half of width
                   
                 return GridView.builder(                 
-                  physics: const ScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 5,
@@ -100,7 +100,7 @@ class HomePageScreen extends StatelessWidget {
                                   shrinkWrap: true,
                                   scrollDirection: Axis.horizontal,
                                   itemCount: addDetails.length,
-                                  itemBuilder: (context, index) => RichTextBuilder.lastWord(text: addDetails[index].toUpperCase()), 
+                                  itemBuilder: (context, index) => RichTextBuilder.firstWord(text: addDetails[index].toUpperCase()), 
                                   separatorBuilder: (context, index) => const VerticalDivider(color: kDottedBorder,thickness: 1,endIndent: 8,indent: 2,width: 5,), 
                                 ),
                               ),
@@ -110,7 +110,7 @@ class HomePageScreen extends StatelessWidget {
                                   const Icon(Icons.location_on_outlined,color: kGreyColor,size: 18,),
                                   Flexible(
                                     fit: FlexFit.loose,
-                                    child: RichTextBuilder.lastWord(text: 'Technopark Trivandr'.toUpperCase(),fontSize: 10,overflow: TextOverflow.ellipsis,),
+                                    child: RichTextBuilder.firstWord(text: 'Technopark Trivandr'.toUpperCase(),fontSize: 10,overflow: TextOverflow.ellipsis,),
                                   ),
                                 ],
                               ),

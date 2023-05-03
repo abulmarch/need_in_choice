@@ -24,7 +24,7 @@ class ShowCatogoryBottomSheet extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(kpadding10))
         ),
         width: double.infinity,
-        height: 275,
+        height: 300,
       child: LayoutBuilder(
         builder: (ctx, cons) => PageView(
           controller: pageController,
@@ -45,34 +45,37 @@ class ShowCatogoryBottomSheet extends StatelessWidget {
                   DashedLineGenerator(width: cons.maxWidth),
                   //  Sub category under real-estate category
                   Expanded(
-                    child: GridView.builder(
-                      padding: const EdgeInsets.only(top: kpadding10),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 4,
-                        mainAxisSpacing: 5,
-                        crossAxisSpacing: 5
-                      ),
-                      itemCount: realEstateSubCategory.length,
-                      itemBuilder: (context, index) => InkWell(
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: index==0 ? kEnabledBackground : kDisabledBackground,
-                            borderRadius: const BorderRadius.all(Radius.circular(30)),
-                            border: index==0 ? Border.all(color: kPrimaryColor,) : null,
-                          ),
-                          child: Text(
-                            realEstateSubCategory[index].toUpperCase(),
-                            style: TextStyle(
-                              color: index==0 ? kPrimaryColor : kDisabledText,
-                              fontWeight: FontWeight.w600,
-                            ),//------------------------------
-                          )
+                    child: Center(
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.only(top: kpadding10),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 4,
+                          mainAxisSpacing: 5,
+                          crossAxisSpacing: 5
                         ),
-                        onTap: () {
-                          switchPage(1, pageController);
-                        },
+                        itemCount: realEstateSubCategory.length,
+                        itemBuilder: (context, index) => InkWell(
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: index==0 ? kEnabledBackground : kDisabledBackground,
+                              borderRadius: const BorderRadius.all(Radius.circular(30)),
+                              border: index==0 ? Border.all(color: kPrimaryColor,) : null,
+                            ),
+                            child: Text(
+                              realEstateSubCategory[index].toUpperCase(),
+                              style: TextStyle(
+                                color: index==0 ? kPrimaryColor : kDisabledText,
+                                fontWeight: FontWeight.w600,
+                              ),//------------------------------
+                            )
+                          ),
+                          onTap: () {
+                            switchPage(1, pageController);
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -116,7 +119,7 @@ class ShowCatogoryBottomSheet extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                RichTextBuilder.lastWord(text: subCat['cat_name']!.toUpperCase(),),
+                                RichTextBuilder.firstWord(text: subCat['cat_name']!.toUpperCase(),),
                               ],
                             ),
                           ),

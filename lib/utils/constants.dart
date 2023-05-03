@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'colors.dart';
+
 //spacing
 const kHeight5 = SizedBox(
   height: 5,
@@ -20,8 +22,11 @@ const kWidth20 = SizedBox(
   width: 20,
 );
 
-const kHintTextFontFamily = 'Inter';
+const kWidth15 = SizedBox(width: 10,);
+const kHeight15 = SizedBox(height: 20,);
 
+const kHintTextFontFamily = 'Inter';
+const Text kRequiredAsterisk = Text('*  ',style: TextStyle(fontSize: 20,color: kDarkGreyButtonColor),);
 const double kpadding10 = 10;
 const double kpadding15 = 15;
 const double kpadding20 = 20;

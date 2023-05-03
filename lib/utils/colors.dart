@@ -21,3 +21,5 @@ const kDisabledText = Color(0xFFBEBFC0);
 const kDisabledBackground = Color(0xFFF1F1F1);
 const kEnabledBackground = Color(0xFFC3E2FF);
 const kDarkBlue = Color(0xFF2B3F6C);
+const kDarkGreyButtonColor = Color(0XFF5E5E5E);
+const kButtonRedColor = Color(0XFFFF6464);

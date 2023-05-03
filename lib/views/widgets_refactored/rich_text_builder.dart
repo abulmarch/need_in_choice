@@ -5,7 +5,7 @@ import 'package:need_in_choice/utils/colors.dart';
 
 class RichTextBuilder extends StatelessWidget {
   const RichTextBuilder({super.key, required this.text, this.fontSize = 9, this.overflow = TextOverflow.clip}): lastWord = false;
-   const RichTextBuilder.lastWord({super.key, required this.text, this.fontSize = 9, this.overflow = TextOverflow.clip}) : lastWord = true;
+   const RichTextBuilder.firstWord({super.key, required this.text, this.fontSize = 9, this.overflow = TextOverflow.clip}) : lastWord = true;
   final String text;
   final bool lastWord;
   final double fontSize;
@@ -13,7 +13,7 @@ class RichTextBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!lastWord) {
-      return RichText(
+      return RichText(//softWrap: true,
         text: TextSpan(
           text: text.replaceRange(text.length~/2, text.length, ''),
           style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: fontSize,color: kFadedBlack),
