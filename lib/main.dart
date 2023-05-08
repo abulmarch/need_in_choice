@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Need In Choice',
       theme: ThemeDataPrimary.primaryTheme,
       onGenerateRoute: PageRoutes.generateRoute,
-      // initialRoute: accountScreen,
+      // initialRoute: adDetailScreen,
       // initialRoute: adDetailScreen,
       initialRoute: mainNavigationScreen,
       // initialRoute: collectAdDetails,

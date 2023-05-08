@@ -6,6 +6,7 @@ import 'package:need_in_choice/views/pages/login/details_screen.dart';
 import 'package:need_in_choice/views/pages/login/splash_screen.dart';
 
 import '../../views/pages/ad_detail/ad_detail_screen.dart';
+import '../../views/pages/ad_detail/ad_detail_screen.dart';
 import '../../views/pages/ad_finalisation/ad_preview_screen.dart';
 import '../../views/pages/ad_finalisation/confirm_lottie.dart';
 import '../../views/pages/collect_ad_details/collect_ad_details.dart';
@@ -68,7 +69,16 @@ class PageRoutes {
           builder: (_) => const AccountScreen(),
         );
       default:
-        return null;
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (_) => const Scaffold(
+            body: Center(
+              child: Text(
+                'error! no routes',
+              ),
+            ),
+          ),
+        );
     }
   }
 }
