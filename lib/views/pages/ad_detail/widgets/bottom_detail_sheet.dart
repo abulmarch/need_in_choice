@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
-import '../../../widgets_refactored/dashed_line_generator.dart';
 import 'details_row.dart';
 import '../../../widgets_refactored/icon_button.dart';
 
@@ -19,6 +18,7 @@ class BottomDetailsSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
+
       initialChildSize: .3,
       minChildSize: .3,
       maxChildSize: .8,

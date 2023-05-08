@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/utils/constants.dart';
 import 'package:need_in_choice/views/pages/ad_detail/widgets/bottom_detail_sheet.dart';
 import 'package:need_in_choice/views/pages/ad_detail/widgets/image_card.dart';
