@@ -111,7 +111,8 @@ class BottomDetailsSheet extends StatelessWidget {
                         ),
                         kWidth10,
                         IconWithButton(
-                          onpressed: () {},
+                          onpressed: () {
+                          },
                           iconData: Icons.rocket_launch_outlined,
                           text: "Chat Now",
                           radius: 10,

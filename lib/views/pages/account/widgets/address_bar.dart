@@ -40,16 +40,21 @@ class AddressBar extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: const BoxDecoration(
-                      color: kWhiteColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      color: kPrimaryColor,
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: const BoxDecoration(
+                        color: kWhiteColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: kPrimaryColor,
+                      ),
                     ),
                   ),
                 ],
@@ -83,7 +88,9 @@ class AddressBar extends StatelessWidget {
                     onTap: ontap,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: accountpagebloc.isViewButton ? kPrimaryColor.withOpacity(.42) : kPrimaryColor,
+                        color: accountpagebloc.isViewButton
+                            ? kPrimaryColor.withOpacity(.42)
+                            : kPrimaryColor,
                         borderRadius: BorderRadius.circular(100),
                       ),
                       child: Padding(
@@ -96,8 +103,7 @@ class AddressBar extends StatelessWidget {
                               color: kWhiteColor,
                             ),
                             Text(
-                              accountpagebloc.isViewButton ?
-                              "view" : "viewing",
+                              accountpagebloc.isViewButton ? "view" : "viewing",
                               style: Theme.of(context)
                                   .textTheme
                                   .labelSmall!

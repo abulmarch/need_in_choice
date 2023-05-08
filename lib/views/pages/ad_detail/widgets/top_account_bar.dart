@@ -22,14 +22,17 @@ class TopAccountBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: kLightBlueWhite,
         borderRadius: BorderRadius.circular(10),
-        border:
-            Border.all(color: kLightBlueWhiteBorder, width: 1),
+        border: Border.all(color: kLightBlueWhiteBorder, width: 1),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          CircularBackButton(onPressed: () {  },
-          size: const Size(40, 40),),
+          CircularBackButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            size: const Size(40, 40),
+          ),
           Container(
             height: 35,
             width: 35,
@@ -47,8 +50,8 @@ class TopAccountBar extends StatelessWidget {
               child: CircleAvatar(
                 backgroundColor: kWhiteColor,
                 radius: 16,
-                backgroundImage: AssetImage(
-                    'assets/images/profile/profile_head.png'),
+                backgroundImage:
+                    AssetImage('assets/images/profile/profile_head.png'),
               ),
             ),
           ),
@@ -62,8 +65,7 @@ class TopAccountBar extends StatelessWidget {
                       style: Theme.of(context)
                           .textTheme
                           .labelSmall!
-                          .copyWith(
-                              color: const Color(0XFF8B8B8B))),
+                          .copyWith(color: const Color(0XFF8B8B8B))),
                   TextSpan(
                       text: " 6 Jan 2020",
                       style: Theme.of(context)
@@ -73,9 +75,7 @@ class TopAccountBar extends StatelessWidget {
                 ]),
           ),
           IconWithButton(
-            onpressed: () {
-              
-            },
+            onpressed: () {},
             iconData: Icons.share,
             radius: 100,
             size: const Size(113, 46),

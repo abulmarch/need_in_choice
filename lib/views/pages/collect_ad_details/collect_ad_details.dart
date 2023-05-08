@@ -1,5 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/views/widgets_refactored/dashed_line_generator.dart';
 
@@ -12,8 +13,8 @@ import 'widgets/condinue_button.dart';
 import 'widgets/custom_dropdown_button.dart';
 import 'widgets/image_upload_doted_circle.dart';
 
-
 ValueNotifier<bool> addMoreEnabled = ValueNotifier(false);
+
 class CollectAdDetails extends StatelessWidget {
   const CollectAdDetails({super.key});
 
@@ -38,7 +39,8 @@ class CollectAdDetails extends StatelessWidget {
         preferredSize: const Size(double.infinity, 90),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5,horizontal: kpadding10),
+            padding:
+                const EdgeInsets.symmetric(vertical: 5, horizontal: kpadding10),
             child: SizedBox(
               height: 80,
               child: Row(
@@ -46,9 +48,11 @@ class CollectAdDetails extends StatelessWidget {
                 children: [
                   // top back button
                   Padding(
-                    padding: const EdgeInsets.only(left: 2,bottom: 20),
+                    padding: const EdgeInsets.only(left: 2, bottom: 20),
                     child: CircularBackButton(
-                      onPressed: (){Navigator.of(context).pop();},
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                       size: const Size(45, 45),
                     ),
                   ),
@@ -64,40 +68,52 @@ class CollectAdDetails extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Container(
-                              height: 60,width: 60,
+                              height: 60,
+                              width: 60,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 color: kDisabledBackground,
                                 shape: BoxShape.circle,
-                                border: building4saleCommercial[index]['cat_name']!.toLowerCase() == 'restaurant' ? Border.all(color: kSecondaryColor) : null,
+                                border: building4saleCommercial[index]
+                                                ['cat_name']!
+                                            .toLowerCase() ==
+                                        'restaurant'
+                                    ? Border.all(color: kSecondaryColor)
+                                    : null,
                               ),
-                              child: Image.asset(building4saleCommercial[index]['cat_img']!,height: 50,width: 50,),
+                              child: Image.asset(
+                                building4saleCommercial[index]['cat_img']!,
+                                height: 50,
+                                width: 50,
+                              ),
                             ),
                             Text(
-                              building4saleCommercial[index]['cat_name']!.toLowerCase(),
+                              building4saleCommercial[index]['cat_name']!
+                                  .toLowerCase(),
                               style: const TextStyle(
-                                fontSize: 10,
-                                color: kPrimaryColor,height: 1
-                                // leadingDistribution: TextLeadingDistribution.proportional
-                                
-                              ),
+                                  fontSize: 10, color: kPrimaryColor, height: 1
+                                  // leadingDistribution: TextLeadingDistribution.proportional
+
+                                  ),
                             )
                           ],
                         ),
-                      ), 
-                      separatorBuilder: (context, index) => const SizedBox(width: 1,), 
+                      ),
+                      separatorBuilder: (context, index) => const SizedBox(
+                        width: 1,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-        ), 
+        ),
       ),
 
       body: LayoutBuilder(
         builder: (ctx, cons) {
-          double keyBoardHeight = 0;//MediaQuery.of(context).viewInsets.bottom;
+          double keyBoardHeight = 0; //MediaQuery.of(context).viewInsets.bottom;
           return SingleChildScrollView(
             controller: scrollController,
             physics: const BouncingScrollPhysics(),
@@ -119,18 +135,28 @@ class CollectAdDetails extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                building4saleCommercial[0]['cat_name']!,//'Restaurant',
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontSize: 20,
-                                  color: kPrimaryColor
-                                ),
+                                building4saleCommercial[0]
+                                    ['cat_name']!, //'Restaurant',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                        fontSize: 20, color: kPrimaryColor),
                               ),
                               // title arrow underline
                               Stack(
                                 alignment: Alignment.centerRight,
                                 children: [
-                                  DashedLineGenerator(width: building4saleCommercial[0]['cat_name']!.length*10),
-                                  const Icon(Icons.arrow_forward,size: 15,color: kDottedBorder,)
+                                  DashedLineGenerator(
+                                      width: building4saleCommercial[0]
+                                                  ['cat_name']!
+                                              .length *
+                                          10),
+                                  const Icon(
+                                    Icons.arrow_forward,
+                                    size: 15,
+                                    color: kDottedBorder,
+                                  )
                                 ],
                               )
                             ],
@@ -139,15 +165,13 @@ class CollectAdDetails extends StatelessWidget {
                       ),
                       kHeight20,
                       const CustomTextField(
-                        hintText: 'Ads name | Title',
-                        suffixIcon : kRequiredAsterisk
-                      ),
+                          hintText: 'Ads name | Title',
+                          suffixIcon: kRequiredAsterisk),
                       kHeight15,
                       const CustomTextField(
-                        maxLines: 5,
-                        hintText: 'Description',
-                        suffixIcon : kRequiredAsterisk
-                      ),
+                          maxLines: 5,
+                          hintText: 'Description',
+                          suffixIcon: kRequiredAsterisk),
                       kHeight20,
                       SizedBox(
                         height: 250,
@@ -156,11 +180,13 @@ class CollectAdDetails extends StatelessWidget {
                           children: [
                             Text(
                               'Brand Name',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 18,
-                                color: kLightGreyColor
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 18,
+                                      color: kLightGreyColor),
                             ),
                             kHeight15,
                             const CustomTextField(
@@ -172,38 +198,37 @@ class CollectAdDetails extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 SizedBox(
-                                  width: cons.maxWidth*0.435,
+                                  width: cons.maxWidth * 0.435,
                                   child: CustomTextField(
                                     hintText: 'Property Area',
                                     onTapOutside: (event) {
                                       FocusScope.of(context).unfocus();
                                     },
-                                    suffixIcon : CustomDropDownButton(
+                                    suffixIcon: CustomDropDownButton(
                                       initialValue: propertyArea,
                                       itemList: ListItems.propertyArea,
                                       onChanged: (String? value) {
-                                          propertyArea = value!;
+                                        propertyArea = value!;
                                       },
                                     ),
                                     // focusNode: ,
                                   ),
                                 ),
                                 SizedBox(
-                                  width: cons.maxWidth*0.435,
+                                  width: cons.maxWidth * 0.435,
                                   child: CustomTextField(
                                     hintText: 'Buildup Area',
                                     onTapOutside: (event) {
                                       FocusScope.of(context).unfocus();
                                     },
-                                    suffixIcon : CustomDropDownButton(
+                                    suffixIcon: CustomDropDownButton(
                                       initialValue: buildupArea,
                                       itemList: ListItems.buildupArea,
                                       onChanged: (String? value) {
-                                          buildupArea = value!;
+                                        buildupArea = value!;
                                       },
                                     ),
                                     // focusNode: ,
-                                    
                                   ),
                                 ),
                               ],
@@ -217,32 +242,44 @@ class CollectAdDetails extends StatelessWidget {
                                 runSpacing: 3,
                                 alignment: WrapAlignment.center,
                                 runAlignment: WrapAlignment.center,
-                                children: [           
+                                children: [
                                   CustomDropDownButton(
                                     initialValue: saleType,
-                                    hint: Text('sale type',style: TextStyle(color: kWhiteColor.withOpacity(0.7)),),
+                                    hint: Text(
+                                      'sale type',
+                                      style: TextStyle(
+                                          color: kWhiteColor.withOpacity(0.7)),
+                                    ),
                                     maxWidth: 100,
                                     itemList: ListItems.saleType,
                                     onChanged: (String? value) {
-                                        saleType = value!;
+                                      saleType = value!;
                                     },
                                   ),
                                   CustomDropDownButton(
                                     initialValue: listedBy,
-                                    hint: Text('listed by',style: TextStyle(color: kWhiteColor.withOpacity(0.7)),),
+                                    hint: Text(
+                                      'listed by',
+                                      style: TextStyle(
+                                          color: kWhiteColor.withOpacity(0.7)),
+                                    ),
                                     maxWidth: 100,
                                     itemList: ListItems.listedBy,
                                     onChanged: (String? value) {
-                                        listedBy = value!;
+                                      listedBy = value!;
                                     },
                                   ),
                                   CustomDropDownButton(
                                     initialValue: facing,
-                                    hint: Text('facing',style: TextStyle(color: kWhiteColor.withOpacity(0.7)),),
+                                    hint: Text(
+                                      'facing',
+                                      style: TextStyle(
+                                          color: kWhiteColor.withOpacity(0.7)),
+                                    ),
                                     maxWidth: 100,
                                     itemList: ListItems.facing,
                                     onChanged: (String? value) {
-                                        facing = value!;
+                                      facing = value!;
                                     },
                                   ),
                                 ],
@@ -251,7 +288,7 @@ class CollectAdDetails extends StatelessWidget {
                           ],
                         ),
                       ),
-                      DashedLineGenerator(width: cons.maxWidth-60),
+                      DashedLineGenerator(width: cons.maxWidth - 60),
                       kHeight20,
                       DottedBorder(
                         dashPattern: const [3, 2],
@@ -261,7 +298,8 @@ class CollectAdDetails extends StatelessWidget {
                         radius: const Radius.circular(10),
                         padding: const EdgeInsets.all(2),
                         child: ClipRRect(
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
                           child: TextFormField(
                             decoration: const InputDecoration(
                               fillColor: kWhiteColor,
@@ -278,35 +316,47 @@ class CollectAdDetails extends StatelessWidget {
                       ),
                       kHeight20,
                       ValueListenableBuilder(
-                        valueListenable: addMoreEnabled, 
+                        valueListenable: addMoreEnabled,
                         builder: (context, isEnabled, _) {
-                          if(isEnabled == false){
+                          if (isEnabled == false) {
                             return Directionality(
                               textDirection: TextDirection.rtl,
                               child: ElevatedButton.icon(
                                 onPressed: () {
                                   addMoreEnabled.value = !addMoreEnabled.value;
-                                  scrollController.jumpTo(cons.maxHeight*0.8,);
-                                }, 
-                                icon: const Icon(Icons.add_circle), 
-                                label: const Text('Click to add more info',style: TextStyle(fontWeight: FontWeight.normal),),
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<Color>(kDarkGreyButtonColor)
+                                  scrollController.jumpTo(
+                                    cons.maxHeight * 0.8,
+                                  );
+                                },
+                                icon: const Icon(Icons.add_circle),
+                                label: const Text(
+                                  'Click to add more info',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.normal),
                                 ),
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            kDarkGreyButtonColor)),
                               ),
                             );
-                          }else{
+                          } else {
                             return Directionality(
                               textDirection: TextDirection.rtl,
                               child: ElevatedButton.icon(
                                 onPressed: () {
                                   addMoreEnabled.value = !addMoreEnabled.value;
-                                }, 
-                                icon: const Icon(Icons.remove_circle), 
-                                label: const Text('Click to add more info',style: TextStyle(fontWeight: FontWeight.normal),),
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<Color>(kButtonRedColor)
+                                },
+                                icon: const Icon(Icons.remove_circle),
+                                label: const Text(
+                                  'Click to add more info',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.normal),
                                 ),
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            kButtonRedColor)),
                               ),
                             );
                           }
@@ -318,257 +368,271 @@ class CollectAdDetails extends StatelessWidget {
                 // ---------------------------------------------------- more info
                 kHeight10,
                 ValueListenableBuilder(
-                  valueListenable: addMoreEnabled, 
-                  builder: (context, isEnabled, _) {
-                    return isEnabled == true 
-                    ? Container(
-                      width: cons.maxWidth,
-                      constraints: BoxConstraints(
-                        minHeight: cons.maxHeight*0.8,
-                        maxHeight: double.infinity
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: kpadding15),
-                      decoration: const BoxDecoration(
-                        color: Color(0x1CA6A7A8),
-                      ),
-                      child: Column(
-                        children: [
-                          kHeight20,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: cons.maxWidth*0.435,
-                                child: CustomTextField(
-                                  hintText: 'Eg 3',
-                                  fillColor: kWhiteColor,
-                                  onTapOutside: (event) {
-                                    FocusScope.of(context).unfocus();
-                                  },
-                                  suffixIcon : Container(
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.symmetric(horizontal: 6,vertical: 8),
-                                    decoration: const BoxDecoration(
-                                      color: kDarkGreyButtonColor,
-                                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    ),
-                                    constraints: const BoxConstraints(
-                                      minWidth: 70,
-                                      maxWidth: 75,
-                                    ),
-                                    child: const Text(
-                                      'Total Floors',
-                                      style: TextStyle(
-                                        color: kWhiteColor,
-                                        fontSize: 12
+                    valueListenable: addMoreEnabled,
+                    builder: (context, isEnabled, _) {
+                      return isEnabled == true
+                          ? Container(
+                              width: cons.maxWidth,
+                              constraints: BoxConstraints(
+                                  minHeight: cons.maxHeight * 0.8,
+                                  maxHeight: double.infinity),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: kpadding15),
+                              decoration: const BoxDecoration(
+                                color: Color(0x1CA6A7A8),
+                              ),
+                              child: Column(
+                                children: [
+                                  kHeight20,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: cons.maxWidth * 0.435,
+                                        child: CustomTextField(
+                                          hintText: 'Eg 3',
+                                          fillColor: kWhiteColor,
+                                          onTapOutside: (event) {
+                                            FocusScope.of(context).unfocus();
+                                          },
+                                          suffixIcon: Container(
+                                            alignment: Alignment.center,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 6, vertical: 8),
+                                            decoration: const BoxDecoration(
+                                              color: kDarkGreyButtonColor,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(30)),
+                                            ),
+                                            constraints: const BoxConstraints(
+                                              minWidth: 70,
+                                              maxWidth: 75,
+                                            ),
+                                            child: const Text(
+                                              'Total Floors',
+                                              style: TextStyle(
+                                                  color: kWhiteColor,
+                                                  fontSize: 12),
+                                            ),
+                                          ),
+
+                                          // focusNode: ,
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  
-                                  // focusNode: ,
-                                ),
-                              ),
-                              SizedBox(
-                                width: cons.maxWidth*0.435,
-                                child: CustomTextField(
-                                  hintText: 'Carpet Area',
-                                  fillColor: kWhiteColor,
-                                  onTapOutside: (event) {
-                                    FocusScope.of(context).unfocus();
-                                  },
-                                  suffixIcon : CustomDropDownButton(
-                                    initialValue: carpetArea,
-                                    itemList: ListItems.carpetArea,
-                                    onChanged: (String? value) {
-                                        carpetArea = value!;
-                                    },
-                                  ),
-                                  // focusNode: ,
-                                ),
-                              ),
-                            ],
-                          ),
-                          kHeight15,
-                          
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: cons.maxWidth*0.435,
-                                child: CustomTextField(
-                                  hintText: 'Eg 3',
-                                  fillColor: kWhiteColor,
-                                  onTapOutside: (event) {
-                                    FocusScope.of(context).unfocus();
-                                  },
-                                  suffixIcon : Container(
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.symmetric(horizontal: 6,vertical: 8),
-                                    decoration: const BoxDecoration(
-                                      color: kDarkGreyButtonColor,
-                                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    ),
-                                    constraints: const BoxConstraints(
-                                      minWidth: 70,
-                                      maxWidth: 70,
-                                    ),
-                                    child: const Text(
-                                      'Floor no',
-                                      style: TextStyle(
-                                        color: kWhiteColor,
-                                        fontSize: 12
+                                      SizedBox(
+                                        width: cons.maxWidth * 0.435,
+                                        child: CustomTextField(
+                                          hintText: 'Carpet Area',
+                                          fillColor: kWhiteColor,
+                                          onTapOutside: (event) {
+                                            FocusScope.of(context).unfocus();
+                                          },
+                                          suffixIcon: CustomDropDownButton(
+                                            initialValue: carpetArea,
+                                            itemList: ListItems.carpetArea,
+                                            onChanged: (String? value) {
+                                              carpetArea = value!;
+                                            },
+                                          ),
+                                          // focusNode: ,
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                  // focusNode: ,
-                                ),
-                              ),
-                              SizedBox(
-                                width: cons.maxWidth*0.435,
-                                child: CustomTextField(
-                                  hintText: 'Eg 3',
-                                  fillColor: kWhiteColor,
-                                  onTapOutside: (event) {
-                                    FocusScope.of(context).unfocus();
-                                  },
-                                  suffixIcon : Container(
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.symmetric(horizontal: 6,vertical: 8),
-                                    decoration: const BoxDecoration(
-                                      color: kDarkGreyButtonColor,
-                                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    ),
-                                    constraints: const BoxConstraints(
-                                      minWidth: 70,
-                                      maxWidth: 70,
-                                    ),
-                                    child: const Text(
-                                      'Parking',
-                                      style: TextStyle(
-                                        color: kWhiteColor,
-                                        fontSize: 12
+                                  kHeight15,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: cons.maxWidth * 0.435,
+                                        child: CustomTextField(
+                                          hintText: 'Eg 3',
+                                          fillColor: kWhiteColor,
+                                          onTapOutside: (event) {
+                                            FocusScope.of(context).unfocus();
+                                          },
+                                          suffixIcon: Container(
+                                            alignment: Alignment.center,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 6, vertical: 8),
+                                            decoration: const BoxDecoration(
+                                              color: kDarkGreyButtonColor,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(30)),
+                                            ),
+                                            constraints: const BoxConstraints(
+                                              minWidth: 70,
+                                              maxWidth: 70,
+                                            ),
+                                            child: const Text(
+                                              'Floor no',
+                                              style: TextStyle(
+                                                  color: kWhiteColor,
+                                                  fontSize: 12),
+                                            ),
+                                          ),
+                                          // focusNode: ,
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  // focusNode: ,
-                                ),
-                              ),
-                            ],
-                          ),
-                          kHeight10,
-                          
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: cons.maxWidth*0.435,
-                                child: CustomTextField(
-                                  hintText: 'Eg 3',
-                                  fillColor: kWhiteColor,
-                                  onTapOutside: (event) {
-                                    FocusScope.of(context).unfocus();
-                                  },
-                                  suffixIcon : Container(
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.symmetric(horizontal: 6,vertical: 8),
-                                    decoration: const BoxDecoration(
-                                      color: kDarkGreyButtonColor,
-                                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    ),
-                                    constraints: const BoxConstraints(
-                                      minWidth: 70,
-                                      maxWidth: 100,
-                                    ),
-                                    child: const Text(
-                                      'Age Of Building',
-                                      style: TextStyle(
-                                        color: kWhiteColor,
-                                        fontSize: 12
+                                      SizedBox(
+                                        width: cons.maxWidth * 0.435,
+                                        child: CustomTextField(
+                                          hintText: 'Eg 3',
+                                          fillColor: kWhiteColor,
+                                          onTapOutside: (event) {
+                                            FocusScope.of(context).unfocus();
+                                          },
+                                          suffixIcon: Container(
+                                            alignment: Alignment.center,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 6, vertical: 8),
+                                            decoration: const BoxDecoration(
+                                              color: kDarkGreyButtonColor,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(30)),
+                                            ),
+                                            constraints: const BoxConstraints(
+                                              minWidth: 70,
+                                              maxWidth: 70,
+                                            ),
+                                            child: const Text(
+                                              'Parking',
+                                              style: TextStyle(
+                                                  color: kWhiteColor,
+                                                  fontSize: 12),
+                                            ),
+                                          ),
+                                          // focusNode: ,
+                                        ),
                                       ),
+                                    ],
+                                  ),
+                                  kHeight10,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: cons.maxWidth * 0.435,
+                                        child: CustomTextField(
+                                          hintText: 'Eg 3',
+                                          fillColor: kWhiteColor,
+                                          onTapOutside: (event) {
+                                            FocusScope.of(context).unfocus();
+                                          },
+                                          suffixIcon: Container(
+                                            alignment: Alignment.center,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 6, vertical: 8),
+                                            decoration: const BoxDecoration(
+                                              color: kDarkGreyButtonColor,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(30)),
+                                            ),
+                                            constraints: const BoxConstraints(
+                                              minWidth: 70,
+                                              maxWidth: 100,
+                                            ),
+                                            child: const Text(
+                                              'Age Of Building',
+                                              style: TextStyle(
+                                                  color: kWhiteColor,
+                                                  fontSize: 12),
+                                            ),
+                                          ),
+                                          // focusNode: ,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                          width: cons.maxWidth * 0.435,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: const [
+                                              ImageUploadDotedCircle(
+                                                color: kPrimaryColor,
+                                                text: 'Floor\nPlan',
+                                              ),
+                                              ImageUploadDotedCircle(
+                                                color: kBlackColor,
+                                                text: 'Land\nSketch',
+                                              ),
+                                            ],
+                                          )),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 65,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        CustomDropDownButton(
+                                          initialValue: constructionStatus,
+                                          hint: Text(
+                                            'construction status',
+                                            style: TextStyle(
+                                                color: kWhiteColor
+                                                    .withOpacity(0.7)),
+                                          ),
+                                          itemList:
+                                              ListItems.constructionStatus,
+                                          maxWidth: 145,
+                                          onChanged: (String? value) {
+                                            constructionStatus = value!;
+                                          },
+                                        ),
+                                        CustomDropDownButton(
+                                          initialValue: furnishing,
+                                          hint: Text(
+                                            'furnishing',
+                                            style: TextStyle(
+                                                color: kWhiteColor
+                                                    .withOpacity(0.7)),
+                                          ),
+                                          itemList: ListItems.furnishing,
+                                          maxWidth: 130,
+                                          onChanged: (String? value) {
+                                            furnishing = value!;
+                                          },
+                                        )
+                                      ],
                                     ),
                                   ),
-                                  // focusNode: ,
-                                ),
+                                  kHeight5,
+                                  const CustomTextField(
+                                      hintText: 'Land marks near your Villa',
+                                      fillColor: kWhiteColor,
+                                      suffixIcon: kRequiredAsterisk),
+                                  kHeight15,
+                                  const CustomTextField(
+                                      fillColor: kWhiteColor,
+                                      hintText: 'Website link of your Villa',
+                                      suffixIcon: kRequiredAsterisk),
+                                  kHeight15,
+                                ],
                               ),
-                              
-                              SizedBox(
-                                width: cons.maxWidth*0.435,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: const [
-                                    ImageUploadDotedCircle(
-                                      color: kPrimaryColor,
-                                      text: 'Floor\nPlan',
-                                    ),
-                                    ImageUploadDotedCircle(
-                                      color: kBlackColor,
-                                      text: 'Land\nSketch',
-                                    ),
-                                  ],
-                                )
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 65,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                CustomDropDownButton(
-                                  initialValue: constructionStatus,
-                                  hint: Text('construction status',style: TextStyle(color: kWhiteColor.withOpacity(0.7)),),
-                                  itemList: ListItems.constructionStatus, 
-                                  maxWidth: 145,
-                                  onChanged: (String? value) {
-                                    constructionStatus = value!;
-                                  },
-                                ),
-                                CustomDropDownButton(
-                                  initialValue: furnishing,
-                                  hint: Text('furnishing',style: TextStyle(color: kWhiteColor.withOpacity(0.7)),),
-                                  itemList: ListItems.furnishing, 
-                                  maxWidth: 130,
-                                  onChanged: (String? value) {
-                                    furnishing = value!;
-                                  },
-                                )
-                              ],
-                            ),
-                          ),
-                          kHeight5,
-                          const CustomTextField(
-                            hintText: 'Land marks near your Villa',
-                            fillColor: kWhiteColor,
-                            suffixIcon : kRequiredAsterisk
-                          ),
-                          kHeight15,
-                          const CustomTextField(
-                            fillColor: kWhiteColor,
-                            hintText: 'Website link of your Villa',
-                            suffixIcon : kRequiredAsterisk
-                          ),
-                          kHeight15,
-                        ],
-                      ),
-                    )
-                    : const SizedBox();
-                  } 
-                )
+                            )
+                          : const SizedBox();
+                    })
               ],
             ),
           );
         },
       ),
       //  bottom continue button
-      bottomNavigationBar: const SizedBox(
+      bottomNavigationBar: SizedBox(
         width: double.infinity,
         height: 90,
         child: Padding(
-          padding: EdgeInsets.only(left: 20,right: 20,bottom: 20,top: 10),
-          child: ButtonWithRightSideIcon(
-            onPressed: null//(){},//
-          ),
+          padding:
+              const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 10),
+          child: ButtonWithRightSideIcon(onPressed: () {
+            Navigator.pushNamed(context, adConfirmScreen);
+          }),
         ),
       ),
     );
@@ -578,32 +642,27 @@ class CollectAdDetails extends StatelessWidget {
 class AddMoreInfoButton extends StatelessWidget {
   const AddMoreInfoButton({
     super.key,
-    this.onPressed, 
-    required this.backgroundColor, 
+    this.onPressed,
+    required this.backgroundColor,
     required this.icon,
   });
   final void Function()? onPressed;
   final Color backgroundColor;
-  final Widget icon; 
+  final Widget icon;
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: ElevatedButton.icon(
-        onPressed: onPressed, 
+        onPressed: onPressed,
         icon: icon,
-        label: const Text('Click to add more info',style: TextStyle(fontSize: 13 ,fontWeight: FontWeight.w500),),
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(backgroundColor)
+        label: const Text(
+          'Click to add more info',
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
         ),
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(backgroundColor)),
       ),
     );
   }
 }
-
-
-
-
-
-
-
