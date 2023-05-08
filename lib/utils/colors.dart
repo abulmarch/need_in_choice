@@ -23,3 +23,7 @@ const kEnabledBackground = Color(0xFFC3E2FF);
 const kDarkBlue = Color(0xFF2B3F6C);
 const kDarkGreyButtonColor = Color(0XFF5E5E5E);
 const kButtonRedColor = Color(0XFFFF6464);
+
+
+
+const kButtonColor = Color(0xffF1F1F1);

@@ -30,6 +30,7 @@ const Text kRequiredAsterisk = Text('*  ',style: TextStyle(fontSize: 20,color: k
 const double kpadding10 = 10;
 const double kpadding15 = 15;
 const double kpadding20 = 20;
+const double kpadding30 = 30;
 
 const vericalDivider = SizedBox(
   height: 30,

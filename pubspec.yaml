@@ -40,6 +40,7 @@ flutter:
     - assets/images/category/realestate-buildingForSale/
     - assets/images/category/realestate-buildingForSale/commercial/
     - assets/images/dummy/
+    - assets/images/icons/
 
 
   fonts:
