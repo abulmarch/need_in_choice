@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/constants.dart';
-
-import '../../../utils/category_and_subcategory_info.dart';
+import 'package:need_in_choice/views/pages/home_page/show_category_bottomsheet.dart';
+import '../../../utils/category_data.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/dummy_data.dart';
 import '../../widgets_refactored/dashed_line_generator.dart';
@@ -388,9 +388,38 @@ class HomePageScreen extends StatelessWidget {
                 builder: (BuildContext ctx, BoxConstraints bConst) {
               return Padding(
                 padding: const EdgeInsets.only(top: 5),
-                child: ScrollingCategory(
-                    selectedCategory: 0 /*_selectedCategory*/,
-                    size: bConst.maxHeight),
+                child: ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: mainCategories.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return MainCategoryIconWithName(
+                      selectedCategory: -1, 
+                      size: bConst.maxHeight,
+                      index: index,
+                      onTap: () {
+                        if(mainCategories[index]['is_comming_soon']!=null){
+                          showModalBottomSheet(
+                            context: context, 
+                            builder: (context) => ShowCatogoryBottomSheet(level2SubCat: mainCategories[index]['next_cat_list'],selectedMainCatIndex: index),
+                            backgroundColor: Colors.white.withOpacity(0),
+                            enableDrag: false,
+                          );
+                        }else if(mainCategories[index]['end_of_cat'] == true){
+                          Navigator.of(context).pushNamed(mainCategories[index]['root_name']);
+                        }else{
+                          showModalBottomSheet(
+                            context: context, 
+                            builder: (context) => ShowCatogoryBottomSheet(level2SubCat: mainCategories[index]['next_cat_list'],selectedMainCatIndex: index),
+                            backgroundColor: Colors.white.withOpacity(0),
+                            enableDrag: false,
+                          );
+                        }
+                      },
+                    );
+                  }
+                )
               );
             }),
           ),

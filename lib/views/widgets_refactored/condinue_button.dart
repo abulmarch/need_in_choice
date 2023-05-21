@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../../utils/colors.dart';
-import '../../../../utils/constants.dart';
+import '../../utils/colors.dart';
+import '../../utils/constants.dart';
 
 class ButtonWithRightSideIcon extends StatelessWidget {
   const ButtonWithRightSideIcon({

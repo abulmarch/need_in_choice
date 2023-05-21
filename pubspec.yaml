@@ -36,9 +36,10 @@ flutter:
     - assets/images/
     - assets/images/tools/
     - assets/images/profile/
-    - assets/images/category/
-    - assets/images/category/realestate-buildingForSale/
-    - assets/images/category/realestate-buildingForSale/commercial/
+    - assets/images/category/level1-main-category/
+    - assets/images/category/level3-sub-cat/
+    - assets/images/category/level4-sub-cat/
+    - assets/images/category/vehicles-rent/
     - assets/images/dummy/
     - assets/images/icons/
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../utils/colors.dart';
-import '../../../../utils/constants.dart';
+import '../../utils/colors.dart';
+import '../../utils/constants.dart';
 
 class CustomDropDownButton extends StatelessWidget {
   const CustomDropDownButton({
@@ -20,7 +20,8 @@ class CustomDropDownButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
+      margin: const EdgeInsets.only(right: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
         color: kPrimaryColor,
         borderRadius: BorderRadius.circular(30),

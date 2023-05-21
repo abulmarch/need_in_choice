@@ -10,7 +10,7 @@ class CustomTextField extends StatelessWidget {
     this.controller, 
     this.onTapOutside, 
     this.onChanged, 
-    this.fillColor,
+    this.fillColor, this.width,
   });
   final String? hintText;
   final Widget? suffixIcon;
@@ -20,21 +20,25 @@ class CustomTextField extends StatelessWidget {
   final void Function(String)? onChanged;
   final void Function(PointerDownEvent)? onTapOutside;
   final Color? fillColor;
+  final double? width;
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      decoration: InputDecoration(
-        // contentPadding: kContentPadding,
-        fillColor: fillColor,
-        hintText: hintText,
-        suffixIconConstraints: suffixIconConstraints ?? const BoxConstraints.tightForFinite(),
-        suffixIcon : suffixIcon,
+    return SizedBox(
+      width: width,
+      child: TextFormField(
+        controller: controller,
+        maxLines: maxLines,
+        decoration: InputDecoration(
+          // contentPadding: kContentPadding,
+          fillColor: fillColor,
+          hintText: hintText,
+          suffixIconConstraints: suffixIconConstraints ?? const BoxConstraints.tightForFinite(),
+          suffixIcon : suffixIcon,
+        ),
+
+        onTapOutside: onTapOutside,
+        onChanged: onChanged,
       ),
-      
-      onTapOutside: onTapOutside,
-      onChanged: onChanged,
     );
   }
 }

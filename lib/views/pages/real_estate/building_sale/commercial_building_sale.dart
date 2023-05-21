@@ -1,33 +1,36 @@
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/views/widgets_refactored/dashed_line_generator.dart';
+import '../../../../utils/constants.dart';
+import '../../../../utils/dropdown_list_items.dart';
+import '../../../../utils/level4_category_data.dart';
+import '../../../widgets_refactored/circular_back_button.dart';
+import '../../../widgets_refactored/custom_text_field.dart';
+import '../../../widgets_refactored/dotted_border_textfield.dart';
+import '../../../widgets_refactored/condinue_button.dart';
+import '../../../widgets_refactored/custom_dropdown_button.dart';
+import '../../../widgets_refactored/image_upload_doted_circle.dart';
+import '../land_sale/e_auction_land.dart';
 
-import '../../../utils/category_and_subcategory_info.dart';
-import '../../../utils/constants.dart';
-import '../../../utils/dropdown_list_items.dart';
-import '../../widgets_refactored/circular_back_button.dart';
-import '../../widgets_refactored/custom_text_field.dart';
-import 'widgets/condinue_button.dart';
-import 'widgets/custom_dropdown_button.dart';
-import 'widgets/image_upload_doted_circle.dart';
+
+
 
 ValueNotifier<bool> addMoreEnabled = ValueNotifier(false);
 
-class CollectAdDetails extends StatelessWidget {
-  const CollectAdDetails({super.key});
+class CommercialBuildingForSale extends StatelessWidget {
+  const CommercialBuildingForSale({super.key});
 
   @override
   Widget build(BuildContext context) {
     ScrollController scrollController = ScrollController();
-    String propertyArea = ListItems.propertyArea.first;
-    String buildupArea = ListItems.buildupArea.first;
+    String propertyArea = DropdownUnitsList.propertyArea.first;
+    String buildupArea = DropdownUnitsList.buildupArea.first;
     String? saleType;
     String? listedBy;
     String? facing;
 
-    String carpetArea = ListItems.carpetArea.first;
+    String carpetArea = DropdownUnitsList.carpetArea.first;
     String? constructionStatus;
     String? furnishing;
 
@@ -52,6 +55,7 @@ class CollectAdDetails extends StatelessWidget {
                     child: CircularBackButton(
                       onPressed: () {
                         Navigator.of(context).pop();
+                        // Navigator.of(context).push(MaterialPageRoute(builder: (context) => EAuctionLandScreen(),));
                       },
                       size: const Size(45, 45),
                     ),
@@ -113,7 +117,7 @@ class CollectAdDetails extends StatelessWidget {
 
       body: LayoutBuilder(
         builder: (ctx, cons) {
-          double keyBoardHeight = 0; //MediaQuery.of(context).viewInsets.bottom;
+          // double keyBoardHeight = 0; //MediaQuery.of(context).viewInsets.bottom;
           return SingleChildScrollView(
             controller: scrollController,
             physics: const BouncingScrollPhysics(),
@@ -206,7 +210,7 @@ class CollectAdDetails extends StatelessWidget {
                                     },
                                     suffixIcon: CustomDropDownButton(
                                       initialValue: propertyArea,
-                                      itemList: ListItems.propertyArea,
+                                      itemList: DropdownUnitsList.propertyArea,
                                       onChanged: (String? value) {
                                         propertyArea = value!;
                                       },
@@ -223,7 +227,7 @@ class CollectAdDetails extends StatelessWidget {
                                     },
                                     suffixIcon: CustomDropDownButton(
                                       initialValue: buildupArea,
-                                      itemList: ListItems.buildupArea,
+                                      itemList: DropdownUnitsList.buildupArea,
                                       onChanged: (String? value) {
                                         buildupArea = value!;
                                       },
@@ -238,9 +242,7 @@ class CollectAdDetails extends StatelessWidget {
                               height: 60,
                               child: Wrap(
                                 crossAxisAlignment: WrapCrossAlignment.center,
-                                spacing: 5,
-                                runSpacing: 3,
-                                alignment: WrapAlignment.center,
+                                alignment: WrapAlignment.spaceEvenly,
                                 runAlignment: WrapAlignment.center,
                                 children: [
                                   CustomDropDownButton(
@@ -251,7 +253,7 @@ class CollectAdDetails extends StatelessWidget {
                                           color: kWhiteColor.withOpacity(0.7)),
                                     ),
                                     maxWidth: 100,
-                                    itemList: ListItems.saleType,
+                                    itemList: DropdownUnitsList.saleType,
                                     onChanged: (String? value) {
                                       saleType = value!;
                                     },
@@ -264,7 +266,7 @@ class CollectAdDetails extends StatelessWidget {
                                           color: kWhiteColor.withOpacity(0.7)),
                                     ),
                                     maxWidth: 100,
-                                    itemList: ListItems.listedBy,
+                                    itemList: DropdownUnitsList.listedBy,
                                     onChanged: (String? value) {
                                       listedBy = value!;
                                     },
@@ -277,7 +279,7 @@ class CollectAdDetails extends StatelessWidget {
                                           color: kWhiteColor.withOpacity(0.7)),
                                     ),
                                     maxWidth: 100,
-                                    itemList: ListItems.facing,
+                                    itemList: DropdownUnitsList.facing,
                                     onChanged: (String? value) {
                                       facing = value!;
                                     },
@@ -290,74 +292,29 @@ class CollectAdDetails extends StatelessWidget {
                       ),
                       DashedLineGenerator(width: cons.maxWidth - 60),
                       kHeight20,
-                      DottedBorder(
-                        dashPattern: const [3, 2],
-                        color: kSecondaryColor,
-                        borderType: BorderType.RRect,
-                        strokeWidth: 1.5,
-                        radius: const Radius.circular(10),
-                        padding: const EdgeInsets.all(2),
-                        child: ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              fillColor: kWhiteColor,
-                              hintText: 'Ads Price',
-                              hintStyle: TextStyle(color: kSecondaryColor),
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              // contentPadding: kContentPadding,
-                              // focusedBorder: OutlineInputBorder(borderSide: BorderSide(width: 1,color: kWhiteColor.withOpacity(0)),),
-                              // contentPadding: EdgeInsets.fromLTRB(12, 16, 12, 16),
-                            ),
-                          ),
-                        ),
+                      const DottedBorderTextField(
+                        hintText: 'Ads Price',
                       ),
                       kHeight20,
                       ValueListenableBuilder(
                         valueListenable: addMoreEnabled,
                         builder: (context, isEnabled, _) {
                           if (isEnabled == false) {
-                            return Directionality(
-                              textDirection: TextDirection.rtl,
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  addMoreEnabled.value = !addMoreEnabled.value;
-                                  scrollController.jumpTo(
-                                    cons.maxHeight * 0.8,
-                                  );
-                                },
-                                icon: const Icon(Icons.add_circle),
-                                label: const Text(
-                                  'Click to add more info',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.normal),
-                                ),
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            kDarkGreyButtonColor)),
-                              ),
+                            return AddMoreInfoButton(
+                              onPressed: () {
+                                addMoreEnabled.value = !addMoreEnabled.value;
+                                scrollController.jumpTo(
+                                  cons.maxHeight * 0.8,
+                                );
+                              },
                             );
                           } else {
-                            return Directionality(
-                              textDirection: TextDirection.rtl,
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  addMoreEnabled.value = !addMoreEnabled.value;
-                                },
-                                icon: const Icon(Icons.remove_circle),
-                                label: const Text(
-                                  'Click to add more info',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.normal),
-                                ),
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            kButtonRedColor)),
-                              ),
+                            return AddMoreInfoButton(
+                              onPressed: () {
+                                addMoreEnabled.value = !addMoreEnabled.value;
+                              },
+                              backgroundColor: kButtonRedColor,
+                              icon: const Icon(Icons.remove_circle),
                             );
                           }
                         },
@@ -396,28 +353,7 @@ class CollectAdDetails extends StatelessWidget {
                                           onTapOutside: (event) {
                                             FocusScope.of(context).unfocus();
                                           },
-                                          suffixIcon: Container(
-                                            alignment: Alignment.center,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 6, vertical: 8),
-                                            decoration: const BoxDecoration(
-                                              color: kDarkGreyButtonColor,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(30)),
-                                            ),
-                                            constraints: const BoxConstraints(
-                                              minWidth: 70,
-                                              maxWidth: 75,
-                                            ),
-                                            child: const Text(
-                                              'Total Floors',
-                                              style: TextStyle(
-                                                  color: kWhiteColor,
-                                                  fontSize: 12),
-                                            ),
-                                          ),
-
-                                          // focusNode: ,
+                                          suffixIcon: const DarkTextChip(text: 'Total Floors'),
                                         ),
                                       ),
                                       SizedBox(
@@ -430,7 +366,7 @@ class CollectAdDetails extends StatelessWidget {
                                           },
                                           suffixIcon: CustomDropDownButton(
                                             initialValue: carpetArea,
-                                            itemList: ListItems.carpetArea,
+                                            itemList: DropdownUnitsList.carpetArea,
                                             onChanged: (String? value) {
                                               carpetArea = value!;
                                             },
@@ -453,26 +389,27 @@ class CollectAdDetails extends StatelessWidget {
                                           onTapOutside: (event) {
                                             FocusScope.of(context).unfocus();
                                           },
-                                          suffixIcon: Container(
-                                            alignment: Alignment.center,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 6, vertical: 8),
-                                            decoration: const BoxDecoration(
-                                              color: kDarkGreyButtonColor,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(30)),
-                                            ),
-                                            constraints: const BoxConstraints(
-                                              minWidth: 70,
-                                              maxWidth: 70,
-                                            ),
-                                            child: const Text(
-                                              'Floor no',
-                                              style: TextStyle(
-                                                  color: kWhiteColor,
-                                                  fontSize: 12),
-                                            ),
-                                          ),
+                                          suffixIcon: const DarkTextChip(text: 'Floor no'),
+                                          // suffixIcon: Container(
+                                          //   alignment: Alignment.center,
+                                          //   padding: const EdgeInsets.symmetric(
+                                          //       horizontal: 6, vertical: 8),
+                                          //   decoration: const BoxDecoration(
+                                          //     color: kDarkGreyButtonColor,
+                                          //     borderRadius: BorderRadius.all(
+                                          //         Radius.circular(30)),
+                                          //   ),
+                                          //   constraints: const BoxConstraints(
+                                          //     minWidth: 70,
+                                          //     maxWidth: 70,
+                                          //   ),
+                                          //   child: const Text(
+                                          //     'Floor no',
+                                          //     style: TextStyle(
+                                          //         color: kWhiteColor,
+                                          //         fontSize: 12),
+                                          //   ),
+                                          // ),
                                           // focusNode: ,
                                         ),
                                       ),
@@ -484,27 +421,7 @@ class CollectAdDetails extends StatelessWidget {
                                           onTapOutside: (event) {
                                             FocusScope.of(context).unfocus();
                                           },
-                                          suffixIcon: Container(
-                                            alignment: Alignment.center,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 6, vertical: 8),
-                                            decoration: const BoxDecoration(
-                                              color: kDarkGreyButtonColor,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(30)),
-                                            ),
-                                            constraints: const BoxConstraints(
-                                              minWidth: 70,
-                                              maxWidth: 70,
-                                            ),
-                                            child: const Text(
-                                              'Parking',
-                                              style: TextStyle(
-                                                  color: kWhiteColor,
-                                                  fontSize: 12),
-                                            ),
-                                          ),
-                                          // focusNode: ,
+                                          suffixIcon: const DarkTextChip(text: 'Parking'),
                                         ),
                                       ),
                                     ],
@@ -516,32 +433,14 @@ class CollectAdDetails extends StatelessWidget {
                                     children: [
                                       SizedBox(
                                         width: cons.maxWidth * 0.435,
-                                        child: CustomTextField(
+                                        child: 
+                                        CustomTextField(
                                           hintText: 'Eg 3',
                                           fillColor: kWhiteColor,
                                           onTapOutside: (event) {
                                             FocusScope.of(context).unfocus();
                                           },
-                                          suffixIcon: Container(
-                                            alignment: Alignment.center,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 6, vertical: 8),
-                                            decoration: const BoxDecoration(
-                                              color: kDarkGreyButtonColor,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(30)),
-                                            ),
-                                            constraints: const BoxConstraints(
-                                              minWidth: 70,
-                                              maxWidth: 100,
-                                            ),
-                                            child: const Text(
-                                              'Age Of Building',
-                                              style: TextStyle(
-                                                  color: kWhiteColor,
-                                                  fontSize: 12),
-                                            ),
-                                          ),
+                                          suffixIcon: const DarkTextChip(text: 'Age Of Building'),
                                           // focusNode: ,
                                         ),
                                       ),
@@ -579,7 +478,7 @@ class CollectAdDetails extends StatelessWidget {
                                                     .withOpacity(0.7)),
                                           ),
                                           itemList:
-                                              ListItems.constructionStatus,
+                                              DropdownUnitsList.constructionStatus,
                                           maxWidth: 145,
                                           onChanged: (String? value) {
                                             constructionStatus = value!;
@@ -593,7 +492,7 @@ class CollectAdDetails extends StatelessWidget {
                                                 color: kWhiteColor
                                                     .withOpacity(0.7)),
                                           ),
-                                          itemList: ListItems.furnishing,
+                                          itemList: DropdownUnitsList.furnishing,
                                           maxWidth: 130,
                                           onChanged: (String? value) {
                                             furnishing = value!;
@@ -604,14 +503,14 @@ class CollectAdDetails extends StatelessWidget {
                                   ),
                                   kHeight5,
                                   const CustomTextField(
-                                      hintText: 'Land marks near your Villa',
+                                      hintText: 'Land marks near your Restaurant',
                                       fillColor: kWhiteColor,
-                                      suffixIcon: kRequiredAsterisk),
+                                      ),
                                   kHeight15,
                                   const CustomTextField(
                                       fillColor: kWhiteColor,
-                                      hintText: 'Website link of your Villa',
-                                      suffixIcon: kRequiredAsterisk),
+                                      hintText: 'Website link of your Restaurant',
+                                      ),
                                   kHeight15,
                                 ],
                               ),
@@ -628,41 +527,17 @@ class CollectAdDetails extends StatelessWidget {
         width: double.infinity,
         height: 90,
         child: Padding(
-          padding:
-              const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 10),
-          child: ButtonWithRightSideIcon(onPressed: () {
-            Navigator.pushNamed(context, adConfirmScreen);
-          }),
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 10),
+          child: ButtonWithRightSideIcon(
+            onPressed: () {
+              Navigator.pushNamed(context, adConfirmScreen);
+            }
+          ),
         ),
       ),
     );
   }
 }
 
-class AddMoreInfoButton extends StatelessWidget {
-  const AddMoreInfoButton({
-    super.key,
-    this.onPressed,
-    required this.backgroundColor,
-    required this.icon,
-  });
-  final void Function()? onPressed;
-  final Color backgroundColor;
-  final Widget icon;
-  @override
-  Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: ElevatedButton.icon(
-        onPressed: onPressed,
-        icon: icon,
-        label: const Text(
-          'Click to add more info',
-          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-        ),
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(backgroundColor)),
-      ),
-    );
-  }
-}
+
+

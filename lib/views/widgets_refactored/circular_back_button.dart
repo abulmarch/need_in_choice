@@ -7,7 +7,7 @@ class CircularBackButton extends StatelessWidget {
   const CircularBackButton({
     super.key, 
     required this.onPressed, 
-    this.size = const Size(30, 30),
+    this.size = const Size(40, 40),
   });
   final void Function() onPressed;
   final Size size;

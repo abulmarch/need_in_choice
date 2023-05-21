@@ -14,3 +14,10 @@ List<String> houseFoRentAd = [
   'assets/images/dummy/house_for_rent2.png',
   'assets/images/dummy/house_for_rent3.png',
 ]; 
+
+List<String> addDetails = [
+  '1 Bhk',
+  'Road facing',
+  '2 Bathroom',
+  'Road facing',
+];
