@@ -3,11 +3,11 @@ import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/views/pages/account/account_screen.dart';
 import 'package:need_in_choice/views/pages/ad_finalisation/ad_confirm_screen.dart';
 import 'package:need_in_choice/views/pages/login/details_screen.dart';
-import 'package:need_in_choice/views/pages/login/splash_screen.dart';
 
 import '../../views/pages/ad_detail/ad_detail_screen.dart';
 import '../../views/pages/ad_finalisation/ad_preview_screen.dart';
 import '../../views/pages/ad_finalisation/confirm_lottie.dart';
+import '../../views/pages/login/splash_screen.dart';
 import '../../views/pages/real_estate/agency/realestate_agency.dart';
 import '../../views/pages/real_estate/agent/realestate_agent.dart';
 import '../../views/pages/real_estate/building_rent/apartment_rent.dart';
@@ -30,7 +30,7 @@ class PageRoutes {
       case splashScreen:
         return MaterialPageRoute(
           settings: routeSettings,
-          builder: (_) => const SpalshScreen(),
+          builder: (_) => const SplashScreen(),
         );
       case signUpScreen:
         return MaterialPageRoute(

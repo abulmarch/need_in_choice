@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "843332302613",
+    "project_id": "nic-besocial",
+    "storage_bucket": "nic-besocial.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843332302613:android:74e6fe3b5029a93a385b1c",
+        "android_client_info": {
+          "package_name": "com.example.need_in_choice"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP7IorU8jlG4NYjKkM8BpHVfQgYre-uj4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
