@@ -181,7 +181,8 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
               child: StartButton(
                 screenWidth: screenWidth,
                 ontap: () {
-                  verifyOTP(context);
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MainNavigationScreen(),));
+                  // verifyOTP(context);
                 },
                 boldText: "Signin | Signup",
                 lightText: ' Now',

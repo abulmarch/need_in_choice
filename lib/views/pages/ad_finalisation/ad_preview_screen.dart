@@ -26,7 +26,6 @@ class AdPreviewScreen extends StatelessWidget {
                 children: [
                   kHeight10,
                   ImageCard(
-                    imageSize: screenWidth,
                     phouseFoRentr: houseFoRentAd,
                   ),
                 ],

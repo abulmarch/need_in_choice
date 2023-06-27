@@ -22,10 +22,10 @@ class ApartmentRentScreen extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     ScrollController scrollController = ScrollController();
-    String buildupArea = DropdownUnitsList.buildupArea.first;
+    String buildupArea = RealEstateDropdownList.buildupArea.first;
     String? listedBy;
     String? facing;
-    String carpetArea = DropdownUnitsList.carpetArea.first;
+    String carpetArea = RealEstateDropdownList.carpetArea.first;
     String? constructionStatus;
     String? furnishing;
 
@@ -183,7 +183,7 @@ class ApartmentRentScreen extends StatelessWidget {
                                       },
                                       suffixIcon: CustomDropDownButton(
                                         initialValue: buildupArea,
-                                        itemList: DropdownUnitsList.buildupArea,
+                                        itemList: RealEstateDropdownList.buildupArea,
                                         onChanged: (String? value) {
                                           buildupArea = value!;
                                         },
@@ -210,7 +210,7 @@ class ApartmentRentScreen extends StatelessWidget {
                                                 kWhiteColor.withOpacity(0.7)),
                                       ),
                                       maxWidth: width*0.27,
-                                      itemList: DropdownUnitsList.listedBy,
+                                      itemList: RealEstateDropdownList.listedBy,
                                       onChanged: (String? value) {
                                         listedBy = value!;
                                       },
@@ -224,7 +224,7 @@ class ApartmentRentScreen extends StatelessWidget {
                                                 kWhiteColor.withOpacity(0.7)),
                                       ),
                                       maxWidth: width*0.27,
-                                      itemList: DropdownUnitsList.facing,
+                                      itemList: RealEstateDropdownList.facing,
                                       onChanged: (String? value) {
                                         facing = value!;
                                       },
@@ -366,7 +366,7 @@ class ApartmentRentScreen extends StatelessWidget {
                                             },
                                             suffixIcon: CustomDropDownButton(
                                               initialValue: carpetArea,
-                                              itemList: DropdownUnitsList.carpetArea,
+                                              itemList: RealEstateDropdownList.carpetArea,
                                               onChanged: (String? value) {
                                                 carpetArea = value!;
                                               },
@@ -384,7 +384,7 @@ class ApartmentRentScreen extends StatelessWidget {
                                             },
                                             suffixIcon: CustomDropDownButton(
                                               initialValue: carpetArea,
-                                              itemList: DropdownUnitsList.carpetArea,
+                                              itemList: RealEstateDropdownList.carpetArea,
                                               onChanged: (String? value) {
                                                 carpetArea = value!;
                                               },
@@ -468,7 +468,7 @@ class ApartmentRentScreen extends StatelessWidget {
                                                       .withOpacity(0.7)),
                                             ),
                                             itemList:
-                                                DropdownUnitsList.constructionStatus,
+                                                RealEstateDropdownList.constructionStatus,
                                             maxWidth: width*0.44,
                                             onChanged: (String? value) {
                                               constructionStatus = value!;
@@ -482,7 +482,7 @@ class ApartmentRentScreen extends StatelessWidget {
                                                   color: kWhiteColor
                                                       .withOpacity(0.7)),
                                             ),
-                                            itemList: DropdownUnitsList.furnishing,
+                                            itemList: RealEstateDropdownList.furnishing,
                                             maxWidth: width*0.3,
                                             onChanged: (String? value) {
                                               furnishing = value!;

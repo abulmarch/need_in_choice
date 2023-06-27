@@ -22,7 +22,7 @@ class LoadingVehicleForRent extends StatelessWidget {
     String? rent;
     String? listedBy;
     String? drivingType;
-    String loadingCapacity = ListItemsVehicles.loadingCapacity.first;
+    String loadingCapacity = VehicleDropDownList.loadingCapacity.first;
 
     return Scaffold(
       backgroundColor: kWhiteColor,
@@ -62,10 +62,12 @@ class LoadingVehicleForRent extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       children: [
                         DashedLineGenerator(
-                            width:
-                                building4saleCommercial[0]['cat_name']!.length *
-                                    width *
-                                    0.07),
+                          width:
+                              building4saleCommercial[0]['cat_name']!.length *
+                                  width *
+                                  0.07,
+                          color: kDottedBorder,
+                        ),
                         const Icon(
                           Icons.arrow_forward,
                           size: 15,
@@ -82,7 +84,7 @@ class LoadingVehicleForRent extends StatelessWidget {
       ),
       body: LayoutBuilder(
         builder: (ctx, cons) {
-          double keyBoardHeight = 0;
+          //double keyBoardHeight = 0;
           return SingleChildScrollView(
             controller: scrollController,
             physics: const BouncingScrollPhysics(),
@@ -124,7 +126,7 @@ class LoadingVehicleForRent extends StatelessWidget {
                                     color: kWhiteColor.withOpacity(0.7)),
                               ),
                               maxWidth: width * 0.25,
-                              itemList: ListItemsVehicles.listedBy,
+                              itemList: VehicleDropDownList.listedBy,
                               onChanged: (String? value) {
                                 listedBy = value!;
                               },
@@ -137,7 +139,7 @@ class LoadingVehicleForRent extends StatelessWidget {
                                     color: kWhiteColor.withOpacity(0.7)),
                               ),
                               maxWidth: width * 0.31,
-                              itemList: ListItemsVehicles.drivingType,
+                              itemList: VehicleDropDownList.drivingType,
                               onChanged: (String? value) {
                                 drivingType = value!;
                               },
@@ -150,7 +152,7 @@ class LoadingVehicleForRent extends StatelessWidget {
                                     color: kWhiteColor.withOpacity(0.7)),
                               ),
                               maxWidth: width * 0.23,
-                              itemList: ListItemsVehicles.rentType,
+                              itemList: VehicleDropDownList.rentTypeLoading,
                               onChanged: (String? value) {
                                 rent = value!;
                               },
@@ -168,7 +170,7 @@ class LoadingVehicleForRent extends StatelessWidget {
                           },
                           suffixIcon: CustomDropDownButton(
                             initialValue: loadingCapacity,
-                            itemList: ListItemsVehicles.loadingCapacity,
+                            itemList: VehicleDropDownList.loadingCapacity,
                             onChanged: (String? value) {
                               loadingCapacity = value!;
                             },
@@ -177,7 +179,10 @@ class LoadingVehicleForRent extends StatelessWidget {
                         ),
                       ),
                       kHeight20,
-                      DashedLineGenerator(width: width * .9),
+                      DashedLineGenerator(
+                        width: width * .9,
+                        color: kDottedBorder,
+                      ),
                       kHeight20,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

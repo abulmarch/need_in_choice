@@ -20,7 +20,7 @@ class EAuctionLandScreen extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     ScrollController scrollController = ScrollController();
-    String propertyArea = DropdownUnitsList.propertyArea.first;
+    String propertyArea = RealEstateDropdownList.propertyArea.first;
     String? facing;
 
     return Scaffold(
@@ -164,7 +164,7 @@ class EAuctionLandScreen extends StatelessWidget {
                                     },
                                     suffixIcon: CustomDropDownButton(
                                       initialValue: propertyArea,
-                                      itemList: DropdownUnitsList.propertyArea,
+                                      itemList: RealEstateDropdownList.propertyArea,
                                       onChanged: (String? value) {
                                         propertyArea = value!;
                                       },
@@ -179,7 +179,7 @@ class EAuctionLandScreen extends StatelessWidget {
                                         color: kWhiteColor.withOpacity(0.7)),
                                   ),
                                   maxWidth: width*0.27,
-                                  itemList: DropdownUnitsList.facing,
+                                  itemList: RealEstateDropdownList.facing,
                                   onChanged: (String? value) {
                                     facing = value!;
                                   },

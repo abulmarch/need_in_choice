@@ -1,37 +1,32 @@
 import 'package:flutter/material.dart';
-
 import '../../../../utils/constants.dart';
 
 class LandWidget extends StatelessWidget {
-  final double value;
-  final String image;
+  final String value;
   final String name;
 
   const LandWidget({
-    super.key, required this.value, required this.image, required this.name,
+    super.key,
+    required this.value,
+    required this.name,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          "$value",
-          style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 18),
-        ),
-        kWidth5,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset("assets/images/tools/$image.png"),
-            Text(
-              name,
-              style:
-                  Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 8),
-            )
-          ],
-        )
-      ],
-    );
+    return Row(children: [
+      RichText(
+          text: TextSpan(
+        text: '$value  ',
+        style:
+            Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 18),
+        children: [
+          TextSpan(
+            text: name,
+            style:
+                Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 12),
+          ),
+        ],
+      ))
+    ]);
   }
 }

@@ -1,18 +1,36 @@
 import 'package:flutter/material.dart';
-
+import 'package:need_in_choice/utils/constants.dart';
+import 'package:need_in_choice/views/widgets_refactored/dashed_line_generator.dart';
+import '../../../../services/model/ads_models.dart';
 import '../../../../utils/colors.dart';
 import '../../../widgets_refactored/circular_back_button.dart';
 import '../../../widgets_refactored/icon_button.dart';
+import 'package:intl/intl.dart';
 
 class TopAccountBar extends StatelessWidget {
   const TopAccountBar({
     super.key,
     required this.screenHeight,
     required this.screenWidth,
+    required this.adsModel,
   });
 
   final double screenHeight;
   final double screenWidth;
+  final AdsModel adsModel;
+
+  String formatDate(String dateStr) {
+    DateTime dateTime = DateTime.parse(dateStr);
+    return DateFormat('dd MMMM yyyy').format(dateTime);
+  }
+
+  String getProfileImage() {
+    if (adsModel.profileImage != null && adsModel.profileImage!.isNotEmpty) {
+      return "https://nic.calletic.com/storage/app/${adsModel.profileImage!}";
+    } else {
+      return 'assets/images/profile/profile_head.png';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,42 +64,62 @@ class TopAccountBar extends StatelessWidget {
                     spreadRadius: 1)
               ],
             ),
-            child: const Center(
-              child: CircleAvatar(
-                backgroundColor: kWhiteColor,
-                radius: 16,
-                backgroundImage:
-                    AssetImage('assets/images/profile/profile_head.png'),
+            child: CircleAvatar(
+              backgroundColor: kWhiteColor,
+              radius: 30,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(30),
+                child: Image.network(
+                  "https://nic.calletic.com/storage/app/${adsModel.profileImage}",
+                  fit: BoxFit.fill,
+                  width: 35,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    }
+                    return Image.asset(
+                        'assets/images/profile/no_profile_img.png');
+                  },
+                  errorBuilder: (BuildContext context, Object error,
+                      StackTrace? stackTrace) {
+                    return Image.asset(
+                        'assets/images/profile/no_profile_img.png');
+                  },
+                ),
               ),
             ),
           ),
+          kWidth5,
+          const DashedLineHeight(height: 50),
+          kWidth5,
           RichText(
             text: TextSpan(
-                text: "Anjitha",
+                text: adsModel.adsTitle,
+                //"Anjitha",
                 style: Theme.of(context).textTheme.labelLarge,
                 children: [
                   TextSpan(
                       text: "\nPosted on",
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelSmall!
-                          .copyWith(color: const Color(0XFF8B8B8B))),
+                      style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                          color: const Color(0XFF8B8B8B), fontSize: 10)),
                   TextSpan(
-                      text: " 6 Jan 2020",
+                      text: formatDate(adsModel.createdDate),
                       style: Theme.of(context)
                           .textTheme
                           .labelSmall!
+                          .copyWith(fontSize: 10)
                           .copyWith(color: kPrimaryColor)),
                 ]),
           ),
           IconWithButton(
             onpressed: () {},
             iconData: Icons.share,
-            radius: 100,
-            size: const Size(113, 46),
+            radius: 50,
+            size: const Size(86, 46),
             text: "Share",
             fontWeight: FontWeight.w500,
-            fontsize: 16,
+            fontsize: 14,
           ),
         ],
       ),

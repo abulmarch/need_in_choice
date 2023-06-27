@@ -10,7 +10,8 @@ class CustomTextField extends StatelessWidget {
     this.controller, 
     this.onTapOutside, 
     this.onChanged, 
-    this.fillColor, this.width,
+    this.fillColor, this.width, 
+    this.validator,
   });
   final String? hintText;
   final Widget? suffixIcon;
@@ -21,6 +22,7 @@ class CustomTextField extends StatelessWidget {
   final void Function(PointerDownEvent)? onTapOutside;
   final Color? fillColor;
   final double? width;
+  final String? Function(String?)? validator;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -35,7 +37,7 @@ class CustomTextField extends StatelessWidget {
           suffixIconConstraints: suffixIconConstraints ?? const BoxConstraints.tightForFinite(),
           suffixIcon : suffixIcon,
         ),
-
+        validator: validator,
         onTapOutside: onTapOutside,
         onChanged: onChanged,
       ),

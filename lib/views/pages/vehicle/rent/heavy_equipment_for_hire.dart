@@ -61,10 +61,12 @@ class HeavyEquipmentForHire extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       children: [
                         DashedLineGenerator(
-                            width:
-                                building4saleCommercial[0]['cat_name']!.length *
-                                    width *
-                                    0.065),
+                          width:
+                              building4saleCommercial[0]['cat_name']!.length *
+                                  width *
+                                  0.065,
+                          color: kDottedBorder,
+                        ),
                         const Icon(
                           Icons.arrow_forward,
                           size: 15,
@@ -81,7 +83,7 @@ class HeavyEquipmentForHire extends StatelessWidget {
       ),
       body: LayoutBuilder(
         builder: (ctx, cons) {
-          double keyBoardHeight = 0;
+          //double keyBoardHeight = 0;
           return SingleChildScrollView(
             controller: scrollController,
             physics: const BouncingScrollPhysics(),
@@ -123,7 +125,7 @@ class HeavyEquipmentForHire extends StatelessWidget {
                                     color: kWhiteColor.withOpacity(0.7)),
                               ),
                               maxWidth: width * 0.25,
-                              itemList: ListItemsVehicles.listedBy,
+                              itemList: VehicleDropDownList.listedBy,
                               onChanged: (String? value) {
                                 listedBy = value!;
                               },
@@ -136,7 +138,7 @@ class HeavyEquipmentForHire extends StatelessWidget {
                                     color: kWhiteColor.withOpacity(0.7)),
                               ),
                               maxWidth: width * 0.29,
-                              itemList: ListItemsVehicles.drivingType,
+                              itemList: VehicleDropDownList.drivingType,
                               onChanged: (String? value) {
                                 drivingType = value!;
                               },
@@ -149,7 +151,7 @@ class HeavyEquipmentForHire extends StatelessWidget {
                                     color: kWhiteColor.withOpacity(0.7)),
                               ),
                               maxWidth: width * 0.25,
-                              itemList: ListItemsVehicles.rent,
+                              itemList: VehicleDropDownList.rentTypeDriver,
                               onChanged: (String? value) {
                                 rent = value!;
                               },
@@ -158,7 +160,10 @@ class HeavyEquipmentForHire extends StatelessWidget {
                         ),
                       ),
                       kHeight20,
-                      DashedLineGenerator(width: width * .9),
+                      DashedLineGenerator(
+                        width: width * .9,
+                        color: kDottedBorder,
+                      ),
                       kHeight20,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

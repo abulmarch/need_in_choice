@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../../../../services/repositories/repository_urls.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 
@@ -8,11 +9,13 @@ class AdvertisementWidget extends StatelessWidget {
   AdvertisementWidget({
     super.key,
     required this.imageSize, 
-    required this.phouseFoRentr,
+    required this.adsImageUrlList, 
+    required this.timeAgo,
   });
 
   final double imageSize;
-  final List<String> phouseFoRentr;
+  final List<String> adsImageUrlList;
+  final String timeAgo;
   final PageController controller = PageController();
   @override
   Widget build(BuildContext context) {
@@ -22,18 +25,28 @@ class AdvertisementWidget extends StatelessWidget {
         SizedBox(
           width: imageSize,
           height: imageSize-15,
-          child: PageView.builder(
+          child: adsImageUrlList.isNotEmpty
+          ? PageView.builder(
             controller: controller,
-            itemCount: phouseFoRentr.length,
+            itemCount: adsImageUrlList.length,
             itemBuilder: (context, index) => ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(kpadding10)),
+              child: Image.network(
+                '$imageUrlEndpoint${adsImageUrlList[index]}',fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Image.asset(
+                  kNoAdImage,fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          )
+          : ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(kpadding10)),
               child: Image.asset(
-                phouseFoRentr[index],fit: BoxFit.cover,
+                kNoAdImage,fit: BoxFit.cover,
                 // width: imageSize,
                 // height: imageSize-15,
               ),
             ),
-          ),
         ),
         Positioned(
           top: kpadding10,
@@ -47,12 +60,13 @@ class AdvertisementWidget extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(kpadding20))
             ),
             child: Text(
-              '10 days ago',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 10,color: kPrimaryColor),
+              timeAgo,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 8,color: kPrimaryColor),
             ),
           ),
         ),
-        Positioned(
+        adsImageUrlList.length > 1 
+        ? Positioned(
           bottom: kpadding10,
           child: Container(
             width: 100,
@@ -61,7 +75,7 @@ class AdvertisementWidget extends StatelessWidget {
             alignment: Alignment.center,
             child: SmoothPageIndicator(
               controller: controller,
-              count: phouseFoRentr.length,
+              count: adsImageUrlList.length,
               effect: const ScrollingDotsEffect(
                 activeDotColor: kWhiteColor,
                 dotColor: kWhiteColor,
@@ -75,7 +89,8 @@ class AdvertisementWidget extends StatelessWidget {
               )
             )
           ),
-        ),
+        )
+        : const SizedBox(),
       ],
     );
   }
