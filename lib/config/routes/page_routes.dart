@@ -46,7 +46,7 @@ class PageRoutes {
       case mainNavigationScreen:
         return MaterialPageRoute(
           settings: routeSettings,
-          builder: (_) => const MainNavigationScreen(selectIndex: 0),
+          builder: (_) => const MainNavigationScreen(),
         );
       case collectAdDetails:
         return MaterialPageRoute(

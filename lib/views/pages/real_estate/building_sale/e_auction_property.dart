@@ -21,9 +21,9 @@ class EAuctionProperty extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     ScrollController scrollController = ScrollController();
-    String propertyArea = DropdownUnitsList.propertyArea.first;
-    String buildupArea = DropdownUnitsList.buildupArea.first;
-    String carpetArea = DropdownUnitsList.carpetArea.first;
+    String propertyArea = RealEstateDropdownList.propertyArea.first;
+    String buildupArea = RealEstateDropdownList.buildupArea.first;
+    String carpetArea = RealEstateDropdownList.carpetArea.first;
 
     return Scaffold(
       backgroundColor: kWhiteColor,
@@ -163,7 +163,7 @@ class EAuctionProperty extends StatelessWidget {
                                     },
                                     suffixIcon: CustomDropDownButton(
                                       initialValue: propertyArea,
-                                      itemList: DropdownUnitsList.propertyArea,
+                                      itemList: RealEstateDropdownList.propertyArea,
                                       onChanged: (String? value) {
                                         propertyArea = value!;
                                       },
@@ -180,7 +180,7 @@ class EAuctionProperty extends StatelessWidget {
                                     },
                                     suffixIcon: CustomDropDownButton(
                                       initialValue: buildupArea,
-                                      itemList: DropdownUnitsList.buildupArea,
+                                      itemList: RealEstateDropdownList.buildupArea,
                                       onChanged: (String? value) {
                                         buildupArea = value!;
                                       },
@@ -341,7 +341,7 @@ class EAuctionProperty extends StatelessWidget {
                                     },
                                     suffixIcon: CustomDropDownButton(
                                       initialValue: carpetArea,
-                                      itemList: DropdownUnitsList.carpetArea,
+                                      itemList: RealEstateDropdownList.carpetArea,
                                       onChanged: (String? value) {
                                         carpetArea = value!;
                                       },
@@ -359,7 +359,7 @@ class EAuctionProperty extends StatelessWidget {
                                     },
                                     suffixIcon: CustomDropDownButton(
                                       initialValue: carpetArea,
-                                      itemList: DropdownUnitsList.carpetArea,
+                                      itemList: RealEstateDropdownList.carpetArea,
                                       onChanged: (String? value) {
                                         carpetArea = value!;
                                       },

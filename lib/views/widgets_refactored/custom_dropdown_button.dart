@@ -64,3 +64,43 @@ class CustomDropDownButton extends StatelessWidget {
     );
   }
 }
+
+
+class NewUsedContainer extends StatelessWidget {
+  const NewUsedContainer({
+    super.key,
+    required this.height,
+    required this.width,
+    required this.text,
+  });
+
+  final double height;
+  final double width;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height * 0.07,
+      width: width * 0.2,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: kSecondaryColor.withOpacity(0.5)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            text,
+            style: const TextStyle(
+                color: kPrimaryColor, fontWeight: FontWeight.w600),
+          ),
+          const Icon(
+            Icons.arrow_forward_ios_rounded,
+            size: 10,
+            color: kWhiteColor,
+          )
+        ],
+      ),
+    );
+  }
+}

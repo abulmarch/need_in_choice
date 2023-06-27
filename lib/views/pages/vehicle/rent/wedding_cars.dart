@@ -61,10 +61,12 @@ class WeddingCarsForHire extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       children: [
                         DashedLineGenerator(
-                            width:
-                                building4saleCommercial[0]['cat_name']!.length *
-                                    width *
-                                    0.06),
+                          width:
+                              building4saleCommercial[0]['cat_name']!.length *
+                                  width *
+                                  0.06,
+                          color: kDottedBorder,
+                        ),
                         const Icon(
                           Icons.arrow_forward,
                           size: 15,
@@ -122,7 +124,7 @@ class WeddingCarsForHire extends StatelessWidget {
                                     color: kWhiteColor.withOpacity(0.7)),
                               ),
                               maxWidth: width * 0.25,
-                              itemList: ListItemsVehicles.listedByWed,
+                              itemList: VehicleDropDownList.listedByWed,
                               onChanged: (String? value) {
                                 listedBy = value!;
                               },
@@ -135,7 +137,7 @@ class WeddingCarsForHire extends StatelessWidget {
                                     color: kWhiteColor.withOpacity(0.7)),
                               ),
                               maxWidth: width * 0.31,
-                              itemList: ListItemsVehicles.drivingType,
+                              itemList: VehicleDropDownList.drivingType,
                               onChanged: (String? value) {
                                 drivingType = value!;
                               },
@@ -148,7 +150,7 @@ class WeddingCarsForHire extends StatelessWidget {
                                     color: kWhiteColor.withOpacity(0.7)),
                               ),
                               maxWidth: width * 0.23,
-                              itemList: ListItemsVehicles.rentTypeWedding,
+                              itemList: VehicleDropDownList.rentTypeWedding,
                               onChanged: (String? value) {
                                 rent = value!;
                               },
@@ -248,7 +250,11 @@ class WeddingCarsForHire extends StatelessWidget {
                         ],
                       ),
                       kHeight20,
-                      Center(child: DashedLineGenerator(width: width * .8)),
+                      Center(
+                          child: DashedLineGenerator(
+                        width: width * .8,
+                        color: kDottedBorder,
+                      )),
                       kHeight20,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

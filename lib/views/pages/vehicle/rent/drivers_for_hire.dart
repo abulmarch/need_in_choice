@@ -63,10 +63,12 @@ class DriversForHireRent extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       children: [
                         DashedLineGenerator(
-                            width:
-                                building4saleCommercial[0]['cat_name']!.length *
-                                    width *
-                                    0.04),
+                          width:
+                              building4saleCommercial[0]['cat_name']!.length *
+                                  width *
+                                  0.04,
+                          color: kDottedBorder,
+                        ),
                         const Icon(
                           Icons.arrow_forward,
                           size: 15,
@@ -124,7 +126,7 @@ class DriversForHireRent extends StatelessWidget {
                                     color: kWhiteColor.withOpacity(0.7)),
                               ),
                               maxWidth: width * 0.2,
-                              itemList: ListItemsVehicles.rent,
+                              itemList: VehicleDropDownList.rentTypeDriver,
                               onChanged: (String? value) {
                                 rent = value!;
                               },
@@ -137,7 +139,7 @@ class DriversForHireRent extends StatelessWidget {
                                     color: kWhiteColor.withOpacity(0.7)),
                               ),
                               maxWidth: width * 0.25,
-                              itemList: ListItemsVehicles.listedBy,
+                              itemList: VehicleDropDownList.listedBy,
                               onChanged: (String? value) {
                                 listedBy = value!;
                               },
@@ -150,7 +152,7 @@ class DriversForHireRent extends StatelessWidget {
                                     color: kWhiteColor.withOpacity(0.7)),
                               ),
                               maxWidth: width * 0.29,
-                              itemList: ListItemsVehicles.salaryPeriod,
+                              itemList: VehicleDropDownList.salaryPeriod,
                               onChanged: (String? value) {
                                 salaryPeriod = value!;
                               },
@@ -159,7 +161,10 @@ class DriversForHireRent extends StatelessWidget {
                         ),
                       ),
                       kHeight20,
-                      DashedLineGenerator(width: width * .9),
+                      DashedLineGenerator(
+                        width: width * .9,
+                        color: kDottedBorder,
+                      ),
                       kHeight20,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

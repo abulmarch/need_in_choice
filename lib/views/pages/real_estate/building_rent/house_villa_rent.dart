@@ -20,11 +20,11 @@ class HouseVillaRentScreen extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     ScrollController scrollController = ScrollController();
-    String propertyArea = DropdownUnitsList.propertyArea.first;
-    String buildupArea = DropdownUnitsList.buildupArea.first;
+    String propertyArea = RealEstateDropdownList.propertyArea.first;
+    String buildupArea = RealEstateDropdownList.buildupArea.first;
     String? listedBy;
     String? facing;
-    String carpetArea = DropdownUnitsList.carpetArea.first;
+    String carpetArea = RealEstateDropdownList.carpetArea.first;
     String? constructionStatus;
     String? furnishing;
 
@@ -168,7 +168,7 @@ class HouseVillaRentScreen extends StatelessWidget {
                                     },
                                     suffixIcon: CustomDropDownButton(
                                       initialValue: propertyArea,
-                                      itemList: DropdownUnitsList.propertyArea,
+                                      itemList: RealEstateDropdownList.propertyArea,
                                       onChanged: (String? value) {
                                         propertyArea = value!;
                                       },
@@ -185,7 +185,7 @@ class HouseVillaRentScreen extends StatelessWidget {
                                     },
                                     suffixIcon: CustomDropDownButton(
                                       initialValue: buildupArea,
-                                      itemList: DropdownUnitsList.buildupArea,
+                                      itemList: RealEstateDropdownList.buildupArea,
                                       onChanged: (String? value) {
                                         buildupArea = value!;
                                       },
@@ -211,7 +211,7 @@ class HouseVillaRentScreen extends StatelessWidget {
                                           color: kWhiteColor.withOpacity(0.7)),
                                     ),
                                     maxWidth: width*0.27,
-                                    itemList: DropdownUnitsList.listedBy,
+                                    itemList: RealEstateDropdownList.listedBy,
                                     onChanged: (String? value) {
                                       listedBy = value!;
                                     },
@@ -224,7 +224,7 @@ class HouseVillaRentScreen extends StatelessWidget {
                                           color: kWhiteColor.withOpacity(0.7)),
                                     ),
                                     maxWidth: width*0.27,
-                                    itemList: DropdownUnitsList.facing,
+                                    itemList: RealEstateDropdownList.facing,
                                     onChanged: (String? value) {
                                       facing = value!;
                                     },
@@ -364,7 +364,7 @@ class HouseVillaRentScreen extends StatelessWidget {
                                           },
                                           suffixIcon: CustomDropDownButton(
                                             initialValue: carpetArea,
-                                            itemList: DropdownUnitsList.carpetArea,
+                                            itemList: RealEstateDropdownList.carpetArea,
                                             onChanged: (String? value) {
                                               carpetArea = value!;
                                             },
@@ -382,7 +382,7 @@ class HouseVillaRentScreen extends StatelessWidget {
                                           },
                                           suffixIcon: CustomDropDownButton(
                                             initialValue: carpetArea,
-                                            itemList: DropdownUnitsList.carpetArea,
+                                            itemList: RealEstateDropdownList.carpetArea,
                                             onChanged: (String? value) {
                                               carpetArea = value!;
                                             },
@@ -415,7 +415,7 @@ class HouseVillaRentScreen extends StatelessWidget {
                                               color:
                                                   kWhiteColor.withOpacity(0.7)),
                                         ),
-                                        itemList: DropdownUnitsList.constructionStatus,
+                                        itemList: RealEstateDropdownList.constructionStatus,
                                         maxWidth: width*0.26,
                                         onChanged: (String? value) {
                                           constructionStatus = value!;
@@ -429,7 +429,7 @@ class HouseVillaRentScreen extends StatelessWidget {
                                               color:
                                                   kWhiteColor.withOpacity(0.7)),
                                         ),
-                                        itemList: DropdownUnitsList.furnishing,
+                                        itemList: RealEstateDropdownList.furnishing,
                                         maxWidth: width*0.26,
                                         onChanged: (String? value) {
                                           furnishing = value!;

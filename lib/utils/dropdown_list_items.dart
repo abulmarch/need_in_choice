@@ -1,4 +1,4 @@
-class DropdownUnitsList {
+class RealEstateDropdownList {
   static List<String> propertyArea = [
     'sq.feet',
     'sq.yards' 'sq.meter',
@@ -25,9 +25,7 @@ class DropdownUnitsList {
     'owner',
     'relative',
     'friend',
-    'real',
-    'estate',
-    'agency'
+    'real estate agency'
   ];
   static List<String> facing = [
     'east',
@@ -51,9 +49,9 @@ class DropdownUnitsList {
   ];
 }
 
-class ListItemsVehicles {
-  static List<String> rent = ['hours', 'day', 'km'];
-  static List<String> rentType = [
+class VehicleDropDownList {
+  static List<String> rentTypeDriver = ['hours', 'day', 'km'];
+  static List<String> rentTypeLoading = [
     'hours',
     'day',
     'km',
@@ -72,4 +70,65 @@ class ListItemsVehicles {
   static List<String> rentTypeWedding = ['km', 'days'];
   static List<String> additionalChargeWed = ['km', 'day'];
   static List<String> listedByWed = ['owner', 'driver', 'agency'];
+  static List<String> fuel = [
+    'petrol',
+    'diesel',
+    'electric',
+    'hybrid',
+    'CNG',
+    'LPG'
+  ];
+  static List<String> finance = [
+    'Yes',
+    'No',
+  ];
+  static List<String> owner = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '10+'
+  ];
+  static List<String> listedBySale = ['owner', 'dealer', 'friend', 'relative'];
+  static List<String> transmission = [
+    'automatic',
+    'manual',
+  ];
+  static List<String> driven = [
+    'km',
+    'hrs',
+  ];
+}
+
+class JobsDropDownList {
+  static List<String> gender = ['male', 'female', 'others'];
+
+  static List<String> employmentType = [
+    'Full Time',
+    'Part Time',
+    'Daily',
+    'Hourly'
+  ];
+  static List<String> workExperience = [
+    '0-2',
+    '2-4',
+    '4-6',
+    '6-8',
+    '8-10',
+    '10+'
+  ];
+
+  static List<String> ageCategory = [
+    'below 20',
+    '20-25',
+    '25-30',
+    '30-35',
+    'above 35',
+  ];
 }

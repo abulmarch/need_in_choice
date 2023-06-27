@@ -56,10 +56,12 @@ class TaxiAgencies extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       children: [
                         DashedLineGenerator(
-                            width:
-                                building4saleCommercial[0]['cat_name']!.length *
-                                    width *
-                                    0.05),
+                          width:
+                              building4saleCommercial[0]['cat_name']!.length *
+                                  width *
+                                  0.05,
+                          color: kDottedBorder,
+                        ),
                         const Icon(
                           Icons.arrow_forward,
                           size: 15,
@@ -224,7 +226,10 @@ class TaxiAgencies extends StatelessWidget {
                             ),
                             kHeight20,
                             Center(
-                                child: DashedLineGenerator(width: width * .8)),
+                                child: DashedLineGenerator(
+                              width: width * .8,
+                              color: kDottedBorder,
+                            )),
                             kHeight20,
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -435,7 +440,10 @@ class TaxiAgencies extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            DashedLineGenerator(width: width * .9),
+                            DashedLineGenerator(
+                              width: width * .9,
+                              color: kDottedBorder,
+                            ),
                             kHeight15,
                             const CustomTextField(
                               hintText: 'Landmarks near your Agencies',

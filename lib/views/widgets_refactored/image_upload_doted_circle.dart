@@ -42,3 +42,48 @@ class ImageUploadDotedCircle extends StatelessWidget {
     );
   }
 }
+
+
+
+class ImageUploadDotedSquare extends StatelessWidget {
+  const ImageUploadDotedSquare({
+    super.key,
+    required this.color,
+    required this.text,
+  });
+  final Color color;
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    return DottedBorder(
+      borderType: BorderType.RRect,
+      color: color,
+      radius: const Radius.circular(10),
+      child: SizedBox(
+        width: 100,
+        height: 40,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+              color: color.withOpacity(0.31), shape: BoxShape.rectangle),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                text,
+                style: const TextStyle(
+                  color: kWhiteColor,
+                  fontSize: 13,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const Icon(
+                Icons.keyboard_arrow_up,
+                color: kWhiteColor,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

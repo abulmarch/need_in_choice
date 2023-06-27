@@ -65,7 +65,8 @@ class TaxiForHire extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: kDisabledBackground,
                                   shape: BoxShape.circle,
-                                  border: building4saleCommercial[index]['cat_name']!
+                                  border: building4saleCommercial[index]
+                                                  ['cat_name']!
                                               .toLowerCase() ==
                                           'cars'
                                       ? Border.all(color: kSecondaryColor)
@@ -78,7 +79,8 @@ class TaxiForHire extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                building4saleCommercial[index]['cat_name']!.toLowerCase(),
+                                building4saleCommercial[index]['cat_name']!
+                                    .toLowerCase(),
                                 style: const TextStyle(
                                     fontSize: 10,
                                     color: kPrimaryColor,
@@ -125,7 +127,8 @@ class TaxiForHire extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  building4saleCommercial[0]['cat_name']!, //'Restaurant',
+                                  building4saleCommercial[0]
+                                      ['cat_name']!, //'Restaurant',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleMedium
@@ -137,10 +140,13 @@ class TaxiForHire extends StatelessWidget {
                                   alignment: Alignment.centerRight,
                                   children: [
                                     DashedLineGenerator(
-                                        width: building4saleCommercial[0]['cat_name']!
-                                                .length *
-                                            width *
-                                            0.035),
+                                      width: building4saleCommercial[0]
+                                                  ['cat_name']!
+                                              .length *
+                                          width *
+                                          0.035,
+                                      color: kDottedBorder,
+                                    ),
                                     const Icon(
                                       Icons.arrow_forward,
                                       size: 15,
@@ -201,7 +207,8 @@ class TaxiForHire extends StatelessWidget {
                                                 kWhiteColor.withOpacity(0.7)),
                                       ),
                                       maxWidth: width * 0.25,
-                                      itemList: ListItemsVehicles.rent,
+                                      itemList:
+                                          VehicleDropDownList.rentTypeDriver,
                                       onChanged: (String? value) {
                                         rent = value!;
                                       },
@@ -215,7 +222,7 @@ class TaxiForHire extends StatelessWidget {
                                                 kWhiteColor.withOpacity(0.7)),
                                       ),
                                       maxWidth: width * 0.25,
-                                      itemList: ListItemsVehicles.listedBy,
+                                      itemList: VehicleDropDownList.listedBy,
                                       onChanged: (String? value) {
                                         listedBy = value!;
                                       },
@@ -240,7 +247,10 @@ class TaxiForHire extends StatelessWidget {
                           ],
                         ),
                         kHeight20,
-                        DashedLineGenerator(width: cons.maxWidth - 60),
+                        DashedLineGenerator(
+                          width: cons.maxWidth - 60,
+                          color: kDottedBorder,
+                        ),
                         kHeight20,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

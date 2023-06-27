@@ -19,7 +19,7 @@ class LandForSaleScreen extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     ScrollController scrollController = ScrollController();
-    String buildupArea = DropdownUnitsList.buildupArea.first;
+    String buildupArea = RealEstateDropdownList.buildupArea.first;
     String? listedBy;
     String? facing;
 
@@ -171,7 +171,7 @@ class LandForSaleScreen extends StatelessWidget {
                                   },
                                   suffixIcon: CustomDropDownButton(
                                     initialValue: buildupArea,
-                                    itemList: DropdownUnitsList.buildupArea,
+                                    itemList: RealEstateDropdownList.buildupArea,
                                     onChanged: (String? value) {
                                       buildupArea = value!;
                                     },
@@ -201,7 +201,7 @@ class LandForSaleScreen extends StatelessWidget {
                                         color: kWhiteColor.withOpacity(0.7)),
                                   ),
                                   maxWidth: width * 0.27,
-                                  itemList: DropdownUnitsList.facing,
+                                  itemList: RealEstateDropdownList.facing,
                                   onChanged: (String? value) {
                                     facing = value!;
                                   },
@@ -214,7 +214,7 @@ class LandForSaleScreen extends StatelessWidget {
                                         color: kWhiteColor.withOpacity(0.7)),
                                   ),
                                   maxWidth: width * 0.27,
-                                  itemList: DropdownUnitsList.listedBy,
+                                  itemList: RealEstateDropdownList.listedBy,
                                   onChanged: (String? value) {
                                     listedBy = value!;
                                   },

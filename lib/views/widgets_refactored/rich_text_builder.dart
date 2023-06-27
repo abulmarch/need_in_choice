@@ -49,3 +49,34 @@ class RichTextBuilder extends StatelessWidget {
     }
   }
 }
+
+class RichTextBuildFromMap extends StatelessWidget {
+  const RichTextBuildFromMap({
+    super.key, 
+    required this.mapEntry,
+    this.fontSize = 9,
+    this.overflow = TextOverflow.clip
+  });
+  final MapEntry mapEntry;
+  final double fontSize;
+  final TextOverflow overflow;
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+        text: TextSpan(
+          text: '${mapEntry.key} '.toUpperCase(),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: fontSize,color: kFadedBlack),
+          children: <TextSpan>[
+            TextSpan(
+              text: mapEntry.value.runtimeType.toString() != '_Map<String, dynamic>' 
+              ? '${mapEntry.value}'.toUpperCase()
+              : '${mapEntry.value['value']} ${mapEntry.value['dropname']}'.toUpperCase(),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: fontSize,color: kPrimaryColor)
+            ),
+          ],
+        ),overflow: overflow,
+        textAlign: TextAlign.center,
+      );
+  }
+}

@@ -23,13 +23,13 @@ class CommercialBuildingForSale extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScrollController scrollController = ScrollController();
-    String propertyArea = DropdownUnitsList.propertyArea.first;
-    String buildupArea = DropdownUnitsList.buildupArea.first;
+    String propertyArea = RealEstateDropdownList.propertyArea.first;
+    String buildupArea = RealEstateDropdownList.buildupArea.first;
     String? saleType;
     String? listedBy;
     String? facing;
 
-    String carpetArea = DropdownUnitsList.carpetArea.first;
+    String carpetArea = RealEstateDropdownList.carpetArea.first;
     String? constructionStatus;
     String? furnishing;
 
@@ -209,7 +209,7 @@ class CommercialBuildingForSale extends StatelessWidget {
                                     },
                                     suffixIcon: CustomDropDownButton(
                                       initialValue: propertyArea,
-                                      itemList: DropdownUnitsList.propertyArea,
+                                      itemList: RealEstateDropdownList.propertyArea,
                                       onChanged: (String? value) {
                                         propertyArea = value!;
                                       },
@@ -226,7 +226,7 @@ class CommercialBuildingForSale extends StatelessWidget {
                                     },
                                     suffixIcon: CustomDropDownButton(
                                       initialValue: buildupArea,
-                                      itemList: DropdownUnitsList.buildupArea,
+                                      itemList: RealEstateDropdownList.buildupArea,
                                       onChanged: (String? value) {
                                         buildupArea = value!;
                                       },
@@ -252,7 +252,7 @@ class CommercialBuildingForSale extends StatelessWidget {
                                           color: kWhiteColor.withOpacity(0.7)),
                                     ),
                                     maxWidth: 100,
-                                    itemList: DropdownUnitsList.saleType,
+                                    itemList: RealEstateDropdownList.saleType,
                                     onChanged: (String? value) {
                                       saleType = value!;
                                     },
@@ -265,7 +265,7 @@ class CommercialBuildingForSale extends StatelessWidget {
                                           color: kWhiteColor.withOpacity(0.7)),
                                     ),
                                     maxWidth: 100,
-                                    itemList: DropdownUnitsList.listedBy,
+                                    itemList: RealEstateDropdownList.listedBy,
                                     onChanged: (String? value) {
                                       listedBy = value!;
                                     },
@@ -278,7 +278,7 @@ class CommercialBuildingForSale extends StatelessWidget {
                                           color: kWhiteColor.withOpacity(0.7)),
                                     ),
                                     maxWidth: 100,
-                                    itemList: DropdownUnitsList.facing,
+                                    itemList: RealEstateDropdownList.facing,
                                     onChanged: (String? value) {
                                       facing = value!;
                                     },
@@ -365,7 +365,7 @@ class CommercialBuildingForSale extends StatelessWidget {
                                           },
                                           suffixIcon: CustomDropDownButton(
                                             initialValue: carpetArea,
-                                            itemList: DropdownUnitsList.carpetArea,
+                                            itemList: RealEstateDropdownList.carpetArea,
                                             onChanged: (String? value) {
                                               carpetArea = value!;
                                             },
@@ -477,7 +477,7 @@ class CommercialBuildingForSale extends StatelessWidget {
                                                     .withOpacity(0.7)),
                                           ),
                                           itemList:
-                                              DropdownUnitsList.constructionStatus,
+                                              RealEstateDropdownList.constructionStatus,
                                           maxWidth: 145,
                                           onChanged: (String? value) {
                                             constructionStatus = value!;
@@ -491,7 +491,7 @@ class CommercialBuildingForSale extends StatelessWidget {
                                                 color: kWhiteColor
                                                     .withOpacity(0.7)),
                                           ),
-                                          itemList: DropdownUnitsList.furnishing,
+                                          itemList: RealEstateDropdownList.furnishing,
                                           maxWidth: 130,
                                           onChanged: (String? value) {
                                             furnishing = value!;

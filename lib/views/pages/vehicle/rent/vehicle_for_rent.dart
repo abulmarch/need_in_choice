@@ -66,7 +66,8 @@ class VehicleForRent extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: kDisabledBackground,
                                   shape: BoxShape.circle,
-                                  border: building4saleCommercial[index]['cat_name']!
+                                  border: building4saleCommercial[index]
+                                                  ['cat_name']!
                                               .toLowerCase() ==
                                           'cars'
                                       ? Border.all(color: kSecondaryColor)
@@ -79,7 +80,8 @@ class VehicleForRent extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                building4saleCommercial[index]['cat_name']!.toLowerCase(),
+                                building4saleCommercial[index]['cat_name']!
+                                    .toLowerCase(),
                                 style: const TextStyle(
                                     fontSize: 10,
                                     color: kPrimaryColor,
@@ -126,7 +128,8 @@ class VehicleForRent extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  building4saleCommercial[0]['cat_name']!, //'Restaurant',
+                                  building4saleCommercial[0]
+                                      ['cat_name']!, //'Restaurant',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleMedium
@@ -138,10 +141,13 @@ class VehicleForRent extends StatelessWidget {
                                   alignment: Alignment.centerRight,
                                   children: [
                                     DashedLineGenerator(
-                                        width: building4saleCommercial[0]['cat_name']!
-                                                .length *
-                                            width *
-                                            0.035),
+                                      width: building4saleCommercial[0]
+                                                  ['cat_name']!
+                                              .length *
+                                          width *
+                                          0.035,
+                                      color: kDottedBorder,
+                                    ),
                                     const Icon(
                                       Icons.arrow_forward,
                                       size: 15,
@@ -202,7 +208,8 @@ class VehicleForRent extends StatelessWidget {
                                                 kWhiteColor.withOpacity(0.7)),
                                       ),
                                       maxWidth: width * 0.2,
-                                      itemList: ListItemsVehicles.rent,
+                                      itemList:
+                                          VehicleDropDownList.rentTypeDriver,
                                       onChanged: (String? value) {
                                         rent = value!;
                                       },
@@ -216,7 +223,7 @@ class VehicleForRent extends StatelessWidget {
                                                 kWhiteColor.withOpacity(0.7)),
                                       ),
                                       maxWidth: width * 0.25,
-                                      itemList: ListItemsVehicles.listedBy,
+                                      itemList: VehicleDropDownList.listedBy,
                                       onChanged: (String? value) {
                                         listedBy = value!;
                                       },
@@ -230,7 +237,7 @@ class VehicleForRent extends StatelessWidget {
                                                 kWhiteColor.withOpacity(0.7)),
                                       ),
                                       maxWidth: width * 0.31,
-                                      itemList: ListItemsVehicles.drivingType,
+                                      itemList: VehicleDropDownList.drivingType,
                                       onChanged: (String? value) {
                                         drivingType = value!;
                                       },
@@ -241,7 +248,10 @@ class VehicleForRent extends StatelessWidget {
                             ],
                           ),
                         ),
-                        DashedLineGenerator(width: cons.maxWidth - 60),
+                        DashedLineGenerator(
+                          width: cons.maxWidth - 60,
+                          color: kDottedBorder,
+                        ),
                         kHeight20,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -21,12 +21,12 @@ class PendingProjectScreen extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     ScrollController scrollController = ScrollController();
-    String propertyArea = DropdownUnitsList.propertyArea.first;
-    String buildupArea = DropdownUnitsList.buildupArea.first;
+    String propertyArea = RealEstateDropdownList.propertyArea.first;
+    String buildupArea = RealEstateDropdownList.buildupArea.first;
     String? saleType;
     String? listedBy;
     String? facing;
-    String carpetArea = DropdownUnitsList.carpetArea.first;
+    String carpetArea = RealEstateDropdownList.carpetArea.first;
 
     return Scaffold(
       backgroundColor: kWhiteColor,
@@ -142,7 +142,7 @@ class PendingProjectScreen extends StatelessWidget {
                                     },
                                     suffixIcon: CustomDropDownButton(
                                       initialValue: propertyArea,
-                                      itemList: DropdownUnitsList.propertyArea,
+                                      itemList: RealEstateDropdownList.propertyArea,
                                       onChanged: (String? value) {
                                         propertyArea = value!;
                                       },
@@ -159,7 +159,7 @@ class PendingProjectScreen extends StatelessWidget {
                                     },
                                     suffixIcon: CustomDropDownButton(
                                       initialValue: buildupArea,
-                                      itemList: DropdownUnitsList.buildupArea,
+                                      itemList: RealEstateDropdownList.buildupArea,
                                       onChanged: (String? value) {
                                         buildupArea = value!;
                                       },
@@ -185,7 +185,7 @@ class PendingProjectScreen extends StatelessWidget {
                                           color: kWhiteColor.withOpacity(0.7)),
                                     ),
                                     maxWidth: width*.27,
-                                    itemList: DropdownUnitsList.saleType,
+                                    itemList: RealEstateDropdownList.saleType,
                                     onChanged: (String? value) {
                                       saleType = value!;
                                     },
@@ -198,7 +198,7 @@ class PendingProjectScreen extends StatelessWidget {
                                           color: kWhiteColor.withOpacity(0.7)),
                                     ),
                                     maxWidth: width*.27,
-                                    itemList: DropdownUnitsList.listedBy,
+                                    itemList: RealEstateDropdownList.listedBy,
                                     onChanged: (String? value) {
                                       listedBy = value!;
                                     },
@@ -211,7 +211,7 @@ class PendingProjectScreen extends StatelessWidget {
                                           color: kWhiteColor.withOpacity(0.7)),
                                     ),
                                     maxWidth: width*.25,
-                                    itemList: DropdownUnitsList.facing,
+                                    itemList: RealEstateDropdownList.facing,
                                     onChanged: (String? value) {
                                       facing = value!;
                                     },
@@ -329,7 +329,7 @@ class PendingProjectScreen extends StatelessWidget {
                                           },
                                           suffixIcon: CustomDropDownButton(
                                             initialValue: carpetArea,
-                                            itemList: DropdownUnitsList.carpetArea,
+                                            itemList: RealEstateDropdownList.carpetArea,
                                             onChanged: (String? value) {
                                               carpetArea = value!;
                                             },
@@ -347,7 +347,7 @@ class PendingProjectScreen extends StatelessWidget {
                                           },
                                           suffixIcon: CustomDropDownButton(
                                             initialValue: carpetArea,
-                                            itemList: DropdownUnitsList.carpetArea,
+                                            itemList: RealEstateDropdownList.carpetArea,
                                             onChanged: (String? value) {
                                               carpetArea = value!;
                                             },
