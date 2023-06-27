@@ -60,7 +60,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: event.verificationId, smsCode: event.otpCode);
       add(OnPhoneAuthVerificationCompleteEvent(credential: credential));
-      print("credentila $credential");
     } catch (e) {
       emit(AuthError(error: e.toString()));
     }
@@ -73,7 +72,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await auth.signInWithCredential(event.credential).then((user) {
         if (user.user != null) {
           emit(AuthVerified());
-        
+        }
       });
     } on FirebaseAuthException catch (e) {
       emit(AuthError(error: e.code));
