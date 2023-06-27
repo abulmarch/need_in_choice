@@ -11,7 +11,6 @@ class BrandNameButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.only(right: 7),
       child: Container(
@@ -57,7 +56,7 @@ class WorkTimeContainer extends StatelessWidget {
       child: Center(
           child: Text(
         text,
-        style: TextStyle(color: kPrimaryColor),
+        style: const TextStyle(color: kPrimaryColor),
       )),
     );
   }

@@ -1,10 +1,8 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/utils/constants.dart';
 
-import '../../../config/routes/route_names.dart';
 
 class ConfirmLottieScreen extends StatelessWidget {
   const ConfirmLottieScreen({super.key});

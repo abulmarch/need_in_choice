@@ -104,8 +104,7 @@ class VehicleForRent extends StatelessWidget {
         ),
         body: LayoutBuilder(
           builder: (ctx, cons) {
-            double keyBoardHeight =
-                0; //MediaQuery.of(context).viewInsets.bottom;
+//MediaQuery.of(context).viewInsets.bottom;
             return SingleChildScrollView(
               controller: scrollController,
               physics: const BouncingScrollPhysics(),

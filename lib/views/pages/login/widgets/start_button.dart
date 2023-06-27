@@ -56,10 +56,10 @@ class StartButton extends StatelessWidget {
                     )
                   ]),
             ),
-            kWidth10,
+            kWidth5,
             Container(
-              height: 60,
-              width: 60,
+              height: 50,
+              width: 50,
               decoration: BoxDecoration(
                 color: circle,
                 shape: BoxShape.circle,

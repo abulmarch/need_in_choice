@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
-import 'edit_button.dart';
 
 class ViewingTiles
  extends StatelessWidget {

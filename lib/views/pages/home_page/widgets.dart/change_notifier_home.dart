@@ -9,7 +9,6 @@ class HomeTabController extends ChangeNotifier{
 
   static int selectedBottomTab = 1;
   void onBottomNavigationTabChange(int index){
-    print(index);
     selectedBottomTab = index;
     notifyListeners();
   }

@@ -81,7 +81,6 @@ class WeddingCarsForHire extends StatelessWidget {
       ),
       body: LayoutBuilder(
         builder: (ctx, cons) {
-          double keyBoardHeight = 0;
           return SingleChildScrollView(
             controller: scrollController,
             physics: const BouncingScrollPhysics(),

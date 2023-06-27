@@ -11,7 +11,6 @@ import '../../../widgets_refactored/dotted_border_textfield.dart';
 import '../../../widgets_refactored/condinue_button.dart';
 import '../../../widgets_refactored/custom_dropdown_button.dart';
 import '../../../widgets_refactored/image_upload_doted_circle.dart';
-import '../land_sale/e_auction_land.dart';
 
 
 

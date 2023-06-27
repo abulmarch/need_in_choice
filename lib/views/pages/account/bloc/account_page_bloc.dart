@@ -1,5 +1,6 @@
-import 'package:bloc/bloc.dart';
+
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'account_page_event.dart';
 part 'account_page_state.dart';
