@@ -123,28 +123,22 @@ class Adtiles extends StatelessWidget {
                             width: 71,
                             text: "Edit Ad",
                             textcolor: kPrimaryColor,
-                            ontap: () {
-                              
-                            },
+                            ontap: () {},
                           ),
-                          
                           const VerticalDivider(
                             color: kDarkGreyColor,
                             thickness: 5,
                             width: 10,
                             indent: 20,
                             endIndent: 0,
-                            
                           ),
                           EditButton(
                             boxcolor: kPrimaryColor,
                             height: 23,
-                            width: 125,
+                            width: 100,
                             text: "Mark as Sold",
                             textcolor: kWhiteColor,
-                            ontap: () {
-                              
-                            },
+                            ontap: () {},
                           ),
                         ],
                       ),
@@ -181,5 +175,3 @@ class Adtiles extends StatelessWidget {
     );
   }
 }
-
-

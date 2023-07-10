@@ -5,7 +5,7 @@ import '../../../../utils/colors.dart';
 class DashedLineGenerator extends StatelessWidget {
   const DashedLineGenerator({
     super.key,
-    required this.width, 
+    required this.width,
     this.color = kDottedBorder,
   });
   final double width;
@@ -14,10 +14,12 @@ class DashedLineGenerator extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
-      height: 2,
+      height: 4,
       child: Text(
         dashedLineGenerator(), //kPadding15*2   // '-------------------------------------------------',
         style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 15,
           height: 0.6,
           color: color,
           overflow: TextOverflow.clip,

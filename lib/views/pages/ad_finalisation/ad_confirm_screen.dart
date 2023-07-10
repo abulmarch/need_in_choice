@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+
 import 'package:need_in_choice/views/widgets_refactored/circular_back_button.dart';
 
 import '../../../config/routes/route_names.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/constants.dart';
 import '../../widgets_refactored/camera_bottomsheet.dart';
+import 'bloc/location_bloc.dart';
 import 'widgets/text_icon_button.dart';
 import 'widgets/update_address_bottomsheet.dart';
 
 class AdConfirmScreen extends StatelessWidget {
-  const AdConfirmScreen({super.key});
+  final LocationBloc locationBloc = LocationBloc();
+  AdConfirmScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +103,7 @@ class AdConfirmScreen extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 170,
-                    width: 170,
+                    width: 150,
                     child: RichText(
                       text: TextSpan(
                           text: "7",
@@ -206,17 +209,19 @@ class AdConfirmScreen extends StatelessWidget {
                 onpressed: () {
                   showModalBottomSheet<void>(
                     isScrollControlled: true,
-                            backgroundColor: kWhiteColor,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(30),
-                              topRight: Radius.circular(30),
-                            )),
-                            context: context,
-                            builder: (context) {
-                              return const UpdateAdressBottomSheet();
-                            },
-                          );
+                    backgroundColor: kWhiteColor,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    )),
+                    context: context,
+                    builder: (context) {
+                      return
+                          const UpdateAdressBottomSheet();
+                          
+                    },
+                  );
                 },
                 size: const Size(222, 38),
               ),
@@ -250,4 +255,3 @@ class AdConfirmScreen extends StatelessWidget {
     );
   }
 }
-

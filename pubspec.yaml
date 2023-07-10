@@ -24,6 +24,10 @@ dependencies:
   http: ^0.13.6
   url_launcher: ^6.1.11
   intl: ^0.18.1
+  geolocator: ^9.0.2
+  geocoding: ^2.1.0
+  image_picker: ^1.0.0
+  extended_text: ^10.0.1
 
 dev_dependencies:
   flutter_test:

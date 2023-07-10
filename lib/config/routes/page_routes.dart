@@ -33,7 +33,7 @@ class PageRoutes {
       case splashScreen:
         return MaterialPageRoute(
           settings: routeSettings,
-          builder: (_) => const SplashScreen(),
+          builder: (_) => SplashScreen(),
         );
       case signUpScreen:
         return MaterialPageRoute(
@@ -64,7 +64,7 @@ class PageRoutes {
       case adConfirmScreen:
         return MaterialPageRoute(
           settings: routeSettings,
-          builder: (_) => const AdConfirmScreen(),
+          builder: (_) => AdConfirmScreen(),
         );
       case adPreviwScreen:
         return MaterialPageRoute(

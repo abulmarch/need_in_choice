@@ -18,6 +18,7 @@ class AccountScreen extends StatelessWidget {
         return SafeArea(
           child: Scaffold(
             body: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Stack(
                   alignment: Alignment.bottomCenter,
@@ -31,20 +32,24 @@ class AccountScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 510,
-                  child: ListView.builder(
-                    padding: const EdgeInsetsDirectional.symmetric(
-                      vertical: kpadding15,
-                      horizontal: kpadding15 * 2,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: kpadding10),
+                    child: ListView.builder(
+                      padding: const EdgeInsetsDirectional.symmetric(
+                        horizontal: kpadding15 * 2,
+                      ),
+                      //   shrinkWrap: true,
+                      itemCount: 10,
+                      itemBuilder: (context, index) {
+                        if (state is AccountPageInitial) {
+                          return const Adtiles();
+                        } else if (state is ViewPressedState) {
+                          return const ViewingTiles();
+                        }
+                        return Container();
+                      },
                     ),
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      if (state is ViewPressedState) {
-                        return const ViewingTiles();
-                      }
-                      return const Adtiles();
-                    },
                   ),
                 ),
               ],

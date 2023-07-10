@@ -4,6 +4,7 @@ import '../../../../services/repositories/repository_urls.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 
+
 class ImageCard extends StatelessWidget {
   ImageCard({
     super.key,
@@ -23,55 +24,119 @@ class ImageCard extends StatelessWidget {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        SizedBox(
-          width: screenSize.width,
-          height: screenSize.height * 0.55,
-          child: ListView.separated(
-            scrollDirection: Axis.vertical,
-            controller: controller,
-            itemCount: imageUrls?.length ?? 0,
-            cacheExtent: screenSize.width,
-            itemBuilder: (context, index) => ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(kpadding10)),
-              child: SizedBox(
-                height: screenSize.width,
-                width: screenSize.width,
-                child: Image.network(
-                  '$imageUrlEndpoint${imageUrls?[index]}',
-                  fit: BoxFit.cover,
-                  loadingBuilder: (BuildContext context, Widget child,
-                      ImageChunkEvent? loadingProgress) {
-                    if (loadingProgress == null) {
-                      return child;
-                    }
-                    return SizedBox(
-                      width: double.infinity,
-                      height: screenSize.width,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
-                              : null,
+        ListView.builder(
+          scrollDirection: Axis.vertical,
+          controller: controller,
+          itemCount: imageUrls?.length ?? 0,
+          cacheExtent: screenSize.width,
+          itemBuilder: (context, index) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: InkWell(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Dialog(
+                        backgroundColor: kWhiteColor.withOpacity(0.3),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              20.0,
+                            ),
+                          ),
                         ),
+                        child: SizedBox(
+                          height: screenSize.height * .55,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(25),
+                              child: InteractiveViewer(
+                                child: Image.network(
+                                  '$imageUrlEndpoint${imageUrls![index]}',
+                                  fit: BoxFit.contain,
+                                  alignment: Alignment.center,
+                                  loadingBuilder: (BuildContext context,
+                                      Widget child,
+                                      ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        value: loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                loadingProgress
+                                                    .expectedTotalBytes!
+                                            : null,
+                                      ),
+                                    );
+                                  },
+                                  errorBuilder: (BuildContext context,
+                                      Object error, StackTrace? stackTrace) {
+                                    return const Icon(Icons.error);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ));
+                  },
+                );
+              },
+              child: Container(
+                height: 250,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: kLightBlueWhiteBorder, width: 1),
+                ),
+                child: ClipRRect(
+                  borderRadius:
+                      const BorderRadius.all(Radius.circular(kpadding10)),
+                  child: SizedBox(
+                    height: screenSize.width,
+                    width: screenSize.width,
+                    child: InteractiveViewer(
+                      child: Image.network(
+                        '$imageUrlEndpoint${imageUrls![index]}',
+                        fit: BoxFit.cover,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return SizedBox(
+                            width: double.infinity,
+                            height: screenSize.width,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
+                        errorBuilder: (BuildContext context, Object error,
+                            StackTrace? stackTrace) {
+                          return const Icon(Icons.error);
+                        },
                       ),
-                    );
-                  },
-                  errorBuilder: (BuildContext context, Object error,
-                      StackTrace? stackTrace) {
-                    return Icon(Icons.error);
-                  },
+                    ),
+                  ),
                 ),
               ),
-            ),
-            separatorBuilder: (context, index) => const SizedBox(
-              height: 10,
             ),
           ),
         ),
         Positioned(
-          top: kpadding10,
-          left: kpadding10,
+          top: kpadding15,
+          left: kpadding20,
           child: Container(
             width: 80,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -80,7 +145,7 @@ class ImageCard extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(kpadding20))),
             child: Text(
-              timeAgo??"",
+              timeAgo ?? "",
               //   '10 years ago',
               style: Theme.of(context)
                   .textTheme

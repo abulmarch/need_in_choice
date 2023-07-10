@@ -122,7 +122,7 @@ class BottomDetailsSheet extends StatelessWidget {
                           ),
                         ),
                         kWidth10,
-                        IconWithButton(
+                        IconWithButtonBottom(
                           onpressed: () {},
                           iconData: Icons.rocket_launch_outlined,
                           text: "Chat Now",
@@ -168,7 +168,8 @@ class BottomDetailsSheet extends StatelessWidget {
                       children: [
                         RichText(
                           text: TextSpan(
-                            text: adsModel!.categoryInfo['more_info']['Landmark'],
+                            text: adsModel!.categoryInfo['more_info']
+                                ['Landmark'],
                             //"Near PRS Hospital",
                             style: Theme.of(context)
                                 .textTheme
@@ -269,7 +270,7 @@ class BottomDetailsSheet extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconWithButton(
+                        IconWithButtonBottom(
                           onpressed: () {
                             launch("tel://8893917626");
                           },
@@ -278,7 +279,7 @@ class BottomDetailsSheet extends StatelessWidget {
                           radius: 100,
                           size: const Size(100, 51),
                         ),
-                        IconWithButton(
+                        IconWithButtonBottom(
                           background: Colors.green,
                           onpressed: () {
                             showModalBottomSheet<void>(
