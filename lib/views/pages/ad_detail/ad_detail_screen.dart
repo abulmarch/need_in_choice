@@ -5,9 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/utils/constants.dart';
 import 'package:need_in_choice/views/pages/ad_detail/ad_detail_bloc/bloc/ad_detail_bloc.dart';
 import 'package:need_in_choice/views/pages/ad_detail/widgets/image_card.dart';
+import 'package:need_in_choice/views/pages/ad_detail/widgets/realestate_details_bottomsheet.dart';
 import 'package:need_in_choice/views/pages/ad_detail/widgets/top_account_bar.dart';
-import 'package:need_in_choice/views/pages/ad_detail/widgets/bottomsheet_e_auction.dart';
 import '../../../services/repositories/selected_ads_service.dart';
+import '../../../utils/colors.dart';
 import '../../../utils/dummy_data.dart';
 
 class AdDetailScreen extends StatelessWidget {
@@ -33,6 +34,7 @@ class AdDetailScreen extends StatelessWidget {
                   final adsModel = state.adsModel;
                   if (adsModel != null) {
                     return Stack(
+                      alignment: Alignment.bottomCenter,
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(kpadding10),
@@ -45,23 +47,28 @@ class AdDetailScreen extends StatelessWidget {
                                 adsModel: adsModel,
                               ),
                               kHeight5,
-                              ImageCard(
-                                phouseFoRentr: houseFoRentAd,
-                                imageUrls: adsModel.images,
-                                timeAgo: adsModel.timeAgo,
-                              ),
+                              Container(
+                                height: screenHeight * .57,
+                                width: screenWidth * .9,
+                                decoration: BoxDecoration(
+                                  color: kLightBlueWhite,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      color: kLightBlueWhiteBorder, width: 1),
+                                ),
+                                child: ImageCard(
+                                  phouseFoRentr: houseFoRentAd,
+                                  imageUrls: adsModel.images,
+                                  timeAgo: adsModel.timeAgo,
+                                ),
+                              )
                             ],
                           ),
                         ),
-                        // BottomDetailsSheet(
-                        //   screenWidth: screenWidth,
-                        //   screenHeight: screenHeight,
-                        //   adsModel: adsModel,
-                        // ),
-                        BottomSheetEAction(
-                          screenWidth: screenWidth,
-                          screenHeight: screenHeight,
+                        RealEstateDetailsBottomSheet(
                           adsModel: adsModel,
+                          screenHeight: screenHeight,
+                          screenWidth: screenWidth,
                         )
                       ],
                     );

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:need_in_choice/utils/constants.dart';
+
 import 'package:need_in_choice/views/widgets_refactored/dashed_line_generator.dart';
 import '../../../../services/model/ads_models.dart';
 import '../../../../utils/colors.dart';
@@ -35,7 +35,7 @@ class TopAccountBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: screenHeight * .1,
+      height: screenHeight * .09,
       width: screenWidth * .9,
       decoration: BoxDecoration(
         color: kLightBlueWhite,
@@ -90,9 +90,9 @@ class TopAccountBar extends StatelessWidget {
               ),
             ),
           ),
-          kWidth5,
+          //kWidth5,
           const DashedLineHeight(height: 50),
-          kWidth5,
+          // kWidth5,
           RichText(
             text: TextSpan(
                 text: adsModel.adsTitle,
@@ -100,9 +100,9 @@ class TopAccountBar extends StatelessWidget {
                 style: Theme.of(context).textTheme.labelLarge,
                 children: [
                   TextSpan(
-                      text: "\nPosted on",
+                      text: "\nPosted on ",
                       style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                          color: const Color(0XFF8B8B8B), fontSize: 10)),
+                          color: const Color(0XFF8B8B8B), fontSize: 9)),
                   TextSpan(
                       text: formatDate(adsModel.createdDate),
                       style: Theme.of(context)
@@ -116,10 +116,10 @@ class TopAccountBar extends StatelessWidget {
             onpressed: () {},
             iconData: Icons.share,
             radius: 50,
-            size: const Size(86, 46),
+            size: const Size(76, 35),
             text: "Share",
             fontWeight: FontWeight.w500,
-            fontsize: 14,
+            fontsize: 12,
           ),
         ],
       ),

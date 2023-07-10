@@ -30,7 +30,7 @@ class PageRoutes {
       case splashScreen:
         return MaterialPageRoute(
           settings: routeSettings,
-          builder: (_) => const SplashScreen(),
+          builder: (_) => SplashScreen(),
         );
       case signUpScreen:
         return MaterialPageRoute(
@@ -53,7 +53,7 @@ class PageRoutes {
           settings: routeSettings,
           builder: (_) => const CommercialBuildingForSale(),
         );
-        case adDetailScreen:
+      case adDetailScreen:
         return MaterialPageRoute(
           settings: routeSettings,
           builder: (_) => const AdDetailScreen(),
@@ -61,7 +61,7 @@ class PageRoutes {
       case adConfirmScreen:
         return MaterialPageRoute(
           settings: routeSettings,
-          builder: (_) => const AdConfirmScreen(),
+          builder: (_) => AdConfirmScreen(),
         );
       case adPreviwScreen:
         return MaterialPageRoute(
@@ -78,7 +78,7 @@ class PageRoutes {
           settings: routeSettings,
           builder: (_) => const AccountScreen(),
         );
-        //------------------------------------------------- LEVEL 2 Category
+      //------------------------------------------------- LEVEL 2 Category
       case landForRentRoot:
         return MaterialPageRoute(
           settings: routeSettings,
@@ -94,7 +94,7 @@ class PageRoutes {
           settings: routeSettings,
           builder: (_) => const RealEstateAgentScreen(),
         );
-        //------------------------------------------------- LEVEL 3 Category
+      //------------------------------------------------- LEVEL 3 Category
       case commercialBuildingForSaleRoot:
         return MaterialPageRoute(
           settings: routeSettings,
@@ -136,7 +136,7 @@ class PageRoutes {
           settings: routeSettings,
           builder: (_) => const ApartmentRentScreen(),
         );
-      
+
       case landForSaleRoot:
         return MaterialPageRoute(
           settings: routeSettings,

@@ -159,7 +159,7 @@ class BottomSheetEAction extends StatelessWidget {
                           ],
                         ),
                         kWidth10,
-                        IconWithButton(
+                        IconWithButtonBottom(
                           onpressed: () {},
                           iconData: Icons.rocket_launch_outlined,
                           text: "Chat Now",
@@ -187,12 +187,9 @@ class BottomSheetEAction extends StatelessWidget {
                           .copyWith(fontWeight: FontWeight.w400),
                     ),
                     ConstrainedBox(
-
-                      constraints: BoxConstraints(
-                        maxHeight: 500
-                      ),
+                      constraints: BoxConstraints(maxHeight: 500),
                       child: Text(
-                      adsModel!.description,
+                        adsModel!.description,
                         maxLines: 6,
                         // 'Kalyan Gateway is our new upcoming luxury apartment project in Trivandrum. Located at NH Bypass, in close proximity to the IT Technopark and the upcoming Lulu Mall, these 2 and 3 BHK luxury flats are ideal for the increasing young and vibrant crowd in the city.',
                         style:
@@ -210,7 +207,8 @@ class BottomSheetEAction extends StatelessWidget {
                       children: [
                         RichText(
                           text: TextSpan(
-                            text: adsModel!.categoryInfo['more_info']['Landmark'],
+                            text: adsModel!.categoryInfo['more_info']
+                                ['Landmark'],
                             //"Near PRS Hospital",
                             style: Theme.of(context)
                                 .textTheme
@@ -371,7 +369,7 @@ class BottomSheetEAction extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconWithButton(
+                        IconWithButtonBottom(
                           onpressed: () {
                             launch("tel://9876543210");
                           },
@@ -380,7 +378,7 @@ class BottomSheetEAction extends StatelessWidget {
                           radius: 100,
                           size: const Size(100, 51),
                         ),
-                        IconWithButton(
+                        IconWithButtonBottom(
                           background: Colors.green,
                           onpressed: () {
                             showModalBottomSheet<void>(
