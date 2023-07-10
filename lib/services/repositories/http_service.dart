@@ -26,18 +26,5 @@ class Repositories {
     }
   }
 
-  static Future<AccountModels?> fetchAccountsData() async {
-    try {
-      final response = await http.get(Uri.parse(getAccount));
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        final accounts = responseData['results'];
-        return AccountModels.fromJson(accounts);
-      } else {
-        return null;
-      }
-    } catch (e) {
-      return null;
-    }
-  }
+  
 }

@@ -19,6 +19,7 @@ class AuthError extends AuthState {
   List<Object> get props => [error];
 }
 
+class AuthNotVerified extends AuthState {}
 class AuthVerified extends AuthState {}
 
 class AuthCodeSentSuccess extends AuthState {

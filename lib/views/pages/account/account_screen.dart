@@ -13,9 +13,7 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accountpagebloc = AccountPageBloc();
     return BlocBuilder<AccountPageBloc, AccountPageState>(
-      bloc: accountpagebloc,
       builder: (context, state) {
         return SafeArea(
           child: Scaffold(
@@ -23,11 +21,9 @@ class AccountScreen extends StatelessWidget {
               children: [
                 Stack(
                   alignment: Alignment.bottomCenter,
-                  children: [
-                    AddressBar(ontap: () {
-                      accountpagebloc.add(ViewPressedEvent());
-                    }),
-                    const Padding(
+                  children:const [
+                    AddressBar(),
+                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: kpadding20),
                       child: SearchFormField(
                         hintText: 'Search your Ads',
@@ -44,12 +40,10 @@ class AccountScreen extends StatelessWidget {
                     ),
                     itemCount: 10,
                     itemBuilder: (context, index) {
-                      if (state is AccountPageInitial) {
-                        return const Adtiles();
-                      } else if (state is ViewPressedState) {
+                      if (state is ViewPressedState) {
                         return const ViewingTiles();
                       }
-                      return Container();
+                      return const Adtiles();
                     },
                   ),
                 ),

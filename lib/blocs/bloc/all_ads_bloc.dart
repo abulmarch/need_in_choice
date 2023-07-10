@@ -25,7 +25,6 @@ class AllAdsBloc extends Bloc<AllAdsEvent, AllAdsState> {
     if(_page <= AllAdsRepo.lastPage +1){// if AllAdsRepo.lastPage = 5 then _page can upto 6
         _page++;
     }
-    print('----_page--------->   $_page');
   }
   Future<void> _fetchNextPageAds(FetchNextPageAds event, Emitter<AllAdsState> emit) async {
     final oldList = event.oldAdsList;
@@ -36,6 +35,5 @@ class AllAdsBloc extends Bloc<AllAdsEvent, AllAdsState> {
     if(_page <= AllAdsRepo.lastPage +1){// if AllAdsRepo.lastPage = 5 then _page can upto 6
         _page++;
     }
-    print('-----------_page-->\\\\   $_page');
   }
 }

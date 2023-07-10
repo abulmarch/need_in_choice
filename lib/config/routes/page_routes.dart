@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
+import 'package:need_in_choice/services/repositories/auth_repo.dart';
 import 'package:need_in_choice/views/pages/account/account_screen.dart';
+import 'package:need_in_choice/views/pages/account/bloc/account_page_bloc.dart';
 import 'package:need_in_choice/views/pages/ad_finalisation/ad_confirm_screen.dart';
 import 'package:need_in_choice/views/pages/login/details_screen.dart';
 
@@ -53,7 +56,7 @@ class PageRoutes {
           settings: routeSettings,
           builder: (_) => const CommercialBuildingForSale(),
         );
-        case adDetailScreen:
+      case adDetailScreen:
         return MaterialPageRoute(
           settings: routeSettings,
           builder: (_) => const AdDetailScreen(),
@@ -76,9 +79,12 @@ class PageRoutes {
       case accountScreen:
         return MaterialPageRoute(
           settings: routeSettings,
-          builder: (_) => const AccountScreen(),
+          builder: (_) =>  BlocProvider(
+            create: (context) => AccountPageBloc(Authrepo()),
+            child: const AccountScreen(),
+          ),
         );
-        //------------------------------------------------- LEVEL 2 Category
+      //------------------------------------------------- LEVEL 2 Category
       case landForRentRoot:
         return MaterialPageRoute(
           settings: routeSettings,
@@ -94,7 +100,7 @@ class PageRoutes {
           settings: routeSettings,
           builder: (_) => const RealEstateAgentScreen(),
         );
-        //------------------------------------------------- LEVEL 3 Category
+      //------------------------------------------------- LEVEL 3 Category
       case commercialBuildingForSaleRoot:
         return MaterialPageRoute(
           settings: routeSettings,
@@ -136,7 +142,7 @@ class PageRoutes {
           settings: routeSettings,
           builder: (_) => const ApartmentRentScreen(),
         );
-      
+
       case landForSaleRoot:
         return MaterialPageRoute(
           settings: routeSettings,

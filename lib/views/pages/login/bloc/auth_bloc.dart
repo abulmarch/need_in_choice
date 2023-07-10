@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/repository/firebase/auth_repo.dart';
+import '../../../../services/repositories/auth_repo.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -72,6 +72,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await auth.signInWithCredential(event.credential).then((user) {
         if (user.user != null) {
           emit(AuthVerified());
+        } else {
+          emit(AuthNotVerified());
         }
       });
     } on FirebaseAuthException catch (e) {
