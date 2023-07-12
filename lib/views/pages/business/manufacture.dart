@@ -476,7 +476,7 @@ class ManufactureScreen extends StatelessWidget {
                                             ),
                                             const ImageUploadDotedCircle(
                                               color: kPrimaryColor,
-                                              text: 'PDF\nUpload',
+                                              documentTypeName: 'PDF\nUpload',
                                             ),
                                           ],
                                         ),

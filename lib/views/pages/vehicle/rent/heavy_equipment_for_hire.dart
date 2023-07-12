@@ -16,6 +16,7 @@ class HeavyEquipmentForHire extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ValueNotifier<bool> addMoreEnabled = ValueNotifier(false);
     ScrollController scrollController = ScrollController();
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;

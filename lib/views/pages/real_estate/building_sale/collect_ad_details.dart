@@ -553,11 +553,11 @@ class CollectAdDetails extends StatelessWidget {
                                             children: const [
                                               ImageUploadDotedCircle(
                                                 color: kPrimaryColor,
-                                                text: 'Floor\nPlan',
+                                                documentTypeName: 'Floor\nPlan',
                                               ),
                                               ImageUploadDotedCircle(
                                                 color: kBlackColor,
-                                                text: 'Land\nSketch',
+                                                documentTypeName: 'Land\nSketch',
                                               ),
                                             ],
                                           )),

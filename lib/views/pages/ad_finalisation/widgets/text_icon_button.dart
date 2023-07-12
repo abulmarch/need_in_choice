@@ -6,7 +6,7 @@ class TextIconButton extends StatelessWidget {
   final Color txtcolor;
   final double fontsize;
   final IconData? iconData;
-  final Function() onpressed;
+  final Function()? onpressed;
   final Color? background;
   final Color? iconcolor;
   final Color? bordercolor;
@@ -29,7 +29,7 @@ class TextIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: onpressed,
+      onPressed: onpressed ?? (){},
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(background),
         shape: MaterialStateProperty.all(
@@ -43,13 +43,14 @@ class TextIconButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
+          onpressed !=null ? Text(
             text,
             style: Theme.of(context)
                 .textTheme
                 .titleSmall!
                 .copyWith(color: txtcolor, fontSize: fontsize),
-          ),
+          )
+          : const CircularProgressIndicator(),
         ],
       ),
     );

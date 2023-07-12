@@ -6,7 +6,7 @@ import 'package:need_in_choice/services/model/ads_models.dart';
 import 'package:need_in_choice/utils/constants.dart';
 import 'package:need_in_choice/views/pages/ad_detail/widgets/realestate_details_bottomsheet.dart';
 import 'package:need_in_choice/views/pages/home_page/show_category_bottomsheet.dart';
-import '../../../blocs/bloc/all_ads_bloc.dart';
+import '../../../blocs/all_ads_bloc/all_ads_bloc.dart';
 import '../../../services/repositories/repository_urls.dart';
 import '../../../utils/category_data.dart';
 import '../../../utils/colors.dart';
