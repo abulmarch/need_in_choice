@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/views/pages/home_page/home_screen.dart';
 import 'package:need_in_choice/views/pages/home_page/widgets.dart/bottom_navigation_bar.dart';
-import '../../../blocs/bloc/all_ads_bloc.dart';
+import '../../../blocs/all_ads_bloc/all_ads_bloc.dart';
 import '../../../services/repositories/all_ads_services.dart';
 import '../chat_page/chat_screen.dart';
 import 'show_category_bottomsheet.dart';

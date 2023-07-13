@@ -437,11 +437,11 @@ class HouseVillaSaleScreen extends StatelessWidget {
                                             children: const [
                                               ImageUploadDotedCircle(
                                                 color: kBlackColor,
-                                                text: 'Land\nSketch',
+                                                documentTypeName: 'Land\nSketch',
                                               ),
                                               ImageUploadDotedCircle(
                                                 color: kPrimaryColor,
-                                                text: 'Floor\nPlan',
+                                                documentTypeName: 'Floor\nPlan',
                                               ),
                                             ],
                                           )),

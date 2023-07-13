@@ -3,16 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/utils/constants.dart';
 
+import '../../../config/routes/route_names.dart';
 
-class ConfirmLottieScreen extends StatelessWidget {
+
+class ConfirmLottieScreen extends StatefulWidget {
   const ConfirmLottieScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<ConfirmLottieScreen> createState() => _ConfirmLottieScreenState();
+}
 
-    // Timer(const Duration(seconds: 10), () {
-    //   Navigator.popUntil(context, ModalRoute.withName(mainNavigationScreen));
-    // });
+class _ConfirmLottieScreenState extends State<ConfirmLottieScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 1)).then((value) {
+      Navigator.popUntil(context, ModalRoute.withName(mainNavigationScreen));
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
           backgroundColor: kWhiteColor,

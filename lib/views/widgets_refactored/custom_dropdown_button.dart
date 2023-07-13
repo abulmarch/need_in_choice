@@ -10,13 +10,15 @@ class CustomDropDownButton extends StatelessWidget {
     required this.onChanged, 
     this.initialValue, 
     this.maxWidth = 70, 
-    this.hint,
+    this.hint, 
+    this.hideValidationError,
   });
   final List<String> itemList;
   final void Function(String?)? onChanged;
   final String? initialValue;
   final double maxWidth;
   final Widget? hint;
+  final bool? hideValidationError;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,6 +27,7 @@ class CustomDropDownButton extends StatelessWidget {
       decoration: BoxDecoration(
         color: kPrimaryColor,
         borderRadius: BorderRadius.circular(30),
+        border: hideValidationError == null || hideValidationError == true ? null : Border.all(color: Colors.red),
       ),
       constraints: BoxConstraints(
         maxWidth: maxWidth,
@@ -33,7 +36,6 @@ class CustomDropDownButton extends StatelessWidget {
         maxHeight: 30
       ),
       child: DropdownButton<String>(
-
         value: initialValue,
         hint: hint,                                   
         alignment: Alignment.center,

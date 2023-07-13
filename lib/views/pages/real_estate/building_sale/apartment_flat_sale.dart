@@ -434,7 +434,7 @@ class ApartmentSaleScreen extends StatelessWidget {
                                             width: cons.maxWidth * 0.205,
                                             child: const ImageUploadDotedCircle(
                                               color: kPrimaryColor,
-                                              text: 'Floor\nPlan',
+                                              documentTypeName: 'Floor\nPlan',
                                             )),
                                         kWidth20
                                       ],

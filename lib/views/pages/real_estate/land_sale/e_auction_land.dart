@@ -369,7 +369,7 @@ class EAuctionLandScreen extends StatelessWidget {
                                       ),
                                      const ImageUploadDotedCircle(
                                         color: kBlackColor,
-                                        text: 'Land\nSketch',
+                                        documentTypeName: 'Land\nSketch',
                                       ),
                                     ],
                                   ),
