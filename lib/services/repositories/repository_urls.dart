@@ -1,6 +1,6 @@
 const String getAdEndpoint = "https://nic.calletic.com/api/getads";
 
-const String getAccount ="https://nic.calletic.com/api/account/get?user_i3534611d=";
+const String getAccount ="https://nic.calletic.com/api/account/get?user_id=";
 
 
 

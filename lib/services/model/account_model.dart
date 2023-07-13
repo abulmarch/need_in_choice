@@ -1,22 +1,22 @@
 class AccountModels {
-  final int id;
-  final String userId;
-  final String name;
-  final String address;
-  final String whatsapp;
-  final String phone;
-  final String email;
-  final String createDate;
+  final int? id;
+  final String? userId;
+  final String? name;
+  final String? address;
+  final String? whatsapp;
+  final String? phone;
+  final String? email;
+  final String? createDate;
 
   AccountModels(
-      {required this.id,
-      required this.userId,
-      required this.name,
-      required this.address,
-      required this.whatsapp,
-      required this.phone,
-      required this.email,
-      required this.createDate});
+      {this.id,
+      this.userId,
+      this.name,
+      this.address,
+      this.whatsapp,
+      this.phone,
+      this.email,
+      this.createDate});
 
   factory AccountModels.fromJson(Map map) {
     return AccountModels(
@@ -29,5 +29,25 @@ class AccountModels {
       createDate: map['created_at'],
       email: map['email'],
     );
+  }
+
+  
+
+  Map<String, dynamic> toJson(AccountModels accountModels) {
+    return {
+      'id': accountModels.id,
+    'user_id':accountModels.userId ?? '',
+    'name': accountModels.name ?? '',
+    'address': accountModels.address ?? '',
+    'whatsapp': accountModels.whatsapp ?? '',
+    'phone': accountModels.phone ?? '',
+    'created_at': accountModels.createDate ?? '',
+    'email': accountModels.email ?? '',
+    };
+  }
+
+  @override
+  String toString() {
+    return "Account: {user_id : $userId, name: $name, address: $address, phone: $phone }";
   }
 }

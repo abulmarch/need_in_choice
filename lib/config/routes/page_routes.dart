@@ -5,7 +5,7 @@ import 'package:need_in_choice/services/repositories/auth_repo.dart';
 import 'package:need_in_choice/views/pages/account/account_screen.dart';
 import 'package:need_in_choice/views/pages/account/bloc/account_page_bloc.dart';
 import 'package:need_in_choice/views/pages/ad_finalisation/ad_confirm_screen.dart';
-import 'package:need_in_choice/views/pages/login/details_screen.dart';
+
 
 import '../../views/pages/ad_detail/ad_detail_screen.dart';
 import '../../views/pages/ad_finalisation/ad_preview_screen.dart';
@@ -33,7 +33,7 @@ class PageRoutes {
       case splashScreen:
         return MaterialPageRoute(
           settings: routeSettings,
-          builder: (_) => SplashScreen(),
+          builder: (_) => const SplashScreen(),
         );
       case signUpScreen:
         return MaterialPageRoute(
@@ -41,11 +41,7 @@ class PageRoutes {
           builder: (_) => const SignUpScreen(),
         );
 
-      case detailScreen:
-        return MaterialPageRoute(
-          settings: routeSettings,
-          builder: (_) => const DetailsScreen(),
-        );
+    
       case mainNavigationScreen:
         return MaterialPageRoute(
           settings: routeSettings,

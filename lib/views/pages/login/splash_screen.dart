@@ -1,6 +1,9 @@
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/constants.dart';
+import 'package:need_in_choice/views/pages/login/bloc/auth_bloc.dart';
 import 'package:need_in_choice/views/pages/login/widgets/signin_modelsheet.dart';
 import 'package:need_in_choice/views/pages/login/widgets/start_button.dart';
 import '../../../utils/colors.dart';
@@ -20,6 +23,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
@@ -40,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-  
+    final user = FirebaseAuth.instance.currentUser;
     final double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white,
@@ -124,40 +128,38 @@ class _SplashScreenState extends State<SplashScreen>
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 kHeight20,
-                FutureBuilder(
-                  future: Firebase.initializeApp(),
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.done:
-                        return StartButton(
-                          screenWidth: screenWidth,
-                          boldText: 'Get Started',
-                          lightText: ' Now',
-                          circle: kWhiteColor,
-                          button: kPrimaryColor,
-                          ontap: () {
-                            showModalBottomSheet(
-                              backgroundColor: Colors.transparent,
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (context) => SingleChildScrollView(
-                                reverse: false,
-                                padding: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).viewInsets.bottom,
-                                ),
-                                child: const SigninModalSheet(),
+                BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    return StartButton(
+                      screenWidth: screenWidth,
+                      boldText: 'Get Started',
+                      lightText: ' Now',
+                      circle: kWhiteColor,
+                      button: kPrimaryColor,
+                      ontap: () async {
+                        if (user != null) {
+                          await Navigator.pushNamed(
+                              context, mainNavigationScreen);
+                        } else if (user == null) {
+                          showModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (context) => SingleChildScrollView(
+                              reverse: false,
+                              padding: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).viewInsets.bottom,
                               ),
-                            );
-                          },
-                          arrow: kPrimaryColor,
-                        );
-                      default:
-                        return const Center(
-                            child: CircularProgressIndicator(
-                          color: Colors.black,
-                        ));
-                    }
+                              child: const SigninModalSheet(),
+                            ),
+                          );
+                        } else {
+                          const CircularProgressIndicator();
+                        }
+                      },
+                      arrow: kPrimaryColor,
+                    );
                   },
                 ),
                 kHeight20

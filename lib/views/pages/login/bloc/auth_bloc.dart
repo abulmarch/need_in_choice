@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:need_in_choice/services/model/account_model.dart';
 
 import '../../../../services/repositories/auth_repo.dart';
 
@@ -15,18 +16,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc({required this.authrepo}) : super(AuthInitial()) {
     on<SendOtpToPhoneEvent>(_onSendOtp);
+
     on<VerifySentOtpEvent>(_onVerifyOtp);
+
     on<OnPhoneOtpSent>(
       (event, emit) => emit(
         AuthCodeSentSuccess(verificationId: event.verificationId),
       ),
     );
+
     on<OnPhoneAuthErrorEvent>(
       (event, emit) => emit(
         AuthError(error: event.error),
       ),
     );
+
     on<OnPhoneAuthVerificationCompleteEvent>(_loginWithCredential);
+
+    on<SignOutEvent>(_signout);
+
+    on<AuthLoginEvent>(_login);
+
+    on<AuthCraetionEvent>(_onCreate);
   }
 
   FutureOr<void> _onSendOtp(
@@ -80,6 +91,44 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthError(error: e.code));
     } catch (e) {
       emit(AuthError(error: e.toString()));
+    }
+  }
+
+  FutureOr<void> _signout(SignOutEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+      await authrepo.signOut();
+      emit(AuthNotVerified());
+    } catch (e) {
+      emit(AuthError(error: e.toString()));
+    }
+  }
+
+  FutureOr<void> _login(AuthLoginEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+      final uid = auth.currentUser!.uid;
+      bool userExist = await authrepo.checkUserExists(uid);
+      if (userExist) {
+        emit(AuthLoggedIn(uid));
+      } else {
+        emit(AuthNotLoggedIn());
+      }
+    } catch (e) {
+      emit(AuthNotLoggedIn());
+    }
+  }
+
+  FutureOr<void> _onCreate(
+      AuthCraetionEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+    bool accountCreated =  await authrepo.createAccount(postData: event.accountModels);
+    if (accountCreated) {  
+      emit(AuthAccountCreated(event.accountModels));
+    }
+    } catch (e) {
+      emit(AuthCreatedfailed(e.toString()));
     }
   }
 }

@@ -6,14 +6,23 @@ abstract class AuthEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class SignOutEvent extends AuthEvent {
+  const SignOutEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
 class SendOtpToPhoneEvent extends AuthEvent {
   final String phoneNumber;
 
   const SendOtpToPhoneEvent({required this.phoneNumber});
-  
+
   @override
   List<Object> get props => [phoneNumber];
 }
+
 class VerifySentOtpEvent extends AuthEvent {
   final String otpCode;
   final String verificationId;
@@ -26,28 +35,41 @@ class VerifySentOtpEvent extends AuthEvent {
 }
 
 class OnPhoneOtpSent extends AuthEvent {
-   final String verificationId;
-   final int? token;
-   const OnPhoneOtpSent({
-     required this.verificationId,
-     required this.token,
-   });
+  final String verificationId;
+  final int? token;
+  const OnPhoneOtpSent({
+    required this.verificationId,
+    required this.token,
+  });
 
-   @override
-   List<Object> get props => [verificationId];
+  @override
+  List<Object> get props => [verificationId];
 }
+
 class OnPhoneAuthErrorEvent extends AuthEvent {
-   final String error;
-   const OnPhoneAuthErrorEvent({required this.error});
+  final String error;
+  const OnPhoneAuthErrorEvent({required this.error});
 
-   @override
-   List<Object> get props => [error];
+  @override
+  List<Object> get props => [error];
 }
+
 class OnPhoneAuthVerificationCompleteEvent extends AuthEvent {
+  final AuthCredential credential;
+  const OnPhoneAuthVerificationCompleteEvent({
+    required this.credential,
+  });
+}
+
+class AuthLoginEvent extends AuthEvent {
   
-   final AuthCredential credential;
-   const OnPhoneAuthVerificationCompleteEvent({
-     required this.credential,
-   });
-   
+}
+
+class AuthCraetionEvent extends AuthEvent {
+  final AccountModels accountModels;
+
+  const AuthCraetionEvent(this.accountModels);
+
+  @override
+  List<Object> get props => [accountModels];
 }

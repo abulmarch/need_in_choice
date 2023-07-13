@@ -22,9 +22,9 @@ class AccountScreen extends StatelessWidget {
               children: [
                 Stack(
                   alignment: Alignment.bottomCenter,
-                  children:const [
+                  children: const [
                     AddressBar(),
-                     Padding(
+                    Padding(
                       padding: EdgeInsets.symmetric(horizontal: kpadding20),
                       child: SearchFormField(
                         hintText: 'Search your Ads',
@@ -42,12 +42,12 @@ class AccountScreen extends StatelessWidget {
                       //   shrinkWrap: true,
                       itemCount: 10,
                       itemBuilder: (context, index) {
-                        if (state is AccountPageInitial) {
-                          return const Adtiles();
+                        if (state is AccountPageLoading) {
+                          const CircularProgressIndicator();
                         } else if (state is ViewPressedState) {
                           return const ViewingTiles();
                         }
-                        return Container();
+                        return const Adtiles();
                       },
                     ),
                   ),
