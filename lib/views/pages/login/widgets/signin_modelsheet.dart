@@ -6,6 +6,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/utils/constants.dart';
 import 'package:need_in_choice/views/pages/login/widgets/start_button.dart';
+import '../../../widgets_refactored/dashed_line_generator.dart';
 import '../bloc/auth_bloc.dart';
 import 'address_modelsheet.dart';
 import 'alert_dialog_box.dart';

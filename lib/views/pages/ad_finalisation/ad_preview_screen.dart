@@ -20,80 +20,152 @@ class AdPreviewScreen extends StatelessWidget {
     return BlocConsumer<AdCreateOrUpdateBloc, AdCreateOrUpdateState>(
       builder: (context, state) {
         bool isAdUloading = false;
-        if(state is AdUploadingProgress){
+        if (state is AdUploadingProgress) {
           isAdUloading = true;
         }
-        final adDetails = BlocProvider.of<AdCreateOrUpdateBloc>(context).adCreateOrUpdateModel;
+        final adDetails = BlocProvider.of<AdCreateOrUpdateBloc>(context)
+            .adCreateOrUpdateModel;
         final imageList = [...adDetails.imageFiles, ...adDetails.imageUrls];
         return SafeArea(
           child: Scaffold(
+            // body: Stack(
+            //   children: [
+            //     Padding(
+            //       padding: const EdgeInsets.all(kpadding10),
+            //       child: Column(
+            //         crossAxisAlignment: CrossAxisAlignment.stretch,
+            //         children: [
+            //           kHeight10,
+            //           AdPreviewImageCard(
+            //             houseFoRentr: houseFoRentAd,
+            //             imageUrlsOrFiles: imageList,
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //     Positioned(
+            //       bottom: 81,
+            //       child: AdPreviewBottomSheetRealEstate(
+            //         screenWidth: screenWidth,
+            //         screenHeight: screenHeight,
+            //       ),
+            //     ),
+            //     Positioned(
+            //       bottom: 0,
+            //       child: SizedBox(
+            //         width: screenWidth,
+            //         height: 80,
+            //         child: ColoredBox(
+            //           color: kWhiteColor,
+            //           child: Row(
+            //             mainAxisAlignment: MainAxisAlignment.spaceAround,
+            //             children: [
+            //               TextIconButton(
+            //                 onpressed: () {
+            //                   Navigator.pop(context);
+            //                 },
+            //                 text: 'Edit',
+            //                 fontsize: 22,
+            //                 txtcolor: kFadedBlack,
+            //                 // size: const Size(126, 77),
+            //                 size: Size(screenWidth * 0.4, 60),
+            //                 bordercolor: const Color(0XFFB7B7B7),
+            //               ),
+            //               TextIconButton(
+            //                 onpressed: !isAdUloading ? () {
+            //                   context.read<AdCreateOrUpdateBloc>().add(UploadAdEvent());
+            //                 }
+            //                 : null,
+            //                 text: 'Confirm Ad',
+            //                 fontsize: 22,
+            //                 txtcolor: kWhiteColor,
+            //                 background: kPrimaryColor,
+            //                 // size: const Size(243, 77),
+            //                 size: Size(screenWidth * 0.5, 60),
+            //               )
+            //             ],
+            //           ),
+            //         ),
+            //       ),
+            //     )
+            //   ],
+            // ),
+
             body: Stack(
+              alignment: Alignment.bottomCenter,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(kpadding10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      kHeight10,
-                      AdPreviewImageCard(
-                        houseFoRentr: houseFoRentAd,
-                        imageUrlsOrFiles: imageList,
-                      ),
+                      Container(
+                        height: screenHeight - screenHeight * .24,
+                        width: screenWidth * .9,
+                        decoration: BoxDecoration(
+                          color: kLightBlueWhite,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                              color: kLightBlueWhiteBorder, width: 1),
+                        ),
+                        child: AdPreviewImageCard(
+                          houseFoRentr: houseFoRentAd,
+                          imageUrlsOrFiles: imageList,
+                        ),
+                      )
                     ],
                   ),
                 ),
-                Positioned(
-                  bottom: 81,
-                  child: AdPreviewBottomSheetRealEstate(
-                    screenWidth: screenWidth,
-                    screenHeight: screenHeight,
-                  ),
+                AdPreviewBottomSheetRealEstate(
+                  screenWidth: screenWidth,
+                  screenHeight: screenHeight,
                 ),
-                Positioned(
-                  bottom: 0,
-                  child: SizedBox(
-                    width: screenWidth,
-                    height: 80,
-                    child: ColoredBox(
-                      color: kWhiteColor,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          TextIconButton(
-                            onpressed: () {
-                              Navigator.pop(context);
-                            },
-                            text: 'Edit',
-                            fontsize: 22,
-                            txtcolor: kFadedBlack,
-                            // size: const Size(126, 77),
-                            size: Size(screenWidth * 0.4, 60),
-                            bordercolor: const Color(0XFFB7B7B7),
-                          ),
-                          TextIconButton(
-                            onpressed: !isAdUloading ? () {
-                              context.read<AdCreateOrUpdateBloc>().add(UploadAdEvent());
-                            }
-                            : null,
-                            text: 'Confirm Ad',
-                            fontsize: 22,
-                            txtcolor: kWhiteColor,
-                            background: kPrimaryColor,
-                            // size: const Size(243, 77),
-                            size: Size(screenWidth * 0.5, 60),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                )
               ],
             ),
+            bottomNavigationBar: BottomAppBar(
+                child: SizedBox(
+              width: screenWidth,
+              height: screenHeight * .1,
+              child: ColoredBox(
+                color: kWhiteColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    TextIconButton(
+                      onpressed: () {
+                        Navigator.pop(context);
+                      },
+                      text: 'Edit',
+                      fontsize: 22,
+                      txtcolor: kFadedBlack,
+                      // size: const Size(126, 77),
+                      size: Size(screenWidth * 0.4, 60),
+                      bordercolor: const Color(0XFFB7B7B7),
+                    ),
+                    TextIconButton(
+                      onpressed: !isAdUloading
+                          ? () {
+                              context
+                                  .read<AdCreateOrUpdateBloc>()
+                                  .add(UploadAdEvent());
+                            }
+                          : null,
+                      text: 'Confirm Ad',
+                      fontsize: 22,
+                      txtcolor: kWhiteColor,
+                      background: kPrimaryColor,
+                      // size: const Size(243, 77),
+                      size: Size(screenWidth * 0.5, 60),
+                    )
+                  ],
+                ),
+              ),
+            )),
           ),
         );
       },
       listener: (context, state) {
-        if(state is AdUploadingCompletedState){
+        if (state is AdUploadingCompletedState) {
           Navigator.pushNamed(context, confirmLottieScreen);
         }
       },

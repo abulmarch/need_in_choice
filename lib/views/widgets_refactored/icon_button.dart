@@ -123,7 +123,7 @@ class IconWithButtonBottom extends StatelessWidget {
                           )
                         : null,
               ),
-              //kWidth20,
+              const Spacer(),
               Text(
                 text,
                 style: Theme.of(context)
@@ -131,69 +131,9 @@ class IconWithButtonBottom extends StatelessWidget {
                     .titleLarge!
                     .copyWith(fontWeight: fontWeight, fontSize: fontsize),
               ),
+              const Spacer()
             ],
           ),
         ));
   }
 }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final double screenHeight = MediaQuery.of(context).size.height;
-//     final double screenWidth = MediaQuery.of(context).size.width;
-
-//     return InkWell(
-//       onTap: ontap,
-//       child: Container(
-//         height: screenHeight * 0.085,
-//         width: screenWidth * .8,
-//         padding: const EdgeInsets.symmetric(
-//           horizontal: 8,
-//         ),
-//         decoration: BoxDecoration(
-//           color: button,
-//           borderRadius: const BorderRadius.all(Radius.circular(100)),
-//         ),
-//         child: Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             const Spacer(),
-//             RichText(
-//               text: TextSpan(
-//                   text: boldText,
-//                   style: Theme.of(context)
-//                       .textTheme
-//                       .titleLarge!
-//                       .copyWith(color: textcolor, fontSize: 20),
-//                   children: [
-//                     TextSpan(
-//                       text: lightText,
-//                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
-//                           fontWeight: FontWeight.w300,
-//                           color: textcolor,
-//                           fontSize: 20),
-//                     )
-//                   ]),
-//             ),
-//             const Spacer(),
-//             Container(
-//               height: 50,
-//               width: 50,
-//               decoration: BoxDecoration(
-//                 color: circle,
-//                 shape: BoxShape.circle,
-//               ),
-//               child: Center(
-//                 child: Icon(
-//                   Icons.arrow_forward_ios_sharp,
-//                   color: arrow,
-//                 ),
-//               ),
-//             ),
-//             // kWidth10,
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

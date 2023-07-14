@@ -44,129 +44,164 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
+    final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: true,
-      body: Stack(
-        children: [
-          Positioned(
-            top: -30,
-            left: 0,
-            child: AnimatedBuilder(
-              animation: _animation,
-              builder: (BuildContext context, Widget? child) {
-                return Transform.translate(
-                  offset: Offset(0, _animation.value),
-                  child: Image.asset('assets/images/profile/Ellipse 95.png'),
-                );
-              },
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        // if (state is AuthLoading) {
+        //   return circularindicator(context);
+        //   const Center(
+        //     child: CircularProgressIndicator(),
+        //   );
+        // } else
+        if (state is AuthLoggedIn) {
+          Navigator.pushNamed(context, mainNavigationScreen);
+        } else if (state is AuthNotLoggedIn) {
+          openSignInModalSheet(context);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        resizeToAvoidBottomInset: true,
+        body: Stack(
+          children: [
+            Positioned(
+              top: -30,
+              left: 0,
+              child: AnimatedBuilder(
+                animation: _animation,
+                builder: (BuildContext context, Widget? child) {
+                  return Transform.translate(
+                    offset: Offset(0, _animation.value),
+                    child: Image.asset('assets/images/profile/Ellipse 95.png'),
+                  );
+                },
+              ),
             ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).size.height / 2 - 75,
-            left: MediaQuery.of(context).size.width / 9 - 85,
-            child: AnimatedBuilder(
-              animation: _animation,
-              builder: (BuildContext context, Widget? child) {
-                return Transform.translate(
-                  offset: Offset(0, _animation.value),
-                  child: const CircleAvatar(
-                    radius: 50,
-                    backgroundColor: kSecondaryColor,
+            Positioned(
+              top: MediaQuery.of(context).size.height / 2 - 75,
+              left: MediaQuery.of(context).size.width / 9 - 85,
+              child: AnimatedBuilder(
+                animation: _animation,
+                builder: (BuildContext context, Widget? child) {
+                  return Transform.translate(
+                    offset: Offset(0, _animation.value),
+                    child: const CircleAvatar(
+                      radius: 50,
+                      backgroundColor: kSecondaryColor,
+                    ),
+                  );
+                },
+              ),
+            ),
+            Positioned(
+              top: MediaQuery.of(context).size.height / 4 - 45,
+              right: MediaQuery.of(context).size.width / 3 - 85,
+              child: AnimatedBuilder(
+                animation: _animation,
+                builder: (BuildContext context, Widget? child) {
+                  return Transform.translate(
+                    offset: Offset(0, -_animation.value),
+                    child: const CircleAvatar(
+                      radius: 25,
+                      backgroundColor: kPrimaryColor,
+                    ),
+                  );
+                },
+              ),
+            ),
+            Positioned(
+              top: MediaQuery.of(context).size.height / 2 - 75,
+              right: MediaQuery.of(context).size.width / 7 - 85,
+              child: AnimatedBuilder(
+                animation: _animation,
+                builder: (BuildContext context, Widget? child) {
+                  return Transform.translate(
+                    offset: Offset(0, _animation.value),
+                    child: const CircleAvatar(
+                      radius: 40,
+                      backgroundColor: kLightGreyColor,
+                    ),
+                  );
+                },
+              ),
+            ),
+            Positioned(
+              top: MediaQuery.of(context).size.height / 2.5,
+              left: 0,
+              right: 0,
+              child: Image.asset('assets/images/profile/nic.png'),
+            ),
+            Positioned(
+              top: MediaQuery.of(context).size.height / 1.25,
+              left: 0,
+              right: 0,
+              //  left: MediaQuery.of(context).size.height / 8 - 60,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'search and buy everything with nic now',
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
-                );
-              },
-            ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).size.height / 4 - 45,
-            right: MediaQuery.of(context).size.width / 3 - 85,
-            child: AnimatedBuilder(
-              animation: _animation,
-              builder: (BuildContext context, Widget? child) {
-                return Transform.translate(
-                  offset: Offset(0, -_animation.value),
-                  child: const CircleAvatar(
-                    radius: 25,
-                    backgroundColor: kPrimaryColor,
-                  ),
-                );
-              },
-            ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).size.height / 2 - 75,
-            right: MediaQuery.of(context).size.width / 7 - 85,
-            child: AnimatedBuilder(
-              animation: _animation,
-              builder: (BuildContext context, Widget? child) {
-                return Transform.translate(
-                  offset: Offset(0, _animation.value),
-                  child: const CircleAvatar(
-                    radius: 40,
-                    backgroundColor: kLightGreyColor,
-                  ),
-                );
-              },
-            ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).size.height / 2,
-            left: MediaQuery.of(context).size.height / 5 - 65,
-            child: Image.asset('assets/images/profile/nic.png'),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).size.height / 1.25,
-            left: MediaQuery.of(context).size.height / 8 - 60,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'search and buy everything with nic now',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                kHeight20,
-                BlocBuilder<AuthBloc, AuthState>(
-                  builder: (context, state) {
-                    return StartButton(
-                      screenWidth: screenWidth,
-                      boldText: 'Get Started',
-                      lightText: ' Now',
-                      circle: kWhiteColor,
-                      button: kPrimaryColor,
-                      ontap: () async {
-                        if (user != null) {
-                          await Navigator.pushNamed(
-                              context, mainNavigationScreen);
-                        } else if (user == null) {
-                          showModalBottomSheet(
-                            backgroundColor: Colors.transparent,
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (context) => SingleChildScrollView(
-                              reverse: false,
-                              padding: EdgeInsets.only(
-                                bottom:
-                                    MediaQuery.of(context).viewInsets.bottom,
-                              ),
-                              child: const SigninModalSheet(),
+                  kHeight20,
+                  BlocBuilder<AuthBloc, AuthState>(
+                    builder: (context, state) {
+                      if (state is AuthLoading) {
+                        return SizedBox(
+                          height: screenHeight * 0.085,
+                          width: screenWidth * .8,
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation(kPrimaryColor),
                             ),
-                          );
-                        } else {
-                          const CircularProgressIndicator();
-                        }
-                      },
-                      arrow: kPrimaryColor,
-                    );
-                  },
-                ),
-                kHeight20
-              ],
+                          ),
+                        );
+                      }
+                      return StartButton(
+                        screenWidth: screenWidth,
+                        boldText: 'Get Started',
+                        lightText: ' Now',
+                        circle: kWhiteColor,
+                        button: kPrimaryColor,
+                        ontap: () async {
+                          context.read<AuthBloc>().add(AuthLoginEvent());
+                        },
+                        arrow: kPrimaryColor,
+                      );
+                    },
+                  ),
+                  kHeight20
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  //  circularindicator(BuildContext context) {
+  //   return showDialog(
+  //     barrierColor: Colors.transparent,
+  //         context: context,
+  //         builder: (context) {
+  //           return const Center(child: CircularProgressIndicator());
+  //         },
+  //       );
+  // }
+
+  Future<dynamic> openSignInModalSheet(BuildContext context) {
+    return showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => SingleChildScrollView(
+        reverse: false,
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: const SigninModalSheet(),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../services/repositories/repository_urls.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
+import 'full_image.dart';
 
 
 class ImageCard extends StatelessWidget {
@@ -33,59 +34,11 @@ class ImageCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: InkWell(
               onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Dialog(
-                        backgroundColor: kWhiteColor.withOpacity(0.3),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(
-                              20.0,
-                            ),
-                          ),
-                        ),
-                        child: SizedBox(
-                          height: screenSize.height * .55,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(25),
-                              child: InteractiveViewer(
-                                child: Image.network(
-                                  '$imageUrlEndpoint${imageUrls![index]}',
-                                  fit: BoxFit.contain,
-                                  alignment: Alignment.center,
-                                  loadingBuilder: (BuildContext context,
-                                      Widget child,
-                                      ImageChunkEvent? loadingProgress) {
-                                    if (loadingProgress == null) {
-                                      return child;
-                                    }
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        value: loadingProgress
-                                                    .expectedTotalBytes !=
-                                                null
-                                            ? loadingProgress
-                                                    .cumulativeBytesLoaded /
-                                                loadingProgress
-                                                    .expectedTotalBytes!
-                                            : null,
-                                      ),
-                                    );
-                                  },
-                                  errorBuilder: (BuildContext context,
-                                      Object error, StackTrace? stackTrace) {
-                                    return const Icon(Icons.error);
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ));
-                  },
-                );
+                
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>  FullImageView(imageUrl: '$imageUrlEndpoint${imageUrls![index]}',)));
               },
               child: Container(
                 height: 250,

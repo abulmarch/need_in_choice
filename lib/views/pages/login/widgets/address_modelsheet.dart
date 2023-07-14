@@ -27,26 +27,33 @@ class AddressModalSheet extends StatelessWidget {
       listener: (context, state) {
         if (state is AuthLoading) {
           const Center(
-              child: CircularProgressIndicator(),
-            );
+            child: CircularProgressIndicator(),
+          );
         } else if (state is AuthAccountCreated) {
+          const Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(kPrimaryColor),
+            ),
+          );
           ScaffoldMessenger.of(context).showSnackBar(
-               SnackBar(
-                backgroundColor: kPrimaryColor.withOpacity(.5),
-                content: Text('Account Created', style: Theme.of(context).textTheme.labelSmall,),
-                duration: const Duration(seconds: 3),
+            SnackBar(
+              backgroundColor: kPrimaryColor.withOpacity(.5),
+              content: Text(
+                'Account Created',
+                style: Theme.of(context).textTheme.labelSmall,
               ),
-            );
+              duration: const Duration(seconds: 2),
+            ),
+          );
           Navigator.pushNamed(context, mainNavigationScreen);
-        } else if(state is AuthCreatedfailed){
+        } else if (state is AuthCreatedfailed) {
           ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('somthing happend'),
-                duration: Duration(seconds: 20),
-              ),
-            );
+            const SnackBar(
+              content: Text('somthing happend'),
+              duration: Duration(seconds: 20),
+            ),
+          );
         }
-        
       },
       child: SingleChildScrollView(
         child: Form(
@@ -80,7 +87,6 @@ class AddressModalSheet extends StatelessWidget {
                   SizedBox(
                     width: screenWidth * .9,
                     child: TextFormField(
-                      
                       controller: nameController,
                       decoration: InputDecoration(
                         hintText: "Your Name",
@@ -101,7 +107,6 @@ class AddressModalSheet extends StatelessWidget {
                   SizedBox(
                     width: screenWidth * .9,
                     child: TextFormField(
-                      
                       controller: addressController,
                       maxLines: 3,
                       decoration: InputDecoration(
@@ -124,18 +129,41 @@ class AddressModalSheet extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 20),
                     child: BlocBuilder<AuthBloc, AuthState>(
                       builder: (context, state) {
+                        if (state is AuthLoading) {
+                          return SizedBox(
+                            height: screenHeight * 0.085,
+                            width: screenWidth * .8,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Creating Account',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge!
+                                      .copyWith(
+                                          color: kWhiteColor, fontSize: 18),
+                                ),
+                                kWidth15,
+                                const CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation(kPrimaryColor),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                         return StartButton(
                           screenWidth: screenWidth,
                           ontap: () async {
                             if (nameFormKey.currentState!.validate()) {
                               final accountDetails = AccountModels(
-                                
                                 phone: phoneNumber.toString(),
-                                  userId: user!.uid,
-                                  address: addressController.text,
-                                  name: nameController.text,
-                                  );
-                              
+                                userId: user!.uid,
+                                address: addressController.text,
+                                name: nameController.text,
+                              );
+
                               await createAccount(context, accountDetails);
                             } else {
                               showDialog(

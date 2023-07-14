@@ -20,66 +20,68 @@ class AdPreviewImageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageList = imageUrlsOrFiles.isNotEmpty ? imageUrlsOrFiles : ['assets/images/dummy/house_for_rent1.png'];
+    final imageList = imageUrlsOrFiles.isNotEmpty
+        ? imageUrlsOrFiles
+        : ['assets/images/dummy/house_for_rent1.png'];
     final screenSize = MediaQuery.of(context).size;
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        SizedBox(
-          width: screenSize.width,
-          height: screenSize.height * 0.55,
-          child: ListView.separated(
-            scrollDirection: Axis.vertical,
-            controller: controller,
-            itemCount: imageList.length,
-            cacheExtent: screenSize.width,
-            itemBuilder: (context, index) => ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(kpadding10)),
-              child: SizedBox(
-                height: screenSize.width,
-                width: screenSize.width,
-                child: imageList[index].runtimeType == String ?
-                Image.network(
-                  '$imageUrlEndpoint${imageList[index]}',
-                  fit: BoxFit.cover,
-                  loadingBuilder: (BuildContext context, Widget child,
-                      ImageChunkEvent? loadingProgress) {
-                    if (loadingProgress == null) {
-                      return child;
-                    }
-                    return SizedBox(
-                      width: double.infinity,
-                      height: screenSize.width,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
-                              : null,
+        ListView.separated(
+          scrollDirection: Axis.vertical,
+          controller: controller,
+          itemCount: imageList.length,
+          cacheExtent: screenSize.width,
+          itemBuilder: (context, index) => ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(kpadding10)),
+            child: SizedBox(
+              height: screenSize.width,
+              width: screenSize.width,
+              child: imageList[index].runtimeType == String
+                  ? Image.network(
+                      '$imageUrlEndpoint${imageList[index]}',
+                      fit: BoxFit.cover,
+                      loadingBuilder: (BuildContext context, Widget child,
+                          ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+                        return SizedBox(
+                          width: double.infinity,
+                          height: screenSize.width,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (BuildContext context, Object error,
+                              StackTrace? stackTrace) =>
+                          DecoratedBox(
+                        decoration: BoxDecoration(
+                            border: Border.all(color: kGreyColor),
+                            color: kLightGreyColor.withOpacity(0.6)),
+                        child: const Icon(
+                          Icons.image,
+                          size: 80,
+                          color: kGreyColor,
                         ),
                       ),
-                    );
-                  },
-                  errorBuilder: (BuildContext context, Object error,
-                      StackTrace? stackTrace) => DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: kGreyColor),
-                      color: kLightGreyColor.withOpacity(0.6)
+                    )
+                  : Image.file(
+                      File((imageList[index] as XFile).path),
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.image),
                     ),
-                    child:  const Icon(Icons.image,size: 80,color: kGreyColor,),
-                        
-                  ),
-                )
-                : Image.file(
-                  File((imageList[index] as XFile).path),
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.image),
-                ),
-              ),
             ),
-            separatorBuilder: (context, index) => const SizedBox(
-              height: 10,
-            ),
+          ),
+          separatorBuilder: (context, index) => const SizedBox(
+            height: 10,
           ),
         ),
         Positioned(

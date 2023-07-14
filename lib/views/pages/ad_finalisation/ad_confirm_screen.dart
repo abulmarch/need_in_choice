@@ -22,10 +22,10 @@ class AdConfirmScreen extends StatefulWidget {
 }
 
 class _AdConfirmScreenState extends State<AdConfirmScreen> {
-  late AdCreateOrUpdateBloc adCreateOrUpdateBloc ;
+  late AdCreateOrUpdateBloc adCreateOrUpdateBloc;
   @override
   Widget build(BuildContext context) {
-    final screnSize = MediaQuery.of(context).size; 
+    final screnSize = MediaQuery.of(context).size;
     adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.initializeStreamController();
     return SafeArea(
@@ -34,7 +34,7 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
         body: BlocConsumer<AdCreateOrUpdateBloc, AdCreateOrUpdateState>(
           builder: (context, state) {
             bool isAdUloading = false;
-            if(state is AdUploadingProgress){
+            if (state is AdUploadingProgress) {
               isAdUloading = true;
             }
             return Padding(
@@ -67,9 +67,7 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                     child: Text(
                       '---------------------------',
                       style: TextStyle(
-                          height: 0.7,
-                          color: kDottedBorder,
-                          letterSpacing: 2),
+                          height: 0.7, color: kDottedBorder, letterSpacing: 2),
                     ),
                   ),
                   kHeight5,
@@ -80,17 +78,17 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                       InkWell(
                         onTap: () {
                           showModalBottomSheet<void>(
-                              backgroundColor: kWhiteColor,
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(30),
-                                topRight: Radius.circular(30),
-                              )),
-                              context: context,
-                              builder: (context) {
-                                return const CameraBottomSheet();
-                              },
-                            );
+                            backgroundColor: kWhiteColor,
+                            shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30),
+                              topRight: Radius.circular(30),
+                            )),
+                            context: context,
+                            builder: (context) {
+                              return const CameraBottomSheet();
+                            },
+                          );
                         },
                         child: Container(
                           height: 170,
@@ -103,7 +101,8 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                             ),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.only(top: kpadding20 * 3.5),
+                            padding:
+                                const EdgeInsets.only(top: kpadding20 * 3.5),
                             child: Column(
                               children: [
                                 const Icon(Icons.camera_alt_outlined),
@@ -114,8 +113,7 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleSmall!
-                                      .copyWith(
-                                          color: const Color(0XFF979797)),
+                                      .copyWith(color: const Color(0XFF979797)),
                                 )
                               ],
                             ),
@@ -126,27 +124,44 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                         height: 170,
                         width: 150,
                         child: StreamBuilder<List<dynamic>>(
-                          stream: adCreateOrUpdateBloc.imageListStream,
-                          builder: (context, snapshot) {
-                            final int imageCount = (snapshot.data ?? []).length;
-                            return RichText(
-                              text: TextSpan(
-                                  text: imageCount.toString(),
-                                  style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 100,color: kBlackColor,),
-                                  children: [
-                                    TextSpan(
-                                      text: '\nimage',
-                                      style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 15, color: kBlackColor, height: .01),
-                                    ),
-                                    TextSpan(
-                                      text: '\nUpdated',
-                                      style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 15,),
-                                    ),
-                                  ]),
-                              textAlign: TextAlign.center,
-                            );
-                          }
-                        ),
+                            stream: adCreateOrUpdateBloc.imageListStream,
+                            builder: (context, snapshot) {
+                              final int imageCount =
+                                  (snapshot.data ?? []).length;
+                              return RichText(
+                                text: TextSpan(
+                                    text: imageCount.toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall!
+                                        .copyWith(
+                                          fontSize: 100,
+                                          color: kBlackColor,
+                                        ),
+                                    children: [
+                                      TextSpan(
+                                        text: '\nimage',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall!
+                                            .copyWith(
+                                                fontSize: 15,
+                                                color: kBlackColor,
+                                                height: .01),
+                                      ),
+                                      TextSpan(
+                                        text: '\nUpdated',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall!
+                                            .copyWith(
+                                              fontSize: 15,
+                                            ),
+                                      ),
+                                    ]),
+                                textAlign: TextAlign.center,
+                              );
+                            }),
                       ),
                     ],
                   ),
@@ -154,9 +169,12 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                   SizedBox(
                     height: 100,
                     child: StreamBuilder<List<dynamic>>(
-                      stream: adCreateOrUpdateBloc.imageListStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.done) {
+                        stream: adCreateOrUpdateBloc.imageListStream,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                                  ConnectionState.active ||
+                              snapshot.connectionState ==
+                                  ConnectionState.done) {
                             if (snapshot.hasData) {
                               final adImages = snapshot.data ?? [];
                               return ListView.separated(
@@ -169,35 +187,47 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                                       Container(
                                         height: 100,
                                         width: 100,
-                                        padding: const EdgeInsets.all(kpadding10),
+                                        padding:
+                                            const EdgeInsets.all(kpadding10),
                                         decoration: BoxDecoration(
                                             color: kWhiteColor,
-                                            border: Border.all(color: kGreyColor),
-                                            borderRadius: BorderRadius.circular(10)),
-                                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                                        child: adImages[index].runtimeType == String 
-                                        ? Image.network(
-                                          '$imageUrlEndpoint${adImages[index]}',
-                                          fit: BoxFit.cover,
-                                          width: 70,
-                                          height: 70,
-                                          errorBuilder: (context, error, stackTrace) => const Icon(Icons.image),
-                                          // loadingBuilder: (context, child, loadingProgress) {
-                                          //   if(loadingProgress == null) return child;
-                                          //     return const Center(child: CircularProgressIndicator(color: kBlackColor,));
-                                          // },
-                                        )
-                                        : Image.file(
-                                          File((adImages[index] as XFile).path),
-                                          fit: BoxFit.cover,
-                                        ),
+                                            border:
+                                                Border.all(color: kGreyColor),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        child: adImages[index].runtimeType ==
+                                                String
+                                            ? Image.network(
+                                                '$imageUrlEndpoint${adImages[index]}',
+                                                fit: BoxFit.cover,
+                                                width: 70,
+                                                height: 70,
+                                                errorBuilder: (context, error,
+                                                        stackTrace) =>
+                                                    const Icon(Icons.image),
+                                                // loadingBuilder: (context, child, loadingProgress) {
+                                                //   if(loadingProgress == null) return child;
+                                                //     return const Center(child: CircularProgressIndicator(color: kBlackColor,));
+                                                // },
+                                              )
+                                            : Image.file(
+                                                File((adImages[index] as XFile)
+                                                    .path),
+                                                fit: BoxFit.cover,
+                                              ),
                                       ),
                                       Positioned(
                                         top: 5,
                                         right: 5,
                                         child: InkWell(
                                           onTap: () {
-                                            context.read<AdCreateOrUpdateBloc>().deleteImage(index: index,data: adImages[index]);
+                                            context
+                                                .read<AdCreateOrUpdateBloc>()
+                                                .deleteImage(
+                                                    index: index,
+                                                    data: adImages[index]);
                                           },
                                           child: Image.asset(
                                             'assets/images/icons/close_icon.png',
@@ -208,18 +238,20 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                                     ],
                                   );
                                 },
-                                separatorBuilder: (context, index) => const SizedBox(
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(
                                   width: 5,
                                 ),
                               );
-                            }else{
+                            } else {
                               return const SizedBox();
                             }
-                        }else{
-                          return const Center(child: CircularProgressIndicator(),);
-                        }
-                      }
-                    ),
+                          } else {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        }),
                   ),
                   kHeight15,
                   const Padding(
@@ -227,9 +259,7 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                     child: Text(
                       '---------------------------',
                       style: TextStyle(
-                          height: 0.7,
-                          color: kDottedBorder,
-                          letterSpacing: 2),
+                          height: 0.7, color: kDottedBorder, letterSpacing: 2),
                     ),
                   ),
                   kHeight10,
@@ -249,36 +279,36 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                             maxWidth: screnSize.width - 70,
                             minWidth: 150),
                         child: StreamBuilder<String>(
-                              stream: adCreateOrUpdateBloc.addressStream,
-                              builder: (context, snapshot) {
-                                  final String address = snapshot.data ?? "";
-                                return RichText(
-                                    text: TextSpan(
-                                  text: "Ads Address\n",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium!
-                                      .copyWith(
-                                        color: kPrimaryColor,
+                            stream: adCreateOrUpdateBloc.addressStream,
+                            builder: (context, snapshot) {
+                              final String address = snapshot.data ?? "";
+                              return RichText(
+                                text: TextSpan(
+                                    text: "Ads Address\n",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium!
+                                        .copyWith(
+                                          color: kPrimaryColor,
+                                        ),
+                                    children: [
+                                      TextSpan(
+                                        text: address,
+                                        // 'Technopark Campus, Technopark Campus, Kazhakkoottam, Thiruvananthapuram, Kerala 695581',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall,
                                       ),
-                                  children: [
-                                    TextSpan(
-                                      text: address,
-                                          // 'Technopark Campus, Technopark Campus, Kazhakkoottam, Thiruvananthapuram, Kerala 695581',
-                                      style:
-                                          Theme.of(context).textTheme.bodySmall,
-                                    ),
-                                  ]),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 5,
-                                    textAlign: TextAlign.start,
-                                  );
-                              }
-                            ),
+                                    ]),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 5,
+                                textAlign: TextAlign.start,
+                              );
+                            }),
                       ),
                     ],
                   ),
-                  kHeight10,
+                  kHeight20,
                   TextIconButton(
                     text: '+ Update Ad Location',
                     txtcolor: const Color(0XFF6F6F6F),
@@ -286,7 +316,7 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                     onpressed: () {
                       showModalBottomSheet<void>(
                         isScrollControlled: true,
-                        backgroundColor: kWhiteColor,                        
+                        backgroundColor: kWhiteColor,
                         shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(30),
@@ -300,61 +330,69 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                     },
                     size: const Size(222, 38),
                   ),
-                  kHeight20,
-                  kHeight10,
+                  const Spacer(),
                   TextIconButton(
                     text: 'Preview Ad',
                     txtcolor: kPrimaryColor,
                     fontsize: 15,
-                    onpressed: () {//.;
+                    onpressed: () {
+                      //.;
                       // Navigator.pushNamed(context, adPreviwScreen);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdPreviewScreen(),));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AdPreviewScreen(),
+                          ));
                     },
                     size: const Size(246, 50),
                   ),
-                  kHeight5,
+                  kHeight15,
                   TextIconButton(
                     text: 'Confirm Ad',
                     txtcolor: kWhiteColor,
                     fontsize: 15,
-                    onpressed: !isAdUloading ? () {
-                      context.read<AdCreateOrUpdateBloc>().add(UploadAdEvent());                      
-                    }
-                    : null,
+                    onpressed: !isAdUloading
+                        ? () {
+                            context
+                                .read<AdCreateOrUpdateBloc>()
+                                .add(UploadAdEvent());
+                          }
+                        : null,
                     size: const Size(321, 61),
                     background: const Color(0XFF303030),
                     bordercolor: kWhiteColor,
                   ),
+                  kHeight20,
                 ],
               ),
             );
           },
           listener: (context, state) {
-            if(state is ImageFileUploadingState){
+            if (state is ImageFileUploadingState) {
               Navigator.pop(context);
               Future.delayed(const Duration(seconds: 1)).then((value) {
                 SnackBar snackBar = const SnackBar(
                   content: LinearProgressIndicator(),
-                  margin: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                  padding: EdgeInsets.symmetric(vertical: 20,horizontal: 20),
+                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   behavior: SnackBarBehavior.floating,
                   backgroundColor: Color(0xFF00000e),
                   duration: Duration(hours: 1),
                 );
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               });
-            }else if(state is ImageFileUploadedState){
+            } else if (state is ImageFileUploadedState) {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              if(state.exception != null){
+              if (state.exception != null) {
                 SnackBar snackBar = const SnackBar(
                   content: Text('You can not add morethan 7 images.'),
-                  margin: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   behavior: SnackBarBehavior.floating,
                   backgroundColor: Color(0xFF00000e),
                 );
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
-            }else if(state is AdUploadingCompletedState){
+            } else if (state is AdUploadingCompletedState) {
               Navigator.pushNamed(context, confirmLottieScreen);
             }
           },
@@ -362,6 +400,7 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
       ),
     );
   }
+
   @override
   void dispose() {
     adCreateOrUpdateBloc.dispose();

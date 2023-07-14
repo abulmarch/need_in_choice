@@ -6,7 +6,7 @@
 
 
    <application
-        android:label="need_in_choice"
+        android:label="nic"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

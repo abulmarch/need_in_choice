@@ -48,7 +48,7 @@ class AdDetailScreen extends StatelessWidget {
                               ),
                               kHeight5,
                               Container(
-                                height: screenHeight * .57,
+                                height: screenHeight - screenHeight * .35,
                                 width: screenWidth * .9,
                                 decoration: BoxDecoration(
                                   color: kLightBlueWhite,
@@ -72,6 +72,9 @@ class AdDetailScreen extends StatelessWidget {
                         )
                       ],
                     );
+                 
+                 
+                 
                   } else {
                     // ignore: prefer_const_constructors
                     return Center(
