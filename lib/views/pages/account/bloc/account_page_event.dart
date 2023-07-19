@@ -8,11 +8,14 @@ abstract class AccountPageEvent extends Equatable {
 }
 
 class ViewPressedEvent extends AccountPageEvent {}
+class ViewNotPressedEvent extends AccountPageEvent {}
 
-class CreateAccount extends AccountPageEvent {
+class AccountLoadingEvent extends AccountPageEvent {}
+
+class EditingAccount extends AccountPageEvent {
   final AccountModels accountModal;
 
-  const CreateAccount(this.accountModal);
+  const EditingAccount(this.accountModal);
 
   @override
   List<Object> get props => [accountModal];

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:extended_text/extended_text.dart'
     show ExtendedText, TextOverflowWidget;
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 import '../../../widgets_refactored/dashed_line_generator.dart';
 import '../../../widgets_refactored/icon_button.dart';
+import '../../../widgets_refactored/image_upload_doted_circle.dart';
 import 'details_row.dart';
 import 'full_image.dart';
 
@@ -24,8 +27,6 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryDetails = adsModel.categoryInfo['primary_details'];
-    final moreInfo = adsModel.categoryInfo['more_info'];
     return DraggableScrollableSheet(
       initialChildSize: .3,
       minChildSize: .3,
@@ -76,7 +77,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                 ),
                                 kWidth5,
                                 SizedBox(
-                                  width: screenWidth * 0.84,
+                                  width: screenWidth * 0.82,
                                   child: Text(
                                     adsModel.categoryInfo["ads_address"],
                                     //maxLines: 1,
@@ -96,7 +97,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                             ),
                             kHeight5,
                             DetailsRow(
-                              details: primaryDetails,
+                              details: adsModel.primaryData,
                             ),
                             kHeight10,
                             SizedBox(
@@ -189,7 +190,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                             ),
                             kHeight5,
                             DetailsRow(
-                              details: moreInfo,
+                              details: _moreInfoData(),//adsModel.moreInfoData,//
                             ),
                             kHeight10,
                             SizedBox(
@@ -285,8 +286,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                 children: [
                                   RichText(
                                     text: TextSpan(
-                                      text: adsModel.categoryInfo['more_info']
-                                          ['Landmark'],
+                                      text: adsModel.moreInfoData['Landmark'],
                                       //"Near PRS Hospital",
                                       style: Theme.of(context)
                                           .textTheme
@@ -297,7 +297,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                       children: [
                                         TextSpan(
                                           text:
-                                              "\n${adsModel.categoryInfo['more_info']['Website']}",
+                                              "\n${adsModel.moreInfoData['Website Link']}",
                                           //"\nwww.calletic.com",
                                           style: Theme.of(context)
                                               .textTheme
@@ -312,112 +312,18 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                   SizedBox(
                                     width: screenWidth * 0.3,
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const FullImageView(
-                                                          imageUrl:
-                                                              'assets/images/dummy/Room.jpg',
-                                                        )));
-                                          },
-                                          child: Container(
-                                            height: 50,
-                                            width: 50,
-                                            decoration: BoxDecoration(
-                                              image: const DecorationImage(
-                                                opacity: 0.3,
-                                                image: AssetImage(
-                                                    'assets/images/dummy/Room.jpg'),
-                                                fit: BoxFit.cover,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 13),
-                                              child: RichText(
-                                                  textAlign: TextAlign.center,
-                                                  text: TextSpan(
-                                                    text: 'Floor',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleLarge!
-                                                        .copyWith(
-                                                            fontSize: 10,
-                                                            color: kWhiteColor),
-                                                    children: [
-                                                      TextSpan(
-                                                        text: '\nPlan',
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headlineSmall!
-                                                            .copyWith(
-                                                              fontSize: 10,
-                                                            ),
-                                                      ),
-                                                    ],
-                                                  )),
-                                            ),
-                                          ),
+                                        OtherAdsImagePreviewBox(
+                                          documentTypeName: 'Floor Plan',
+                                          networkImageUrl: adsModel.otherimages.firstWhere((element) => element['image_type'] == 'floor_plan',orElse: () => {},)['url'],
+                                          defaultImage: 'assets/images/dummy/Room.jpg',
                                         ),
-                                        InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const FullImageView(
-                                                          imageUrl:
-                                                              'assets/images/dummy/lands.jpg',
-                                                        )));
-                                          },
-                                          child: Container(
-                                            height: 50,
-                                            width: 50,
-                                            decoration: BoxDecoration(
-                                              image: const DecorationImage(
-                                                opacity: 0.4,
-                                                image: AssetImage(
-                                                    'assets/images/dummy/lands.jpg'),
-                                                fit: BoxFit.cover,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 12),
-                                              child: RichText(
-                                                  textAlign: TextAlign.center,
-                                                  text: TextSpan(
-                                                    text: 'Land',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleLarge!
-                                                        .copyWith(
-                                                            fontSize: 10,
-                                                            color: kWhiteColor),
-                                                    children: [
-                                                      TextSpan(
-                                                        text: '\nSketch',
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headlineSmall!
-                                                            .copyWith(
-                                                                fontSize: 10),
-                                                      ),
-                                                    ],
-                                                  )),
-                                            ),
-                                          ),
-                                        )
+                                        OtherAdsImagePreviewBox(
+                                          documentTypeName: 'Land Sketch',
+                                          networkImageUrl: adsModel.otherimages.firstWhere((element) => element['image_type'] == 'land_sketch',orElse: () => {},)['url'],
+                                          defaultImage: 'assets/images/dummy/lands.jpg',
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -589,5 +495,20 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
         );
       },
     );
+  }
+  Map<String, dynamic> _moreInfoData() {
+    log('---------------------------------------\n${adsModel.moreInfoData}');
+    Map<String, dynamic> moreInfo = {};
+    adsModel.moreInfoData.forEach((key, value) {
+      if(value != null && value != "" && key != 'Website Link'){
+        if(value is! String && value['value'] ==""){
+          return;
+        }
+        moreInfo[key] = value;
+      }
+    });
+    // return adsModel.moreInfoData;
+    log(moreInfo.toString());
+    return moreInfo;
   }
 }

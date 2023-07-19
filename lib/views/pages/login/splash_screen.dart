@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
@@ -23,7 +22,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
@@ -48,20 +46,16 @@ class _SplashScreenState extends State<SplashScreen>
     final double screenWidth = MediaQuery.of(context).size.width;
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        // if (state is AuthLoading) {
-        //   return circularindicator(context);
-        //   const Center(
-        //     child: CircularProgressIndicator(),
-        //   );
-        // } else
         if (state is AuthLoggedIn) {
-          Navigator.pushNamed(context, mainNavigationScreen);
-        } else if (state is AuthNotLoggedIn) {
-          openSignInModalSheet(context);
+          Future.delayed(const Duration(seconds: 3));
+          Navigator.pushReplacementNamed(
+            context,
+            mainNavigationScreen,
+          );
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: kWhiteColor,
         resizeToAvoidBottomInset: true,
         body: Stack(
           children: [
@@ -79,7 +73,7 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             Positioned(
-              top: MediaQuery.of(context).size.height / 2 - 75,
+              top: screenHeight / 2 - 75,
               left: MediaQuery.of(context).size.width / 9 - 85,
               child: AnimatedBuilder(
                 animation: _animation,
@@ -95,8 +89,8 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             Positioned(
-              top: MediaQuery.of(context).size.height / 4 - 45,
-              right: MediaQuery.of(context).size.width / 3 - 85,
+              top: screenHeight / 4 - 45,
+              right: screenWidth / 3 - 85,
               child: AnimatedBuilder(
                 animation: _animation,
                 builder: (BuildContext context, Widget? child) {
@@ -111,8 +105,8 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             Positioned(
-              top: MediaQuery.of(context).size.height / 2 - 75,
-              right: MediaQuery.of(context).size.width / 7 - 85,
+              top: screenHeight / 2 - 75,
+              right: screenWidth / 7 - 85,
               child: AnimatedBuilder(
                 animation: _animation,
                 builder: (BuildContext context, Widget? child) {
@@ -127,16 +121,13 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             Positioned(
-              top: MediaQuery.of(context).size.height / 2.5,
-              left: 0,
-              right: 0,
+              top: screenHeight / 2,
+              left: MediaQuery.of(context).size.height / 5 - 65,
               child: Image.asset('assets/images/profile/nic.png'),
             ),
             Positioned(
-              top: MediaQuery.of(context).size.height / 1.25,
-              left: 0,
-              right: 0,
-              //  left: MediaQuery.of(context).size.height / 8 - 60,
+              top: screenHeight / 1.25,
+              left: MediaQuery.of(context).size.height / 8 - 60,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -165,7 +156,11 @@ class _SplashScreenState extends State<SplashScreen>
                         circle: kWhiteColor,
                         button: kPrimaryColor,
                         ontap: () async {
-                          context.read<AuthBloc>().add(AuthLoginEvent());
+                          checklogin(context);
+                          if (state is AuthNotLoggedIn) {
+                            openSignInModalSheet(context);
+                          }
+                          
                         },
                         arrow: kPrimaryColor,
                       );
@@ -181,15 +176,9 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  //  circularindicator(BuildContext context) {
-  //   return showDialog(
-  //     barrierColor: Colors.transparent,
-  //         context: context,
-  //         builder: (context) {
-  //           return const Center(child: CircularProgressIndicator());
-  //         },
-  //       );
-  // }
+  checklogin(BuildContext context) {
+    context.read<AuthBloc>().add(AuthLoginEvent());
+  }
 
   Future<dynamic> openSignInModalSheet(BuildContext context) {
     return showModalBottomSheet(

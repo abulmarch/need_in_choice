@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:need_in_choice/services/model/ad_create_or_update_model.dart';
@@ -40,17 +41,10 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
     emit(AdCreateOrUpdateLoading());
     if(event.id == null){// new ad
       _adCreateOrUpdateModel = AdCreateOrUpdateModel(
-        userId: 'qwerty', 
+        userId: 'qwerty',//FirebaseAuth.instance.currentUser!.uid, 
         mainCategory: event.mainCategory,
-
+        adPrice: null,
         adsAddress: "Calletic Technologies Pvt Ltd 4th Floor, Nila, Technopark Campus, Technopark Campus, Kazhakkoottam, Thiruvananthapuram, Kerala 695581",
-        // imageUrls: ['real_estate/6492a0700dc2e6_58910190.jpg','real_estate/6492a096182ab2_59995728.jpg','real_estate/6492a0bc1e3674_44337848.jpg',],
-        otherImageUrls: [
-          // {
-          //   "image_type": "floor_plan",
-          //   "url": "adsotherimage/64a9418c1584d3_13380405.jpg"
-          // },
-        ]
       );
       emit(const AdCreateOrUpdateLoaded());
     }else{// ad updateion
@@ -101,10 +95,8 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
       List<Map<dynamic, dynamic>> otherImageFiles = [...adCreateOrUpdateModel.otherImageFiles];
 
       final fileIndex = otherImageFiles.indexWhere((map) => map['image_type'] == event.imageType);
-      print('---fileIndex----------| $fileIndex');
       if (fileIndex == -1) { //  if it is not exist we need to remove it from otherImageUrls List and added to otherImageUrlToDelete List
         final urlIndex = otherImageUrls.indexWhere((map) => map['image_type'] == event.imageType);
-      print('---urlIndex----------| $urlIndex');
 
         if(urlIndex >= 0){
           otherImgUrlToDelete.add(otherImageUrls[urlIndex]['url']);
@@ -131,8 +123,13 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
   
   Future<FutureOr<void>> _uploadAdEvent(UploadAdEvent event, Emitter<AdCreateOrUpdateState> emit) async {
     emit(AdUploadingProgress());
-    await createOrUpdateAdsRepo.updateOrCreateAd(adCreateOrUpdateModel);
-    emit(AdUploadingCompletedState());
+    try {
+      await createOrUpdateAdsRepo.updateOrCreateAd(adCreateOrUpdateModel);
+      emit(const AdUploadingCompletedState());
+    } on FaildToUploadDataException{
+      emit(const AdUploadingCompletedState(isUploadFailed: true));
+    }
+    
   }
 
   void savePrimaryMoreInfoDetails({
@@ -141,6 +138,7 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
     required Map<String, dynamic> prymaryInfo, 
     required Map<String, dynamic> moreInfo,
     required Map<String, dynamic> adsLevels,
+    dynamic adPrice,//  price may be either String or map
     String? level4Sub,
     }) {
     _adCreateOrUpdateModel = adCreateOrUpdateModel.copyWith(
@@ -150,6 +148,7 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
       moreInfoData: moreInfo,
       adsLevels: adsLevels,
       level4Sub: level4Sub?.toLowerCase(),
+      adPrice: adPrice,
     );
     log('with --- \n${adCreateOrUpdateModel.toString()}');
   }
@@ -168,8 +167,13 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
   }
 
   Future<String> getCurrentLocation() async{
-    final position = await determinePosition();
-    return await getAddressFromLatLon(position);
+    try {
+      final position = await determinePosition();
+      return await getAddressFromLatLon(position);
+    } catch (e) {
+      log('::::::   $e');
+      throw '$e';
+    }
   }
 
   void saveAdsAddress(String address){

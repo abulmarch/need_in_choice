@@ -1,288 +1,420 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:dotted_border/dotted_border.dart';
+
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/colors.dart';
+import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
+import '../../../../services/model/ad_create_or_update_model.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/dropdown_list_items.dart';
 import '../../../../utils/level4_category_data.dart';
-import '../../../widgets_refactored/circular_back_button.dart';
+import '../../../../utils/main_cat_enum.dart';
+
 import '../../../widgets_refactored/condinue_button.dart';
 import '../../../widgets_refactored/custom_dropdown_button.dart';
 import '../../../widgets_refactored/custom_text_field.dart';
 import '../../../widgets_refactored/dashed_line_generator.dart';
+import '../../../widgets_refactored/dotted_border_textfield.dart';
 import '../../../widgets_refactored/image_upload_doted_circle.dart';
+import '../../../widgets_refactored/scrolling_app_bar.dart';
 
-class LandForRentScreen extends StatelessWidget {
+class LandForRentScreen extends StatefulWidget {
   const LandForRentScreen({super.key});
+
+  @override
+  State<LandForRentScreen> createState() => _LandForRentScreenState();
+}
+
+class _LandForRentScreenState extends State<LandForRentScreen> {
+  final _formKey = GlobalKey<FormState>();
+  late ScrollController _scrollController;
+
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
+  late TextEditingController _landAreaController;
+  late TextEditingController _securityDepositController;
+  late TextEditingController _monthlyRentController;
+
+  late ValueNotifier<int> _level4Cat;
+
+  ScrollController scrollController = ScrollController();
+  String buildupArea = RealEstateDropdownList.buildupArea.first;
+  String? listedBy;
+  String? facing;
+  bool _checkValidation = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _titleController = TextEditingController();
+    _descriptionController = TextEditingController();
+    _landAreaController = TextEditingController();
+    _securityDepositController = TextEditingController();
+    _monthlyRentController = TextEditingController();
+
+    _level4Cat = ValueNotifier(0);
+  }
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    ScrollController scrollController = ScrollController();
-    String buildupArea = RealEstateDropdownList.buildupArea.first;
-    String? listedBy;
-    String? facing;
 
-    return Scaffold(
-      backgroundColor: kWhiteColor,
-      appBar: PreferredSize(
-        preferredSize: const Size(double.infinity, 90),
-        child: SafeArea(
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 5, horizontal: kpadding10),
-            child: SizedBox(
-              height: height*0.15,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 2, bottom: kpadding20),
-                    child: CircularBackButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      size: const Size(45, 45),
-                    ),
-                  ),
-                  // scrolling category
-                  Expanded(
-                    child: ListView.separated(
-                      physics: const BouncingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: land4saleLevel4Cat.length,
-                      itemBuilder: (context, index) => SizedBox(
-                        width: width*0.2,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Container(
-                              height: height*0.06,
-                              width: width*0.15,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: kDisabledBackground,
-                                shape: BoxShape.circle,
-                                border: land4saleLevel4Cat[index]['cat_name']!
-                                            .toLowerCase() ==
-                                        'farm land'
-                                    ? Border.all(color: kSecondaryColor)
-                                    : null,
-                              ),
-                              child: Image.asset(
-                                land4saleLevel4Cat[index]['cat_img']!,
-                                height: height*0.05,
-                                width: width*0.15,
-                              ),
-                            ),
-                            Text(
-                              land4saleLevel4Cat[index]['cat_name']!
-                                  .toLowerCase(),
-                              style: const TextStyle(
-                                  fontSize: 10, color: kPrimaryColor, height: 1
-                                  // leadingDistribution: TextLeadingDistribution.proportional
+    final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
+    adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
+      // id: 29,
+      currentPageRoute: landForRentRoot,
+      mainCategory: MainCategory.realestate.name, //'realestate',
+    ));
 
-                                  ),
-                            )
-                          ],
-                        ),
-                      ),
-                      separatorBuilder: (context, index) => const SizedBox(
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+    return BlocBuilder<AdCreateOrUpdateBloc, AdCreateOrUpdateState>(
+        builder: (context, state) {
+      List otherImageUrl = [];
+      List<Map> otherImageFiles = [];
+      if (state is FaildToFetchExceptionState ||
+          state is AdCreateOrUpdateLoading) {
+        return _loadingScaffoldWidget(state);
+      } else if (state is AdCreateOrUpdateLoaded &&
+          state.adUpdateModel != null) {
+        _initializeUpdatingAdData(state.adUpdateModel!);
+      } else if (state is AdCreateOrUpdateValidateState) {
+        _checkValidation = true;
+      }
+
+      if (state is! FaildToFetchExceptionState &&
+          state is! AdCreateOrUpdateLoading) {
+        try {
+          otherImageUrl =
+              adCreateOrUpdateBloc.adCreateOrUpdateModel.otherImageUrls;
+          otherImageFiles =
+              adCreateOrUpdateBloc.adCreateOrUpdateModel.otherImageFiles;
+        } catch (e) {
+          log(e.toString());
+        }
+      }
+      return Scaffold(
+          backgroundColor: kWhiteColor,
+          appBar: PreferredSize(
+            preferredSize: const Size(double.infinity, 90),
+            child: ValueListenableBuilder<int>(
+                valueListenable: _level4Cat,
+                builder: (context, selectedIndex, _) {
+                  return  ScrollingAppBarLevel4Category(
+                    selectedIndex: selectedIndex,
+                    level4List: land4saleLevel4Cat,
+                    onTap: (index) {
+                      _level4Cat.value = index;
+                    },
+                  );
+                }),
           ),
-        ),
-      ),
-      body: LayoutBuilder(
-        builder: (ctx, cons) {
-          return SingleChildScrollView(
-            controller: scrollController,
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: kpadding15),
-                  width: double.infinity,
-                  constraints: BoxConstraints(
-                    minHeight: cons.maxHeight,
-                    maxHeight: double.infinity,
-                  ),
+          body: LayoutBuilder(
+            builder: (context, cons) {
+              return SingleChildScrollView(
+                controller: _scrollController,
+                physics: const BouncingScrollPhysics(),
+                child: Form(
+                  key: _formKey,
                   child: Column(
                     children: [
-                      kHeight10,
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Farm',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(
-                                        fontSize: 20, color: kPrimaryColor),
-                              ),
-                              // title arrow underline
-                              Stack(
-                                alignment: Alignment.centerRight,
-                                children:  [
-                                  DashedLineGenerator(width: width*0.15),
-                                 const Icon(
-                                    Icons.arrow_forward,
-                                    size: 15,
-                                    color: kDottedBorder,
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                      kHeight20,
-                      const CustomTextField(
-                          hintText: 'Ads name | Title',
-                          suffixIcon: kRequiredAsterisk),
-                      kHeight15,
-                      const CustomTextField(
-                          maxLines: 5,
-                          hintText: 'Description',
-                          suffixIcon: kRequiredAsterisk),
-                      kHeight20,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: cons.maxWidth * 0.635,
-                            child: CustomTextField(
-                              hintText: 'Land Area',
-                              onTapOutside: (event) {
-                                FocusScope.of(context).unfocus();
-                              },
-                              suffixIcon: CustomDropDownButton(
-                                initialValue: buildupArea,
-                                itemList: RealEstateDropdownList.buildupArea,
-                                onChanged: (String? value) {
-                                  buildupArea = value!;
-                                },
-                              ),
-                              // focusNode: ,
-                            ),
-                          ),
-                          const ImageUploadDotedCircle(
-                            color: kBlackColor,
-                            documentTypeName: 'Land\nSketch',
-                          ),
-                        ],
-                      ),
-                      kHeight10,
-                      SizedBox(
-                        height: height*0.05,
-                        child: Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          alignment: WrapAlignment.spaceEvenly,
-                          runAlignment: WrapAlignment.center,
+                      Container(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: kpadding15),
+                        width: double.infinity,
+                        constraints: BoxConstraints(
+                          minHeight: cons.maxHeight,
+                          maxHeight: double.infinity,
+                        ),
+                        child: Column(
                           children: [
-                            CustomDropDownButton(
-                              initialValue: facing,
-                              hint: Text(
-                                'Facing',
-                                style: TextStyle(
-                                    color: kWhiteColor.withOpacity(0.7)),
-                              ),
-                              maxWidth: width*0.27,
-                              itemList: RealEstateDropdownList.facing,
-                              onChanged: (String? value) {
-                                facing = value!;
+                            kHeight10,
+                            Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Farm',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                              fontSize: 20,
+                                              color: kPrimaryColor),
+                                    ),
+                                    // title arrow underline
+                                    Stack(
+                                      alignment: Alignment.centerRight,
+                                      children: [
+                                        DashedLineGenerator(
+                                            width: width * 0.15),
+                                        const Icon(
+                                          Icons.arrow_forward,
+                                          size: 15,
+                                          color: kDottedBorder,
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                            kHeight20,
+                            CustomTextField(
+                              hintText: 'Ads name | Title',
+                              controller: _titleController,
+                              suffixIcon: kRequiredAsterisk,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Please enter some text';
+                                }
+                                return null;
                               },
                             ),
-                            CustomDropDownButton(
-                              initialValue: listedBy,
-                              hint: Text(
-                                'Listed by',
-                                style: TextStyle(
-                                    color: kWhiteColor.withOpacity(0.7)),
-                              ),
-                              maxWidth: width*0.27,
-                              itemList: RealEstateDropdownList.listedBy,
-                              onChanged: (String? value) {
-                                listedBy = value!;
+                            kHeight15,
+                            CustomTextField(
+                              controller: _descriptionController,
+                              maxLines: 5,
+                              hintText: 'Description',
+                              suffixIcon: kRequiredAsterisk,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Please enter some text';
+                                }
+                                return null;
                               },
                             ),
+                            kHeight20,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: cons.maxWidth * 0.635,
+                                  child: CustomTextField(
+                                    hintText: 'Land Area',
+                                    controller: _landAreaController,
+                                    validator: (value) {
+                                      if (value == null ||
+                                          value.trim().isEmpty) {
+                                        return 'Please enter a number';
+                                      }
+                                      return null;
+                                    },
+                                    inputFormatters: [
+                                      // FilteringTextInputFormatter.digitsOnly
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}')),
+                                    ],
+                                    keyboardType: TextInputType.number,
+                                    onTapOutside: (event) {
+                                      FocusScope.of(context).unfocus();
+                                    },
+                                    suffixIcon: CustomDropDownButton(
+                                      initialValue: buildupArea,
+                                      itemList:
+                                          RealEstateDropdownList.buildupArea,
+                                      onChanged: (String? value) {
+                                        buildupArea = value!;
+                                      },
+                                    ),
+                                    // focusNode: ,
+                                  ),
+                                ),
+                                ImageUploadDotedCircle(
+                                  color: kBlackColor,
+                                  documentTypeName: 'Land\nSketch',
+                                  networkImageUrl: otherImageUrl.firstWhere(
+                                    (map) => map['image_type'] == 'land_sketch',
+                                    orElse: () => {},
+                                  )?['url'],
+                                  imageFile: otherImageFiles.firstWhere(
+                                    (map) => map['image_type'] == 'land_sketch',
+                                    orElse: () => {},
+                                  )['file'],
+                                  onTap: () {
+                                    context.read<AdCreateOrUpdateBloc>().add(
+                                        const PickOtherImageEvent(
+                                            'land_sketch'));
+                                  },
+                                ),
+                              ],
+                            ),
+                            kHeight10,
+                            SizedBox(
+                              height: height * 0.05,
+                              child: Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                alignment: WrapAlignment.spaceEvenly,
+                                runAlignment: WrapAlignment.center,
+                                children: [
+                                  CustomDropDownButton(
+                                    initialValue: facing,
+                                    hideValidationError: facing != null ||
+                                        _checkValidation == false,
+                                    hint: Text(
+                                      'Facing',
+                                      style: TextStyle(
+                                          color: kWhiteColor.withOpacity(0.7)),
+                                    ),
+                                    maxWidth: width * 0.27,
+                                    itemList: RealEstateDropdownList.facing,
+                                    onChanged: (String? value) {
+                                      facing = value!;
+                                    },
+                                  ),
+                                  CustomDropDownButton(
+                                    initialValue: listedBy,
+                                    hideValidationError: listedBy != null ||
+                                        _checkValidation == false,
+                                    hint: Text(
+                                      'Listed by',
+                                      style: TextStyle(
+                                          color: kWhiteColor.withOpacity(0.7)),
+                                    ),
+                                    maxWidth: width * 0.27,
+                                    itemList: RealEstateDropdownList.listedBy,
+                                    onChanged: (String? value) {
+                                      listedBy = value!;
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            kHeight10,
+                            DashedLineGenerator(width: cons.maxWidth - 60),
+                            kHeight20,
+                            DottedBorderTextField(
+                              hintText: 'Monthly Rent',
+                              controller: _monthlyRentController,
+                              hideValidationError: _monthlyRentController.text
+                                      .trim()
+                                      .isNotEmpty ||
+                                  _checkValidation == false,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}')),
+                              ],
+                            ),
+                            kHeight20,
+                            DottedBorderTextField(
+                              hintText: 'Security Deposit',
+                              color: kGreyColor,
+                              controller: _securityDepositController,
+                              hideValidationError: _securityDepositController
+                                      .text
+                                      .trim()
+                                      .isNotEmpty ||
+                                  _checkValidation == false,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}')),
+                              ],
+                            ),
+                            kHeight20
                           ],
                         ),
                       ),
-                      kHeight10,
-                      DashedLineGenerator(width: cons.maxWidth - 60),
-                      kHeight20,
-                      DottedBorder(
-                        dashPattern: const [3, 2],
-                        color: kSecondaryColor,
-                        borderType: BorderType.RRect,
-                        strokeWidth: 1.5,
-                        radius: const Radius.circular(10),
-                        padding: const EdgeInsets.all(2),
-                        child: ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              fillColor: kWhiteColor,
-                              hintText: 'Monthly Rent',
-                              hintStyle: TextStyle(color: kSecondaryColor),
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                      kHeight20,
-                      DottedBorder(
-                        dashPattern: const [3, 2],
-                        color: kGreyColor,
-                        borderType: BorderType.RRect,
-                        strokeWidth: 1.5,
-                        radius: const Radius.circular(10),
-                        padding: const EdgeInsets.all(2),
-                        child: ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              fillColor: kWhiteColor,
-                              hintText: 'Security Deposit',
-                              hintStyle: TextStyle(color: kGreyColor),
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                      kHeight20
                     ],
                   ),
                 ),
-              ],
-            ),
-          );
-        },
+              );
+            },
+          ),
+          //  bottom continue button
+          bottomNavigationBar: SizedBox(
+              width: double.infinity,
+              height: height * 0.12,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, bottom: 20, top: 10),
+                child: ButtonWithRightSideIcon(
+                  onPressed: () {
+                    _saveChangesAndContinue(context);
+                  },
+                ),
+              )));
+    });
+  }
+
+  Scaffold _loadingScaffoldWidget(AdCreateOrUpdateState state) {
+    return Scaffold(
+      body: Center(
+        child: state is FaildToFetchExceptionState
+            ? Text(state.errorMessagge)
+            : const CircularProgressIndicator(),
       ),
-      //  bottom continue button
-        bottomNavigationBar: SizedBox(
-            width: double.infinity,
-            height: height*0.12,
-            child: const Padding(
-              padding:
-              EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 10),
-              child: ButtonWithRightSideIcon(
-                onPressed: null //(){},//
-              ),
-            ))
     );
+  }
+
+  void _initializeUpdatingAdData(AdCreateOrUpdateModel adUpdateModel) {
+    log(adUpdateModel.toString());
+    final primaryData = adUpdateModel.primaryData;
+
+    _titleController.text = adUpdateModel.adsTitle;
+    _descriptionController.text = adUpdateModel.description;
+    _landAreaController.text = primaryData['Land Area']['value'];
+    buildupArea = primaryData['Land Area']['dropname'];
+    listedBy = primaryData['Listed By'];
+    facing = primaryData['Facing'];
+    //-----------------------------------------------------------------
+    _monthlyRentController.text = '10000'; //---------------------------------
+    _securityDepositController.text = '50000';
+  }
+
+  _saveChangesAndContinue(BuildContext context) {
+    _checkValidation = true;
+    context
+        .read<AdCreateOrUpdateBloc>()
+        .add(AdCreateOrUpdateCheckDropDownValidattionEvent());
+    if (_formKey.currentState!.validate() &&
+        listedBy != null &&
+        facing != null &&
+        _monthlyRentController.text.trim().isNotEmpty &&
+        _securityDepositController.text.trim().isNotEmpty) {
+      final Map<String, dynamic> primaryInfo = {
+        'Land Area': {
+          "value": _landAreaController.text,
+          "dropname": buildupArea
+        },
+        'Listed By': listedBy!,
+        'Facing': facing!,
+      };
+
+      context.read<AdCreateOrUpdateBloc>().savePrimaryMoreInfoDetails(
+        adsTitle: _titleController.text,
+        description: _descriptionController.text,
+        prymaryInfo: primaryInfo,
+        level4Sub: land4saleLevel4Cat[_level4Cat.value]['cat_name'],
+        adPrice: '',
+        adsLevels: {
+          "route": landForRentRoot,
+          "sub category":
+              land4saleLevel4Cat[_level4Cat.value]['cat']?.toLowerCase(),
+        },
+        moreInfo: {},
+      );
+      Navigator.pushNamed(
+        context,
+        adConfirmScreen,
+      ); //
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _titleController.dispose();
+    _descriptionController.dispose();
+    _landAreaController.dispose();
+    _monthlyRentController.dispose();
+    _securityDepositController.dispose();
+    _level4Cat.dispose();
+    super.dispose();
   }
 }

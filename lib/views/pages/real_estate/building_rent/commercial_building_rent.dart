@@ -1,495 +1,721 @@
-import 'package:dotted_border/dotted_border.dart';
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:need_in_choice/config/routes/route_names.dart';
+import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
+import '../../../../services/model/ad_create_or_update_model.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/dropdown_list_items.dart';
 import '../../../../utils/level4_category_data.dart';
-import '../../../widgets_refactored/circular_back_button.dart';
+import '../../../../utils/main_cat_enum.dart';
 import '../../../widgets_refactored/condinue_button.dart';
 import '../../../widgets_refactored/custom_dropdown_button.dart';
 import '../../../widgets_refactored/custom_text_field.dart';
 import '../../../widgets_refactored/dashed_line_generator.dart';
 import '../../../widgets_refactored/dotted_border_textfield.dart';
-import '../building_sale/collect_ad_details.dart';
+import '../../../widgets_refactored/scrolling_app_bar.dart';
 
-class CommercialBuildingForRent extends StatelessWidget {
+class CommercialBuildingForRent extends StatefulWidget {
   const CommercialBuildingForRent({super.key});
+
+  @override
+  State<CommercialBuildingForRent> createState() =>
+      _CommercialBuildingForRentState();
+}
+
+class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
+  final ValueNotifier<bool> _addMoreEnabled = ValueNotifier(false); // false
+  final _formKey = GlobalKey<FormState>();
+  late ScrollController _scrollController;
+
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
+  late TextEditingController _brandNameController;
+  late TextEditingController _propertyAreaController;
+  late TextEditingController _buildupAreaController;
+  late TextEditingController _roadWidthController;
+  late TextEditingController _carpetAreaController;
+  late TextEditingController _securityDepositController;
+  late TextEditingController _parkingController;
+  late TextEditingController _monthlyRentController;
+  late TextEditingController _landMarksController;
+  late TextEditingController _websiteLinkController;
+
+  late ValueNotifier<int> _level4Cat;
+
+  ScrollController scrollController = ScrollController();
+  String propertyArea = RealEstateDropdownList.propertyArea.first;
+  String buildupArea = RealEstateDropdownList.buildupArea.first;
+  String? listedBy;
+  String? facing;
+  String carpetArea = RealEstateDropdownList.carpetArea.first;
+  String roadWidth = RealEstateDropdownList.carpetArea.first;
+  String? furnishing;
+  bool _checkValidation = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _titleController = TextEditingController();
+    _descriptionController = TextEditingController();
+    _brandNameController = TextEditingController();
+    _propertyAreaController = TextEditingController();
+    _buildupAreaController = TextEditingController();
+    _securityDepositController = TextEditingController();
+    _roadWidthController = TextEditingController();
+
+    _carpetAreaController = TextEditingController();
+    _monthlyRentController = TextEditingController();
+    _parkingController = TextEditingController();
+    _landMarksController = TextEditingController();
+    _websiteLinkController = TextEditingController();
+
+    _level4Cat = ValueNotifier(0);
+  }
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    ScrollController scrollController = ScrollController();
-    String propertyArea = RealEstateDropdownList.propertyArea.first;
-    String buildupArea = RealEstateDropdownList.buildupArea.first;
-    String? listedBy;
-    String? facing;
-    String carpetArea = RealEstateDropdownList.carpetArea.first;
-    String? furnishing;
 
-    return Scaffold(
-        backgroundColor: kWhiteColor,
-        appBar: PreferredSize(
-          preferredSize: const Size(double.infinity, 90),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: 5, horizontal: kpadding10),
-              child: SizedBox(
-                height: height*0.1,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 2, bottom: 20),
-                      child: CircularBackButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        size: const Size(45, 45),
-                      ),
-                    ),
-                    // scrolling category
-                    Expanded(
-                      child: ListView.separated(
-                        physics: const BouncingScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: building4saleCommercial.length,
-                        itemBuilder: (context, index) => SizedBox(
-                          width: width*0.2,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Container(
-                                height: height*0.08,
-                                width: width*0.15,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: kDisabledBackground,
-                                  shape: BoxShape.circle,
-                                  border: building4saleCommercial[index]
-                                                  ['cat_name']!
-                                              .toLowerCase() ==
-                                          'shop'
-                                      ? Border.all(color: kSecondaryColor)
-                                      : null,
-                                ),
-                                child: Image.asset(
-                                  building4saleCommercial[index]['cat_img']!,
-                                  height: height*0.07,
-                                  width: width*0.13,
-                                ),
-                              ),
-                              Text(
-                                building4saleCommercial[index]['cat_name']!
-                                    .toLowerCase(),
-                                style: const TextStyle(
-                                    fontSize: 10,
-                                    color: kPrimaryColor,
-                                    height: 1
-                                    // leadingDistribution: TextLeadingDistribution.proportional
+    final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
+    adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
+      // id: 29,
+      currentPageRoute: commercialBuildingForRentRoot,
+      mainCategory: MainCategory.realestate.name, //'realestate',
+    ));
 
-                                    ),
-                              )
-                            ],
-                          ),
-                        ),
-                        separatorBuilder: (context, index) => const SizedBox(
-                          width: 1,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+    return BlocBuilder<AdCreateOrUpdateBloc, AdCreateOrUpdateState>(
+        builder: (context, state) {
+      List otherImageUrl = [];
+      List<Map> otherImageFiles = [];
+      if (state is FaildToFetchExceptionState ||
+          state is AdCreateOrUpdateLoading) {
+        return _loadingScaffoldWidget(state);
+      } else if (state is AdCreateOrUpdateLoaded &&
+          state.adUpdateModel != null) {
+        _initializeUpdatingAdData(state.adUpdateModel!);
+      } else if (state is AdCreateOrUpdateValidateState) {
+        _checkValidation = true;
+      }
+
+      if (state is! FaildToFetchExceptionState && state is! AdCreateOrUpdateLoading) {
+        try {
+          otherImageUrl = adCreateOrUpdateBloc.adCreateOrUpdateModel.otherImageUrls;
+          otherImageFiles = adCreateOrUpdateBloc.adCreateOrUpdateModel.otherImageFiles;
+        } catch (e) {
+          log(e.toString());
+        }
+      }
+      return Scaffold(
+          backgroundColor: kWhiteColor,
+          appBar: PreferredSize(
+            preferredSize: const Size(double.infinity, 90),
+            child: ValueListenableBuilder<int>(
+                valueListenable: _level4Cat,
+                builder: (context, selectedIndex, _) {
+                  return ScrollingAppBarLevel4Category(
+                    selectedIndex: selectedIndex,
+                    level4List: building4saleCommercial,
+                    onTap: (index) {
+                      _level4Cat.value = index;
+                    },
+                  );
+                }),
           ),
-        ),
-        body: LayoutBuilder(
-          builder: (ctx, cons) {
-            return SingleChildScrollView(
-                controller: scrollController,
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    Container(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: kpadding15),
-                      width: double.infinity,
-                      constraints: BoxConstraints(
-                        minHeight: cons.maxHeight,
-                        maxHeight: double.infinity,
-                      ),
-                      child: Column(
-                        children: [
-                          kHeight10,
-                          Row(
+          body: LayoutBuilder(
+            builder: (context, cons) {
+              return SingleChildScrollView(
+                  controller: _scrollController,
+                  physics: const BouncingScrollPhysics(),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: kpadding15),
+                          width: double.infinity,
+                          constraints: BoxConstraints(
+                            minHeight: cons.maxHeight,
+                            maxHeight: double.infinity,
+                          ),
+                          child: Column(
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              kHeight10,
+                              Row(
                                 children: [
-                                  Text(
-                                    building4saleCommercial[1]['cat_name']!,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                            fontSize: 20, color: kPrimaryColor),
-                                  ),
-                                  // title arrow underline
-                                  Stack(
-                                    alignment: Alignment.centerRight,
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      DashedLineGenerator(
-                                          width: building4saleCommercial[1]
-                                                      ['cat_name']!
-                                                  .length *
-                                              width*0.05),
-                                      const Icon(
-                                        Icons.arrow_forward,
-                                        size: 15,
-                                        color: kDottedBorder,
+                                      Text(
+                                        building4saleCommercial[1]['cat_name']!,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.copyWith(
+                                                fontSize: 20,
+                                                color: kPrimaryColor),
+                                      ),
+                                      // title arrow underline
+                                      Stack(
+                                        alignment: Alignment.centerRight,
+                                        children: [
+                                          DashedLineGenerator(
+                                              width: building4saleCommercial[1]
+                                                          ['cat_name']!
+                                                      .length *
+                                                  width *
+                                                  0.05),
+                                          const Icon(
+                                            Icons.arrow_forward,
+                                            size: 15,
+                                            color: kDottedBorder,
+                                          )
+                                        ],
                                       )
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
-                            ],
-                          ),
-                          kHeight20,
-                          const CustomTextField(
-                              hintText: 'Ads name | Title',
-                              suffixIcon: kRequiredAsterisk),
-                          kHeight15,
-                          const CustomTextField(
-                              maxLines: 5,
-                              hintText: 'Description',
-                              suffixIcon: kRequiredAsterisk),
-                          kHeight20,
-                          SizedBox(
-                            height: height*0.35,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Text(
-                                  'Brand Name',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineSmall
-                                      ?.copyWith(
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 18,
-                                          color: kLightGreyColor),
+                              kHeight20,
+                              CustomTextField(
+                                hintText: 'Ads name | Title',
+                                controller: _titleController,
+                                suffixIcon: kRequiredAsterisk,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Please enter some text';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              kHeight15,
+                              CustomTextField(
+                                controller: _descriptionController,
+                                maxLines: 5,
+                                hintText: 'Description',
+                                suffixIcon: kRequiredAsterisk,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Please enter some text';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              kHeight20,
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minHeight: 255,
+                                  maxHeight: height * 0.44,
                                 ),
-                                kHeight5,
-                                const CustomTextField(
-                                  hintText: 'Eg Kh',
-                                  suffixIcon: kRequiredAsterisk,
-                                ),
-                                kHeight15,
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
-                                    SizedBox(
-                                      width: cons.maxWidth * 0.435,
-                                      child: CustomTextField(
-                                        hintText: 'Property Area',
-                                        onTapOutside: (event) {
-                                          FocusScope.of(context).unfocus();
-                                        },
-                                        suffixIcon: CustomDropDownButton(
-                                          initialValue: propertyArea,
-                                          itemList: RealEstateDropdownList.propertyArea,
-                                          onChanged: (String? value) {
-                                            propertyArea = value!;
-                                          },
-                                        ),
-                                        // focusNode: ,
-                                      ),
+                                    Text(
+                                      'Brand Name',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 18,
+                                              color: kLightGreyColor),
                                     ),
-                                    SizedBox(
-                                      width: cons.maxWidth * 0.435,
-                                      child: CustomTextField(
-                                        hintText: 'Buildup Area',
-                                        onTapOutside: (event) {
-                                          FocusScope.of(context).unfocus();
-                                        },
-                                        suffixIcon: CustomDropDownButton(
-                                          initialValue: buildupArea,
-                                          itemList: RealEstateDropdownList.buildupArea,
-                                          onChanged: (String? value) {
-                                            buildupArea = value!;
-                                          },
-                                        ),
-                                        // focusNode: ,
-                                      ),
+                                    kHeight5,
+                                    CustomTextField(
+                                      controller: _brandNameController,
+                                      hintText: 'Eg Kh',
+                                      suffixIcon: kRequiredAsterisk,
+                                      validator: (value) {
+                                        if (value == null ||
+                                            value.trim().isEmpty) {
+                                          return 'Please enter some text';
+                                        }
+                                        return null;
+                                      },
                                     ),
-                                  ],
-                                ),
-                                kHeight5,
-                                SizedBox(
-                                  height: height*0.08,
-                                  child: Wrap(
-                                    crossAxisAlignment: WrapCrossAlignment.center,
-                                    alignment: WrapAlignment.spaceEvenly,
-                                    runAlignment: WrapAlignment.center,
-                                    children: [
-                                      CustomDropDownButton(
-                                        initialValue: listedBy,
-                                        hint: Text(
-                                          'Listed by',
-                                          style: TextStyle(
-                                              color:
-                                                  kWhiteColor.withOpacity(0.7)),
-                                        ),
-                                        maxWidth: width*0.27,
-                                        itemList: RealEstateDropdownList.listedBy,
-                                        onChanged: (String? value) {
-                                          listedBy = value!;
-                                        },
-                                      ),
-                                      CustomDropDownButton(
-                                        initialValue: facing,
-                                        hint: Text(
-                                          'Facing',
-                                          style: TextStyle(
-                                              color:
-                                                  kWhiteColor.withOpacity(0.7)),
-                                        ),
-                                        maxWidth: width*0.27,
-                                        itemList: RealEstateDropdownList.facing,
-                                        onChanged: (String? value) {
-                                          facing = value!;
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          DashedLineGenerator(width: cons.maxWidth - 60),
-                          kHeight20,
-                          DottedBorder(
-                            dashPattern: const [3, 2],
-                            color: kSecondaryColor,
-                            borderType: BorderType.RRect,
-                            strokeWidth: 1.5,
-                            radius: const Radius.circular(10),
-                            padding: const EdgeInsets.all(2),
-                            child: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10)),
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                  fillColor: kWhiteColor,
-                                  hintText: 'Monthly Rent',
-                                  hintStyle: TextStyle(color: kSecondaryColor),
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                          ),
-                          kHeight20,
-                          DottedBorder(
-                            dashPattern: const [3, 2],
-                            color: kGreyColor,
-                            borderType: BorderType.RRect,
-                            strokeWidth: 1.5,
-                            radius: const Radius.circular(10),
-                            padding: const EdgeInsets.all(2),
-                            child: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10)),
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                  fillColor: kWhiteColor,
-                                  hintText: 'Security Deposit',
-                                  hintStyle: TextStyle(color: kGreyColor),
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                          ),
-                          kHeight20,
-                          ValueListenableBuilder(
-                            valueListenable: addMoreEnabled,
-                            builder: (context, isEnabled, _) {
-                              if (isEnabled == false) {
-                                return Directionality(
-                                  textDirection: TextDirection.rtl,
-                                  child: ElevatedButton.icon(
-                                    onPressed: () {
-                                      addMoreEnabled.value =
-                                          !addMoreEnabled.value;
-                                      scrollController.jumpTo(
-                                        cons.maxHeight * 0.8,
-                                      );
-                                    },
-                                    icon: const Icon(Icons.add_circle),
-                                    label: const Text(
-                                      'Click to add more info',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.normal),
-                                    ),
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                kDarkGreyButtonColor)),
-                                  ),
-                                );
-                              } else {
-                                return Directionality(
-                                  textDirection: TextDirection.rtl,
-                                  child: ElevatedButton.icon(
-                                    onPressed: () {
-                                      addMoreEnabled.value =
-                                          !addMoreEnabled.value;
-                                    },
-                                    icon: const Icon(Icons.remove_circle),
-                                    label: const Text(
-                                      'Click to add more info',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.normal),
-                                    ),
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                kButtonRedColor)),
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    // ---------------------------------------------------- more info
-                    kHeight10,
-                    ValueListenableBuilder(
-                        valueListenable: addMoreEnabled,
-                        builder: (context, isEnabled, _) {
-                          return isEnabled == true
-                              ? Container(
-                                  width: cons.maxWidth,
-                                  constraints: BoxConstraints(
-                                      minHeight: cons.maxHeight * 0.7,
-                                      maxHeight: double.infinity),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: kpadding15),
-                                  decoration: const BoxDecoration(
-                                    color: Color(0x1CA6A7A8),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      kHeight20,
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          SizedBox(
-                                            width: cons.maxWidth * 0.435,
-                                            child: CustomTextField(
-                                              hintText: 'Road Width',
-                                              fillColor: kWhiteColor,
-                                              onTapOutside: (event) {
-                                                FocusScope.of(context)
-                                                    .unfocus();
+                                    kHeight15,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        SizedBox(
+                                          width: cons.maxWidth * 0.435,
+                                          child: CustomTextField(
+                                            controller: _propertyAreaController,
+                                            hintText: 'Property Area',
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.trim().isEmpty) {
+                                                return 'Please enter a number';
+                                              }
+                                              return null;
+                                            },
+                                            inputFormatters: [
+                                              // FilteringTextInputFormatter.digitsOnly
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(r'^\d+\.?\d{0,2}')),
+                                            ],
+                                            keyboardType: TextInputType.number,
+                                            onTapOutside: (event) {
+                                              FocusScope.of(context).unfocus();
+                                            },
+                                            suffixIcon: CustomDropDownButton(
+                                              initialValue: propertyArea,
+                                              itemList: RealEstateDropdownList
+                                                  .propertyArea,
+                                              onChanged: (String? value) {
+                                                propertyArea = value!;
                                               },
-                                              suffixIcon: CustomDropDownButton(
-                                                initialValue: carpetArea,
-                                                itemList: RealEstateDropdownList.carpetArea,
-                                                onChanged: (String? value) {
-                                                  carpetArea = value!;
-                                                },
-                                              ),
-                                              // focusNode: ,
                                             ),
+                                            // focusNode: ,
                                           ),
-                                          SizedBox(
-                                            width: cons.maxWidth * 0.435,
-                                            child: CustomTextField(
-                                              hintText: 'Carpet Area',
-                                              fillColor: kWhiteColor,
-                                              onTapOutside: (event) {
-                                                FocusScope.of(context)
-                                                    .unfocus();
+                                        ),
+                                        SizedBox(
+                                          width: cons.maxWidth * 0.435,
+                                          child: CustomTextField(
+                                            hintText: 'Buildup Area',
+                                            controller: _buildupAreaController,
+                                            inputFormatters: [
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(r'^\d+\.?\d{0,2}')),
+                                            ],
+                                            keyboardType: TextInputType.number,
+                                            onTapOutside: (event) {
+                                              FocusScope.of(context).unfocus();
+                                            },
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.trim().isEmpty) {
+                                                return 'Please enter a number';
+                                              }
+                                              return null;
+                                            },
+                                            suffixIcon: CustomDropDownButton(
+                                              initialValue: buildupArea,
+                                              itemList: RealEstateDropdownList
+                                                  .buildupArea,
+                                              onChanged: (String? value) {
+                                                buildupArea = value!;
                                               },
-                                              suffixIcon: CustomDropDownButton(
-                                                initialValue: carpetArea,
-                                                itemList: RealEstateDropdownList.carpetArea,
-                                                onChanged: (String? value) {
-                                                  carpetArea = value!;
-                                                },
-                                              ),
-                                              // focusNode: ,
                                             ),
+                                            // focusNode: ,
                                           ),
-                                        ],
-                                      ),
-                                      kHeight15,
-                                      Row(
+                                        ),
+                                      ],
+                                    ),
+                                    kHeight5,
+                                    SizedBox(
+                                      height: height * 0.08,
+                                      child: Wrap(
+                                        crossAxisAlignment:
+                                            WrapCrossAlignment.center,
+                                        alignment: WrapAlignment.spaceEvenly,
+                                        runAlignment: WrapAlignment.center,
                                         children: [
-                                          SizedBox(
-                                            width: cons.maxWidth * 0.435,
-                                            child: CustomTextField(
-                                                hintText: 'Eg 3',
-                                                fillColor: kWhiteColor,
-                                                onTapOutside: (event) {
-                                                  FocusScope.of(context)
-                                                      .unfocus();
-                                                },
-                                                suffixIcon: const DarkTextChip(text: 'Parking'),
-                                              ),
-                                          ),
-                                          kWidth10,
                                           CustomDropDownButton(
-                                            initialValue: furnishing,
+                                            initialValue: listedBy,
+                                            hideValidationError:
+                                                listedBy != null ||
+                                                    _checkValidation == false,
                                             hint: Text(
-                                              'furnishing',
+                                              'Listed by',
                                               style: TextStyle(
                                                   color: kWhiteColor
                                                       .withOpacity(0.7)),
                                             ),
-                                            itemList: RealEstateDropdownList.furnishing,
-                                            maxWidth: width*0.33,
+                                            maxWidth: width * 0.27,
+                                            itemList:
+                                                RealEstateDropdownList.listedBy,
                                             onChanged: (String? value) {
-                                              furnishing = value!;
+                                              listedBy = value!;
                                             },
-                                          )
+                                          ),
+                                          CustomDropDownButton(
+                                            initialValue: facing,
+                                            hideValidationError:
+                                                facing != null ||
+                                                    _checkValidation == false,
+                                            hint: Text(
+                                              'Facing',
+                                              style: TextStyle(
+                                                  color: kWhiteColor
+                                                      .withOpacity(0.7)),
+                                            ),
+                                            maxWidth: width * 0.27,
+                                            itemList:
+                                                RealEstateDropdownList.facing,
+                                            onChanged: (String? value) {
+                                              facing = value!;
+                                            },
+                                          ),
                                         ],
                                       ),
-                                      kHeight20,
-                                      const CustomTextField(
-                                        hintText: 'Landmarks near your Shop',
-                                        fillColor: kWhiteColor,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              DashedLineGenerator(width: cons.maxWidth - 60),
+                              kHeight20,
+                              DottedBorderTextField(
+                                hintText: 'Monthly Rent',
+                                controller: _monthlyRentController,
+                                hideValidationError: _monthlyRentController.text
+                                        .trim()
+                                        .isNotEmpty ||
+                                    _checkValidation == false,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'^\d+\.?\d{0,2}')),
+                                ],
+                              ),
+                              kHeight20,
+                              DottedBorderTextField(
+                                hintText: 'Security Deposit',
+                                color: kGreyColor,
+                                controller: _securityDepositController,
+                                hideValidationError: _securityDepositController
+                                        .text
+                                        .trim()
+                                        .isNotEmpty ||
+                                    _checkValidation == false,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'^\d+\.?\d{0,2}')),
+                                ],
+                              ),
+                              kHeight20,
+                              ValueListenableBuilder(
+                                valueListenable: _addMoreEnabled,
+                                builder: (context, isEnabled, _) {
+                                  if (isEnabled == false) {
+                                    return AddMoreInfoButton(
+                                      onPressed: () {
+                                        _addMoreEnabled.value =
+                                            !_addMoreEnabled.value;
+                                        Future.delayed(const Duration(
+                                                milliseconds: 100))
+                                            .then((value) => _scrollController
+                                                .jumpTo(_scrollController
+                                                        .position
+                                                        .maxScrollExtent // cons.maxHeight * 0.8,
+                                                    ));
+                                      },
+                                    );
+                                  } else {
+                                    return AddMoreInfoButton(
+                                      onPressed: () {
+                                        _addMoreEnabled.value =
+                                            !_addMoreEnabled.value;
+                                      },
+                                      backgroundColor: kButtonRedColor,
+                                      icon: const Icon(Icons.remove_circle),
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        // ---------------------------------------------------- more info
+                        kHeight10,
+                        ValueListenableBuilder(
+                            valueListenable: _addMoreEnabled,
+                            builder: (context, isEnabled, _) {
+                              return isEnabled == true
+                                  ? Container(
+                                      width: cons.maxWidth,
+                                      constraints: BoxConstraints(
+                                          minHeight: cons.maxHeight * 0.7,
+                                          maxHeight: double.infinity),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: kpadding15),
+                                      decoration: const BoxDecoration(
+                                        color: Color(0x1CA6A7A8),
                                       ),
-                                      kHeight15,
-                                      const CustomTextField(
-                                        fillColor: kWhiteColor,
-                                        hintText: 'Website link of your Shop',
+                                      child: Column(
+                                        children: [
+                                          kHeight20,
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              SizedBox(
+                                                width: cons.maxWidth * 0.435,
+                                                child: CustomTextField(
+                                                  hintText: 'Road Width',
+                                                  controller:
+                                                      _roadWidthController,
+                                                  fillColor: kWhiteColor,
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter
+                                                        .allow(RegExp(
+                                                            r'^\d+\.?\d{0,2}')),
+                                                  ],
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onTapOutside: (event) {
+                                                    FocusScope.of(context)
+                                                        .unfocus();
+                                                  },
+                                                  suffixIcon:
+                                                      CustomDropDownButton(
+                                                    initialValue: roadWidth,
+                                                    itemList:
+                                                        RealEstateDropdownList
+                                                            .carpetArea,
+                                                    onChanged: (String? value) {
+                                                      carpetArea = value!;
+                                                    },
+                                                  ),
+                                                  // focusNode: ,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: cons.maxWidth * 0.435,
+                                                child: CustomTextField(
+                                                  hintText: 'Carpet Area',
+                                                  controller:
+                                                      _carpetAreaController,
+                                                  fillColor: kWhiteColor,
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter
+                                                        .allow(RegExp(
+                                                            r'^\d+\.?\d{0,2}')),
+                                                  ],
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onTapOutside: (event) {
+                                                    FocusScope.of(context)
+                                                        .unfocus();
+                                                  },
+                                                  suffixIcon:
+                                                      CustomDropDownButton(
+                                                    initialValue: carpetArea,
+                                                    itemList:
+                                                        RealEstateDropdownList
+                                                            .carpetArea,
+                                                    onChanged: (String? value) {
+                                                      carpetArea = value!;
+                                                    },
+                                                  ),
+                                                  // focusNode: ,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          kHeight15,
+                                          Row(
+                                            children: [
+                                              SizedBox(
+                                                width: cons.maxWidth * 0.435,
+                                                child: CustomTextField(
+                                                  hintText: 'Eg 3',
+                                                  controller:
+                                                      _parkingController,
+                                                  fillColor: kWhiteColor,
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter
+                                                        .digitsOnly
+                                                  ],
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onTapOutside: (event) {
+                                                    FocusScope.of(context)
+                                                        .unfocus();
+                                                  },
+                                                  suffixIcon:
+                                                      const DarkTextChip(
+                                                          text: 'Parking'),
+                                                ),
+                                              ),
+                                              kWidth10,
+                                              CustomDropDownButton(
+                                                initialValue: furnishing,
+                                                hint: Text(
+                                                  'furnishing',
+                                                  style: TextStyle(
+                                                      color: kWhiteColor
+                                                          .withOpacity(0.7)),
+                                                ),
+                                                itemList: RealEstateDropdownList
+                                                    .furnishing,
+                                                maxWidth: width * 0.33,
+                                                onChanged: (String? value) {
+                                                  furnishing = value!;
+                                                },
+                                              )
+                                            ],
+                                          ),
+                                          kHeight20,
+                                          CustomTextField(
+                                            hintText:
+                                                'Landmarks near your Shop',
+                                            fillColor: kWhiteColor,
+                                            controller: _landMarksController,
+                                          ),
+                                          kHeight15,
+                                          CustomTextField(
+                                            fillColor: kWhiteColor,
+                                            hintText:
+                                                'Website link of your Shop',
+                                            controller: _websiteLinkController,
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                )
-                              : const SizedBox();
-                        })
-                  ],
-                ));
-          },
-        ),
-        bottomNavigationBar: SizedBox(
-            width: double.infinity,
-            height: height*0.12,
-            child: const Padding(
-              padding:
-                  EdgeInsets.only(left: kpadding20, right: kpadding20, bottom: kpadding20, top: kpadding10),
-              child: ButtonWithRightSideIcon(
-                onPressed: null //(){},//
-              ),
-            )));
+                                    )
+                                  : const SizedBox();
+                            })
+                      ],
+                    ),
+                  ));
+            },
+          ),
+          bottomNavigationBar: SizedBox(
+              width: double.infinity,
+              height: height * 0.12,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: kpadding20,
+                    right: kpadding20,
+                    bottom: kpadding20,
+                    top: kpadding10),
+                child: ButtonWithRightSideIcon(
+                  onPressed: () {
+                    _saveChangesAndContinue(context);
+                  },
+                ),
+              )));
+    });
+  }
+
+  Scaffold _loadingScaffoldWidget(AdCreateOrUpdateState state) {
+    return Scaffold(
+      body: Center(
+        child: state is FaildToFetchExceptionState
+            ? Text(state.errorMessagge)
+            : const CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  void _initializeUpdatingAdData(AdCreateOrUpdateModel adUpdateModel) {
+    log(adUpdateModel.toString());
+    final primaryData = adUpdateModel.primaryData;
+    final moreInfoData = adUpdateModel.moreInfoData;
+    _titleController.text = adUpdateModel.adsTitle;
+    _descriptionController.text = adUpdateModel.description;
+    _brandNameController.text =
+        primaryData['Brand Name'] ?? "Dummy Brand Name is Null";
+    _propertyAreaController.text = primaryData['Property Area']['value'];
+    propertyArea = primaryData['Property Area']['dropname'];
+    _buildupAreaController.text = primaryData['Buildup Area']['value'];
+    buildupArea = primaryData['Buildup Area']['dropname'];
+
+    listedBy = primaryData['Listed By'];
+    facing = primaryData['Facing'];
+
+    //-----------------------------------------------------------------
+
+    _monthlyRentController.text = '10000'; //---------------------------------
+    _securityDepositController.text = '50000';
+    _roadWidthController.text = moreInfoData['Road Width']['value'];
+    roadWidth = moreInfoData['Road Width']['dropname'];
+    _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
+    carpetArea =
+        'sq.feet'; //moreInfoData['Carpet Area']['dropname'];//    ERROR
+    _parkingController.text = moreInfoData['Parking'];
+    furnishing = moreInfoData['Furnishing'];
+    _landMarksController.text = moreInfoData['Landmark'];
+    _websiteLinkController.text = moreInfoData['Website Link'];
+  }
+
+  _saveChangesAndContinue(BuildContext context) {
+    _checkValidation = true;
+    context
+        .read<AdCreateOrUpdateBloc>()
+        .add(AdCreateOrUpdateCheckDropDownValidattionEvent());
+    if (_formKey.currentState!.validate() &&
+        listedBy != null &&
+        facing != null &&
+        _monthlyRentController.text.trim().isNotEmpty &&
+        _securityDepositController.text.trim().isNotEmpty) {
+      final Map<String, dynamic> primaryInfo = {
+        'Brand Name': _brandNameController.text,
+        'Property Area': {
+          "value": _propertyAreaController.text,
+          "dropname": propertyArea
+        },
+        'Buildup Area': {
+          "value": _buildupAreaController.text,
+          "dropname": buildupArea
+        },
+        'Listed By': listedBy!,
+        'Facing': facing!,
+      };
+      final Map<String, dynamic> moreInfo = {
+        'Road Width': {
+          'value': _roadWidthController.text,
+          'dropname': roadWidth,
+        },
+        'Carpet Area': {
+          'value': _carpetAreaController.text,
+          'dropname': carpetArea,
+        },
+        'Parking': _parkingController.text,
+        'Furnishing': furnishing,
+        'Landmark': _landMarksController.text,
+        'Website Link': _websiteLinkController.text,
+      };
+
+      context.read<AdCreateOrUpdateBloc>().savePrimaryMoreInfoDetails(
+        adsTitle: _titleController.text,
+        description: _descriptionController.text,
+        prymaryInfo: primaryInfo,
+        moreInfo: moreInfo,
+        level4Sub: building4saleCommercial[_level4Cat.value]['cat_name'],
+        adPrice: '',
+        adsLevels: {
+          "route": commercialBuildingForRentRoot,
+          "sub category":
+              building4saleCommercial[_level4Cat.value]['cat']?.toLowerCase(),
+        },
+      );
+      Navigator.pushNamed(
+        context,
+        adConfirmScreen,
+      ); //
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _titleController.dispose();
+    _descriptionController.dispose();
+    _brandNameController.dispose();
+    _propertyAreaController.dispose();
+    _roadWidthController.dispose();
+    _monthlyRentController.dispose();
+    _buildupAreaController.dispose();
+    _roadWidthController.dispose();
+    _securityDepositController.dispose();
+    _carpetAreaController.dispose();
+    _parkingController.dispose();
+    _landMarksController.dispose();
+    _websiteLinkController.dispose();
+
+    super.dispose();
   }
 }
+
+typedef Level4CatSelectCallback = void Function(int index);

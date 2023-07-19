@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:need_in_choice/services/model/ads_models.dart';
+import 'package:need_in_choice/views/pages/home_page/widgets.dart/advertisement_card_widget.dart';
 
+import '../../../../services/repositories/repository_urls.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 import 'edit_button.dart';
 
 class Adtiles extends StatelessWidget {
+  final AdsModel adsData;
   const Adtiles({
     super.key,
+    required this.adsData,
   });
 
   @override
   Widget build(BuildContext context) {
+    List imageList = adsData.images;
     return Card(
       color: kadBox,
       shape: RoundedRectangleBorder(
@@ -29,8 +35,26 @@ class Adtiles extends StatelessWidget {
                   height: 80,
                   width: 80,
                   decoration: BoxDecoration(
-                      color: kDarkGreyColor,
-                      borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: imageList.isNotEmpty
+                      ? Image.network(
+                          '$imageUrlEndpoint${imageList[0]}',
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Image.asset(
+                            kNoAdImage,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : ClipRRect(
+                          borderRadius: const BorderRadius.all(
+                              Radius.circular(kpadding10)),
+                          child: Image.asset(
+                            kNoAdImage,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                 ),
                 kHeight5,
                 Container(
@@ -77,7 +101,7 @@ class Adtiles extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Modern Contrpersist",
+                    adsData.adsTitle,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                           color: const Color(0xff606060),
@@ -123,7 +147,9 @@ class Adtiles extends StatelessWidget {
                             width: 71,
                             text: "Edit Ad",
                             textcolor: kPrimaryColor,
-                            ontap: () {},
+                            ontap: () {
+                              
+                            },
                           ),
                           const VerticalDivider(
                             color: kDarkGreyColor,

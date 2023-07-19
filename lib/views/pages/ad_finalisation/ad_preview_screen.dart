@@ -6,6 +6,7 @@ import 'package:need_in_choice/utils/constants.dart';
 import '../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
 import '../../../config/routes/route_names.dart';
 import '../../../utils/dummy_data.dart';
+import '../../widgets_refactored/error_popup.dart';
 import 'widgets/ad_preview_image_card.dart';
 import 'widgets/adspreview_bottom_sheet_realestate.dart';
 import 'widgets/text_icon_button.dart';
@@ -165,8 +166,13 @@ class AdPreviewScreen extends StatelessWidget {
         );
       },
       listener: (context, state) {
-        if (state is AdUploadingCompletedState) {
+        if (state is AdUploadingCompletedState && !state.isUploadFailed) {
           Navigator.pushNamed(context, confirmLottieScreen);
+        }else if (state is AdUploadingCompletedState && state.isUploadFailed) {
+          showErrorDialog(context, 'Somthing went wrong. Please try again.').then((value) {
+           Navigator.popUntil(context, (mainNavigationScreen) => false);
+            // Navigator.popUntil(context, ModalRoute.withName(mainNavigationScreen));
+          });
         }
       },
     );

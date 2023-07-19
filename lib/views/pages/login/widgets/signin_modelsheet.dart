@@ -52,10 +52,10 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
               child: CircularProgressIndicator(),
             );
           }
-          if (state is AuthLoggedIn) {
-            Navigator.pushNamed(context, mainNavigationScreen);
+          else if (state is AuthLoggedIn) {
+            Navigator.pushReplacementNamed(context, mainNavigationScreen);
           } else if (state is AuthNotLoggedIn) {
-            return _openAddressBottomModalSheet();
+             _openAddressBottomModalSheet();
           }
         },
         child: SingleChildScrollView(
@@ -214,8 +214,8 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
                           ontap: () async {
                             if (_otpFormKey.currentState!.validate()) {
                               if (state is AuthCodeSentSuccess) {
-                                await verifyOTP(context, state.verificationId);
-                                await login();
+                                 verifyOTP(context, state.verificationId);
+                                 login(context);
                               }
                             } else {
                               showDialog(
@@ -263,7 +263,7 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
     );
   }
 
-  Future login() async {
+  Future login(BuildContext context,) async {
     context.read<AuthBloc>().add(AuthLoginEvent());
   }
 

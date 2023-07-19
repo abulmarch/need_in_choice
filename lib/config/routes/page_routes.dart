@@ -6,7 +6,6 @@ import 'package:need_in_choice/views/pages/account/account_screen.dart';
 import 'package:need_in_choice/views/pages/account/bloc/account_page_bloc.dart';
 import 'package:need_in_choice/views/pages/ad_finalisation/ad_confirm_screen.dart';
 
-
 import '../../views/pages/ad_detail/ad_detail_screen.dart';
 import '../../views/pages/ad_finalisation/ad_preview_screen.dart';
 import '../../views/pages/ad_finalisation/confirm_lottie.dart';
@@ -19,7 +18,6 @@ import '../../views/pages/real_estate/building_rent/house_villa_rent.dart';
 import '../../views/pages/real_estate/building_sale/apartment_flat_sale.dart';
 import '../../views/pages/real_estate/building_sale/commercial_building_sale.dart';
 import '../../views/pages/home_page/main_navigation_page.dart';
-import '../../views/pages/login/signup_screen.dart';
 import '../../views/pages/real_estate/building_sale/e_auction_property.dart';
 import '../../views/pages/real_estate/building_sale/housevilla_sale.dart';
 import '../../views/pages/real_estate/building_sale/pending_projects.dart';
@@ -28,6 +26,7 @@ import '../../views/pages/real_estate/land_sale/e_auction_land.dart';
 import '../../views/pages/real_estate/land_sale/land_for_sale_screen.dart';
 
 class PageRoutes {
+  final AccountPageBloc accountPageBloc = AccountPageBloc(Authrepo());
   static Route<dynamic>? generateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case splashScreen:
@@ -35,13 +34,7 @@ class PageRoutes {
           settings: routeSettings,
           builder: (_) => const SplashScreen(),
         );
-      case signUpScreen:
-        return MaterialPageRoute(
-          settings: routeSettings,
-          builder: (_) => const SignUpScreen(),
-        );
 
-    
       case mainNavigationScreen:
         return MaterialPageRoute(
           settings: routeSettings,
@@ -60,7 +53,7 @@ class PageRoutes {
       case adConfirmScreen:
         return MaterialPageRoute(
           settings: routeSettings,
-          builder: (_) => AdConfirmScreen(),
+          builder: (_) => const AdConfirmScreen(),
         );
       case adPreviwScreen:
         return MaterialPageRoute(
@@ -75,8 +68,8 @@ class PageRoutes {
       case accountScreen:
         return MaterialPageRoute(
           settings: routeSettings,
-          builder: (_) =>  BlocProvider(
-            create: (context) => AccountPageBloc(Authrepo()),
+          builder: (_) => BlocProvider(
+            create: (context) => AccountPageBloc(Authrepo())..add(AccountLoadingEvent()),
             child: const AccountScreen(),
           ),
         );

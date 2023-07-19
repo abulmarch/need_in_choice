@@ -110,7 +110,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final uid = auth.currentUser!.uid;
       bool userExist = await authrepo.checkUserExists(uid);
       if (userExist) {
-        emit(AuthLoggedIn(uid));
+        final AccountModels? accountdata =
+            await authrepo.fetchAccountsData(uid);
+        emit(AuthLoggedIn(accountdata!));
       } else {
         emit(AuthNotLoggedIn());
       }
@@ -123,10 +125,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       AuthCraetionEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-    bool accountCreated =  await authrepo.createAccount(postData: event.accountModels);
-    if (accountCreated) {  
-      emit(AuthAccountCreated(event.accountModels));
-    }
+      bool accountCreated =
+          await authrepo.createAccount(postData: event.accountModels);
+      if (accountCreated) {
+        emit(AuthAccountCreated(event.accountModels));
+      }
     } catch (e) {
       emit(AuthCreatedfailed(e.toString()));
     }

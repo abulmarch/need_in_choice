@@ -25,16 +25,7 @@ class AddressModalSheet extends StatelessWidget {
     final double screenWidth = MediaQuery.of(context).size.width;
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthLoading) {
-          const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (state is AuthAccountCreated) {
-          const Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation(kPrimaryColor),
-            ),
-          );
+         if (state is AuthAccountCreated) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: kPrimaryColor.withOpacity(.5),
@@ -45,7 +36,7 @@ class AddressModalSheet extends StatelessWidget {
               duration: const Duration(seconds: 2),
             ),
           );
-          Navigator.pushNamed(context, mainNavigationScreen);
+          Navigator.pushNamed(context, mainNavigationScreen, arguments: state.accountModels);
         } else if (state is AuthCreatedfailed) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

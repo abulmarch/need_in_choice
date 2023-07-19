@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart' show XFile;
 import 'package:need_in_choice/services/repositories/repository_urls.dart';
 
 import '../../utils/colors.dart';
+import '../pages/ad_detail/widgets/full_image.dart';
 
 class ImageUploadDotedCircle extends StatelessWidget {
   const ImageUploadDotedCircle({
@@ -129,53 +130,62 @@ class OtherAdsImagePreviewBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dividedNameList = documentTypeName.split(' ');
-    return Container(
-      height: 50,
-      width: 50,
-      decoration: BoxDecoration(
-        image: imageFile != null ? DecorationImage(
-          opacity: 0.3,
-          image: FileImage(
-            File(imageFile!.path)
+    return InkWell(
+      onTap: () {
+        Navigator.push(context,MaterialPageRoute(
+          builder: (context) => FullImageView(
+           imageUrl: networkImageUrl ?? defaultImage,
+          )
+        ));
+      },
+      child: Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+          image: imageFile != null ? DecorationImage(
+            opacity: 0.3,
+            image: FileImage(
+              File(imageFile!.path)
+            ),
+            fit: BoxFit.cover,
+          )
+          : networkImageUrl != null ? DecorationImage(
+            opacity: 0.3,
+            image: NetworkImage(
+              '$imageUrlEndpoint$networkImageUrl',
+            ),
+            fit: BoxFit.cover,
+          )
+          : DecorationImage(
+            opacity: 0.3,
+            image: AssetImage(defaultImage),fit: BoxFit.cover,
           ),
-          fit: BoxFit.cover,
-        )
-        : networkImageUrl != null ? DecorationImage(
-          opacity: 0.3,
-          image: NetworkImage(
-            '$imageUrlEndpoint$networkImageUrl',
-          ),
-          fit: BoxFit.cover,
-        )
-        : DecorationImage(
-          opacity: 0.3,
-          image: AssetImage(defaultImage),fit: BoxFit.cover,
+          borderRadius: BorderRadius.circular(10),
         ),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 13),
-        child: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              text: dividedNameList.first,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(
-                      fontSize: 10, color: kWhiteColor),
-              children: [
-                TextSpan(
-                  text: dividedNameList.length > 1 ? "\n${dividedNameList.last}" : '',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall!
-                      .copyWith(
-                        fontSize: 10,
-                      ),
-                ),
-              ],
-            )),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 13),
+          child: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: dividedNameList.first,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge!
+                    .copyWith(
+                        fontSize: 10, color: kWhiteColor),
+                children: [
+                  TextSpan(
+                    text: dividedNameList.length > 1 ? "\n${dividedNameList.last}" : '',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall!
+                        .copyWith(
+                          fontSize: 10,
+                        ),
+                  ),
+                ],
+              )),
+        ),
       ),
     );
   }

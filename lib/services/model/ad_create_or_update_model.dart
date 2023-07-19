@@ -22,7 +22,7 @@ class AdCreateOrUpdateModel {
   final List<Map> otherImageFiles;
   final String pinCode;
   final Map adsLevels;
-  final String price;
+  final dynamic adPrice;
 
   final String? level4Sub;
 
@@ -46,7 +46,7 @@ class AdCreateOrUpdateModel {
     this.otherImgUrlsToDelete = const [],
     this.level4Sub,
     this.adsLevels = const {},
-    this.price = '0'
+    required this.adPrice,
   });
 
   factory AdCreateOrUpdateModel.fromJson(Map json) {
@@ -62,15 +62,15 @@ class AdCreateOrUpdateModel {
       isPremium: json['is_premium'] == 1 ? true : false,
       adsTitle: json['ads_title'],
       description: json['description'],
-      imageUrls:
-          (json['images'] as List).map((img) => img['url'] as String).toList(),
+      imageUrls: (json['images'] as List).map((img) => img['url'] as String).toList(),
       otherImageUrls: json['otherimage'],
       adsAddress: json[mainCategoryName]['ads_address'],
       primaryData: json[mainCategoryName]['primary_details'],
       moreInfoData: json[mainCategoryName]['more_info'],
       adsLevels: json[mainCategoryName]['ads_levels'],
       level4Sub: json[mainCategoryName]['ads_levels']['sub category'],
-      price: '0'
+      adPrice: json['ad_price'],
+      pinCode: json['pincode'],
     );
   }
 
@@ -80,6 +80,7 @@ class AdCreateOrUpdateModel {
     ----------------------------------->
     id : $id, 'userId : $userId, 'adsTitle' : $adsTitle,
     description : $description, isPremium : $isPremium, isNewAd : $isNewAd, 
+    adPrice : $adPrice,
     mainCategory : $mainCategory,
     level4Sub : $level4Sub
     imageUrls : $imageUrls,
@@ -109,7 +110,7 @@ class AdCreateOrUpdateModel {
     List<Map>? otherImageFiles,
     List<String>? otherImgUrlsToDelete,
     Map<String, dynamic>? adsLevels,
-    String? price
+    dynamic adPrice,
   }) {
     return AdCreateOrUpdateModel(
         id: id,
@@ -131,7 +132,7 @@ class AdCreateOrUpdateModel {
         otherImageUrls: otherImageUrls ?? this.otherImageUrls,
         otherImgUrlsToDelete: otherImgUrlsToDelete ?? this.otherImgUrlsToDelete,
         otherImageFiles: otherImageFiles ?? this.otherImageFiles,
-        price: price ?? this.price,
+        adPrice: adPrice ?? this.adPrice,
       );
         
   }

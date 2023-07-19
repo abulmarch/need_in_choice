@@ -39,25 +39,32 @@ class WorkTimeContainer extends StatelessWidget {
     required this.color,
     required this.textcolor,
     required this.text,
+    this.selected = false,
+    this.onSelected,
   });
   final Color color;
   final Color textcolor;
   final String text;
+  final bool selected;
+  final VoidCallback? onSelected;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 35,
-      width: 40,
-      decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: textcolor)),
-      child: Center(
-          child: Text(
-        text,
-        style: const TextStyle(color: kPrimaryColor),
-      )),
+    return GestureDetector(
+      onTap: onSelected,
+      child: Container(
+        height: 35,
+        width: 40,
+        decoration: BoxDecoration(
+            color: selected ? textcolor : color,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: textcolor)),
+        child: Center(
+            child: Text(
+          text,
+          style: TextStyle(color: selected ? color : textcolor),
+        )),
+      ),
     );
   }
 }

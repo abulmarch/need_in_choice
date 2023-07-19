@@ -11,6 +11,7 @@ import '../../../services/repositories/repository_urls.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/constants.dart';
 import '../../widgets_refactored/camera_bottomsheet.dart';
+import '../../widgets_refactored/error_popup.dart';
 import 'widgets/text_icon_button.dart';
 import 'widgets/update_address_bottomsheet.dart';
 
@@ -274,8 +275,8 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                       kWidth10,
                       ConstrainedBox(
                         constraints: BoxConstraints(
-                            minHeight: 70,
-                            maxHeight: 120,
+                            minHeight: 65,
+                            maxHeight: 110,
                             maxWidth: screnSize.width - 70,
                             minWidth: 150),
                         child: StreamBuilder<String>(
@@ -308,7 +309,7 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                       ),
                     ],
                   ),
-                  kHeight20,
+                  kHeight10,
                   TextIconButton(
                     text: '+ Update Ad Location',
                     txtcolor: const Color(0XFF6F6F6F),
@@ -392,8 +393,12 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                 );
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
-            } else if (state is AdUploadingCompletedState) {
+            } else if (state is AdUploadingCompletedState && !state.isUploadFailed) {
               Navigator.pushNamed(context, confirmLottieScreen);
+            }else if (state is AdUploadingCompletedState && state.isUploadFailed) {
+              showErrorDialog(context, 'Somthing went wrong. Try again.').then((value) {
+                // Navigator.popUntil(context, ModalRoute.withName(mainNavigationScreen));
+              });
             }
           },
         ),

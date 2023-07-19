@@ -54,9 +54,34 @@ class Authrepo {
     }
   }
 
-  static Future<AccountModels?> fetchAccountsData(String uid) async {
+  Future updateAccount({required AccountModels postData}) async {
+    const String url = "$endpoint/update";
+    final finalurl = Uri.parse(url);
+    final headers = <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    final Map requestbody = {
+      'user_id': postData.userId,
+      'name': postData.name,
+      'phone': postData.phone,
+      'address': postData.address,
+      'whatsapp': postData.whatsapp,
+    };
+    final jsonBody = jsonEncode(requestbody);
     try {
-      final String url = "$endpoint+get?user_id=$uid";
+      final response =
+          await http.post(finalurl, headers: headers, body: jsonBody);
+      if (response.statusCode == 200) {
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<AccountModels?> fetchAccountsData(String uid) async {
+    try {
+      final String url = "$endpoint/get?user_id=$uid";
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);

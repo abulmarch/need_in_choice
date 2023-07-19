@@ -11,12 +11,16 @@ class AdsModel {
   final String? profileImage;
 
   final List<String> images;
+  final List otherimages;
   final Map<String, dynamic> categoryInfo;
   final String timeAgo;
 
   final String? whatsappNo;
   final String userName;
   final String phoneNo;
+
+  final Map<String, dynamic> primaryData;
+  final Map<String, dynamic> moreInfoData;
 
   AdsModel({
     required this.id,
@@ -33,25 +37,34 @@ class AdsModel {
     required this.phoneNo,
     required this.userName,
     this.whatsappNo,
+    required this.primaryData,
+    required this.moreInfoData,
+    required this.otherimages,
   });
   factory AdsModel.fromJson(Map map) {
-    try{return AdsModel(
-      id: map['id'],
-      userId: map['user_id'],
-      adsTitle: map['ads_title'],
-      description: map['description'],
+    try{
+      final mainCategory = map['main_category'];
+      return AdsModel(
+        id: map['id'],
+        userId: map['user_id'],
+        adsTitle: map['ads_title'],
+        description: map['description'],
 
-      isPremium: map['is_premium'] == 1 ? true : false, // is_premium : 1, 0
-      mainCategory: map['main_category'],
-      createdDate: map['created_at'],
-      profileImage: map['profile_image'],
-      images: (map['images'] as List).map((img) => img['url'] as String).toList(), // images : [{'url':'imagepath1.png'},{'url':'imagepath2.png'}]
-      categoryInfo: map['realestate'],
-      timeAgo: ConvertToTimeAgo.calculateTimeAgo(map['created_at']), 
-      phoneNo: map['phone'] ?? '',
-      userName: map['name'] ?? '',
-      whatsappNo: map['whatsapp'],
-    );}
+        isPremium: map['is_premium'] == 1 ? true : false, // is_premium : 1, 0
+        mainCategory: map['main_category'],
+        createdDate: map['created_at'],
+        profileImage: map['profile_image'],
+        images: (map['images'] as List).map((img) => img['url'] as String).toList(), // images : [{'url':'imagepath1.png'},{'url':'imagepath2.png'}]
+        otherimages: map['otherimage'],
+        categoryInfo: map['realestate'],
+        timeAgo: ConvertToTimeAgo.calculateTimeAgo(map['created_at']), 
+        phoneNo: map['phone'] ?? '',
+        userName: map['name'] ?? '',
+        whatsappNo: map['whatsapp'],
+        primaryData: map[mainCategory]['primary_details'],
+        moreInfoData: map[mainCategory]['more_info'],
+      );
+    }
     catch (e){
       log(e.toString());
       throw '$e --->>';

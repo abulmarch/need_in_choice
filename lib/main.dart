@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:need_in_choice/views/pages/home_page/main_navigation_page.dart';
 import 'config/routes/page_routes.dart';
 import 'config/theme/theme_data_class.dart';
 import 'views/pages/login/bloc/auth_bloc.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => AuthBloc(authrepo: Authrepo()),
+          create: (context) => AuthBloc(authrepo: Authrepo())..add(AuthLoginEvent()),
         ),
         BlocProvider(
           create: (context) => AdCreateOrUpdateBloc(CreateOrUpdateAdsRepo()),
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
         title: 'Need In Choice',
         theme: ThemeDataPrimary.primaryTheme,
         onGenerateRoute: PageRoutes.generateRoute,
-        home: const SplashScreen(),
+        // home: const SplashScreen(),
+        home: const MainNavigationScreen(),
       ),
     );
   }

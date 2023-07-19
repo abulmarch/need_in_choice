@@ -34,11 +34,11 @@ class AuthCodeSentSuccess extends AuthState {
 }
 
 class AuthLoggedIn extends AuthState {
-  final String uid;
+  final AccountModels accountModels;
 
-  const AuthLoggedIn(this.uid);
+  const AuthLoggedIn(this.accountModels);
   @override
-  List<Object> get props => [uid];
+  List<Object> get props => [accountModels];
 }
 
 class AuthNotLoggedIn extends AuthState {}

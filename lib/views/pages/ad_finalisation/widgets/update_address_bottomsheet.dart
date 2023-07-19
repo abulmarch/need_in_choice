@@ -7,6 +7,7 @@ import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart
 import '../../../../blocs/ad_create_or_update_bloc/address_exception.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
+import '../../../widgets_refactored/error_popup.dart';
 
 class UpdateAdressBottomSheet extends StatefulWidget {
   const UpdateAdressBottomSheet({super.key});
@@ -80,6 +81,7 @@ class _UpdateAdressBottomSheetState extends State<UpdateAdressBottomSheet> {
                         _addressController.text = await adCreateOrUpdateBloc.getCurrentLocation();
                         _fetchLocationLoader.value = false;
                       } catch (e) {
+                        _fetchLocationLoader.value = false;
                         log(e.toString());
                       }
                     },
@@ -192,28 +194,7 @@ class _UpdateAdressBottomSheetState extends State<UpdateAdressBottomSheet> {
       ),
     );
   }
-  Future<void> showErrorDialog(
-  BuildContext context,
-  String text,
-) {
-  return showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('An error occurred',style: TextStyle(color: kBlackColor),),
-        content: Text(text),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      );
-    },
-  );
-}
+
 
   @override
   void dispose() {

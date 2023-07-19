@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:extended_text/extended_text.dart'
     show ExtendedText, TextOverflowWidget;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
-import 'package:need_in_choice/views/widgets_refactored/dashed_line_generator.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../services/model/ad_create_or_update_model.dart' show AdCreateOrUpdateModel;
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 import '../../../widgets_refactored/icon_button.dart';
@@ -25,8 +27,7 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final adData =
-        BlocProvider.of<AdCreateOrUpdateBloc>(context).adCreateOrUpdateModel;
+    final adData = BlocProvider.of<AdCreateOrUpdateBloc>(context).adCreateOrUpdateModel;
     return DraggableScrollableSheet(
       initialChildSize: .3,
       minChildSize: .3,
@@ -85,7 +86,7 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                               ),
                               kWidth5,
                               SizedBox(
-                                width: screenWidth * 0.84,
+                                width: screenWidth * 0.82,
                                 child: Text(
                                   adData.adsAddress,
                                   overflow: TextOverflow.ellipsis,
@@ -126,7 +127,7 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                                           .copyWith(fontSize: 19),
                                       children: [
                                         TextSpan(
-                                          text: adData.price,
+                                          text: adData.adPrice.toString(),
                                           // " 9800",
                                           style: Theme.of(context)
                                               .textTheme
@@ -197,7 +198,7 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                           ),
                           kHeight5,
                           DetailsRow(
-                            details: adData.moreInfoData,
+                            details: _moreInfoData(adData.moreInfoData),
                           ),
                           kHeight10,
                           SizedBox(
@@ -325,11 +326,15 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                                                             'assets/images/dummy/Room.jpg',
                                                       )));
                                         },
-                                        child: const OtherAdsImagePreviewBox(
-                                          documentTypeName: 'Floor Plan',
-                                          defaultImage:
-                                              'assets/images/dummy/Room.jpg',
+                                        child: _otherAdsImagePreview(
+                                          imageName: 'Floor Plan',
+                                          adData: adData,
+                                          defaultImage: 'assets/images/dummy/Room.jpg'
                                         ),
+                                        // const OtherAdsImagePreviewBox(
+                                        //   documentTypeName: 'Floor Plan',
+                                        //   defaultImage:'assets/images/dummy/Room.jpg',
+                                        // ),
                                       ),
                                       InkWell(
                                         onTap: () {
@@ -342,88 +347,20 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                                                             'assets/images/dummy/Room.jpg',
                                                       )));
                                         },
-                                        child: const OtherAdsImagePreviewBox(
-                                          documentTypeName: 'Land Sketch',
-                                          defaultImage:
-                                              'assets/images/dummy/lands.jpg',
+                                        child: _otherAdsImagePreview(
+                                          imageName: 'Land Sketch',
+                                          adData: adData,
+                                          defaultImage: 'assets/images/dummy/lands.jpg'
                                         ),
+                                        // const OtherAdsImagePreviewBox(
+                                        //   documentTypeName: 'Land Sketch',
+                                        //   defaultImage:
+                                        //       'assets/images/dummy/lands.jpg',
+                                        // ),
                                       ),
                                     ],
                                   ),
                                 ),
-
-                                // Container(
-                                //   height: 50,
-                                //   width: 50,
-                                //   decoration: BoxDecoration(
-                                //     image: const DecorationImage(
-                                //       opacity: 0.3,
-                                //       image: AssetImage(
-                                //           'assets/images/dummy/Room.jpg'),
-                                //       fit: BoxFit.cover,
-                                //     ),
-                                //     borderRadius: BorderRadius.circular(10),
-                                //   ),
-                                //   child: Padding(
-                                //     padding: const EdgeInsets.only(top: 13),
-                                //     child: RichText(
-                                //         textAlign: TextAlign.center,
-                                //         text: TextSpan(
-                                //           text: 'Floor',
-                                //           style: Theme.of(context)
-                                //               .textTheme
-                                //               .titleLarge!
-                                //               .copyWith(
-                                //                   fontSize: 10, color: kWhiteColor),
-                                //           children: [
-                                //             TextSpan(
-                                //               text: '\nPlan',
-                                //               style: Theme.of(context)
-                                //                   .textTheme
-                                //                   .headlineSmall!
-                                //                   .copyWith(
-                                //                     fontSize: 10,
-                                //                   ),
-                                //             ),
-                                //           ],
-                                //         )),
-                                //   ),
-                                // ),
-                                // Container(
-                                //   height: 50,
-                                //   width: 50,
-                                //   decoration: BoxDecoration(
-                                //     image: const DecorationImage(
-                                //       opacity: 0.4,
-                                //       image: AssetImage(
-                                //           'assets/images/dummy/lands.jpg'),
-                                //       fit: BoxFit.cover,
-                                //     ),
-                                //     borderRadius: BorderRadius.circular(10),
-                                //   ),
-                                //   child: Padding(
-                                //     padding: const EdgeInsets.only(top: 12),
-                                //     child: RichText(
-                                //         textAlign: TextAlign.center,
-                                //         text: TextSpan(
-                                //           text: 'Land',
-                                //           style: Theme.of(context)
-                                //               .textTheme
-                                //               .titleLarge!
-                                //               .copyWith(
-                                //                   fontSize: 10, color: kWhiteColor),
-                                //           children: [
-                                //             TextSpan(
-                                //               text: '\nSketch',
-                                //               style: Theme.of(context)
-                                //                   .textTheme
-                                //                   .headlineSmall!
-                                //                   .copyWith(fontSize: 10),
-                                //             ),
-                                //           ],
-                                //         )),
-                                //   ),
-                                // )
                               ],
                             ),
                           ),
@@ -532,406 +469,47 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
     );
   }
 
-  ListView _existingListView(ScrollController scrollController) {
-    return ListView.builder(
-      itemCount: 1,
-      controller: scrollController,
-      itemBuilder: (context, index) {
-        return Container(
-          width: screenWidth,
-          height: screenHeight * .8,
-          decoration: BoxDecoration(
-            color: bottomSheetcolor.withOpacity(.96),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(kpadding15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Text("Modern Restaurant aluva",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleLarge),
-                    ),
-                    kWidth5,
-                    const Icon(
-                      Icons.favorite_border_outlined,
-                      color: kWhiteColor,
-                    )
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.location_on_outlined,
-                      color: kWhiteColor,
-                    ),
-                    kWidth5,
-                    Text(
-                      "ads_address",
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleSmall!
-                          .copyWith(fontSize: 15),
-                    ),
-                  ],
-                ),
-                kHeight10,
-                DashedLineGenerator(width: screenWidth, color: kDottedBorder),
-                kHeight10,
-                const DetailsRow(
-                  details: {},
-                ),
-                kHeight10,
-                DashedLineGenerator(width: screenWidth, color: kDottedBorder),
-                kHeight10,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            text: "₹",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(fontSize: 19),
-                            children: [
-                              TextSpan(
-                                text: " 98000",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge!
-                                    .copyWith(fontSize: 28),
-                              ),
-                              TextSpan(
-                                text: "/",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge!
-                                    .copyWith(fontSize: 22),
-                              ),
-                              TextSpan(
-                                text: "prebid",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .copyWith(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          height: 25,
-                          width: 160,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: kBlackColor),
-                          child: Center(
-                            child: RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                text: "₹ 98000 - ",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge!
-                                    .copyWith(fontSize: 12),
-                                children: [
-                                  TextSpan(
-                                    text: "15 Jan - 20 Dec ",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall!
-                                        .copyWith(fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    kWidth10,
-                    IconWithButton(
-                      onpressed: () {},
-                      iconData: Icons.rocket_launch_outlined,
-                      text: "Chat Now",
-                      radius: 10,
-                      size: const Size(160, 50),
-                    )
-                  ],
-                ),
-                kHeight20,
-                DashedLineGenerator(width: screenWidth, color: kPrimaryColor),
-                kHeight10,
-                const DetailsRow(
-                  details: {},
-                ),
-                kHeight10,
-                DashedLineGenerator(width: screenWidth, color: kPrimaryColor),
-                kHeight10,
-                Text(
-                  'Description',
-                  style: Theme.of(context)
-                      .textTheme
-                      .displaySmall!
-                      .copyWith(fontWeight: FontWeight.w400),
-                ),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 500),
-                  child: Text(
-                    'Kalyan Gateway is our new upcoming luxury apartment project in Trivandrum. Located at NH Bypass, in close proximity to the IT Technopark and the upcoming Lulu Mall, these 2 and 3 BHK luxury flats are ideal for the increasing young and vibrant crowd in the city.',
-                    maxLines: 6,
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          fontSize: 13,
-                          color: const Color(0XFF878181),
-                        ),
-                  ),
-                ),
-                DashedLineGenerator(width: screenWidth, color: kPrimaryColor),
-                kHeight10,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        text: "Near PRS Hospital",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall!
-                            .copyWith(
-                                fontSize: 13, color: const Color(0XFF878181)),
-                        children: [
-                          TextSpan(
-                            // ignore: prefer_interpolation_to_compose_strings
-                            text: "\nwww.calletic.com",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall!
-                                .copyWith(fontSize: 19),
-                          ),
-                        ],
-                      ),
-                    ),
-                    kWidth15,
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        image: const DecorationImage(
-                          opacity: 0.3,
-                          image: AssetImage('assets/images/dummy/Room.jpg'),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 13),
-                        child: RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                              text: 'Floor',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge!
-                                  .copyWith(fontSize: 10, color: kWhiteColor),
-                              children: [
-                                TextSpan(
-                                  text: '\nPlan',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineSmall!
-                                      .copyWith(
-                                        fontSize: 10,
-                                      ),
-                                ),
-                              ],
-                            )),
-                      ),
-                    ),
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        image: const DecorationImage(
-                          opacity: 0.4,
-                          image: AssetImage('assets/images/dummy/lands.jpg'),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                              text: 'Land',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge!
-                                  .copyWith(fontSize: 10, color: kWhiteColor),
-                              children: [
-                                TextSpan(
-                                  text: '\nSketch',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineSmall!
-                                      .copyWith(fontSize: 10),
-                                ),
-                              ],
-                            )),
-                      ),
-                    )
-                  ],
-                ),
-                kHeight10,
-                Container(
-                  height: 40,
-                  color: kPrimaryColor.withOpacity(0.3),
-                  child: SizedBox(
-                    height: 40,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          height: 40,
-                          width: 70,
-                          child: RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                text: 'Amenities',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge!
-                                    .copyWith(fontSize: 12, color: kBlackColor),
-                                children: [
-                                  TextSpan(
-                                    text: '\nincluded',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge!
-                                        .copyWith(fontSize: 12),
-                                  ),
-                                ],
-                              )),
-                        ),
-                        const VerticalDivider(
-                          endIndent: 4,
-                          indent: 4,
-                          thickness: 2,
-                          color: Color(0XFFB9B9B9),
-                        ),
-                        kWidth10,
-                        Expanded(
-                          child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 5,
-                            itemBuilder: (BuildContext context, int index) {
-                              return const Center(
-                                child: Text(
-                                  'Gym',
-                                  style: TextStyle(color: kWhiteColor),
-                                ),
-                              );
-                            },
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return vericalDivider;
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                kHeight20,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconWithButton(
-                      onpressed: () {
-                        // launch("tel://9876543210");
-                        launchUrl(Uri.parse("tel://9876543210"));
-                      },
-                      text: "Give a Call",
-                      iconData: Icons.phone,
-                      radius: 100,
-                      size: const Size(100, 51),
-                    ),
-                    IconWithButton(
-                      background: Colors.green,
-                      onpressed: () {
-                        showModalBottomSheet<void>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ListTile(
-                                  leading: const Icon(
-                                    Icons.phone,
-                                    color: kPrimaryColor,
-                                  ),
-                                  title: const Text(
-                                    'Phone Messenger',
-                                    style: TextStyle(color: kPrimaryColor),
-                                  ),
-                                  onTap: () {
-                                    const phoneNumber = '9876543210';
-                                    const message = 'Your message goes here';
-
-                                    const url =
-                                        'sms:$phoneNumber?body=$message';
-
-                                    // launch(url);
-                                    launchUrl(Uri.parse(url));
-                                  },
-                                ),
-                                ListTile(
-                                  leading: const Icon(
-                                    Icons.message,
-                                    color: kPrimaryColor,
-                                  ),
-                                  title: const Text(
-                                    'WhatsApp Messenger',
-                                    style: TextStyle(color: kPrimaryColor),
-                                  ),
-                                  onTap: () {
-                                    const phoneNumber = '9876543210';
-                                    const message = 'Your message goes here';
-
-                                    const url =
-                                        'whatsapp://send?phone=$phoneNumber&text=$message';
-                                    // launch(url);
-                                    launchUrl(Uri.parse(url));
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      text: "Message Me",
-                      iconData: Icons.message,
-                      radius: 100,
-                      size: const Size(100, 51),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+  OtherAdsImagePreviewBox _otherAdsImagePreview({
+    required String imageName, 
+    required AdCreateOrUpdateModel adData,
+    required String defaultImage,
+  }) {
+    log(adData.otherImageFiles.toString());
+    log(adData.otherImageUrls.toString());
+    final fileDat = adData.otherImageFiles.firstWhere((fileData) => fileData['image_type'] == imageName, orElse: () => {},);
+    if(fileDat.isNotEmpty){
+      return OtherAdsImagePreviewBox(
+        documentTypeName: imageName,
+        defaultImage:'assets/images/dummy/Room.jpg',
+        imageFile: fileDat['file'],
+      );
+    }else{
+      final urlMap = adData.otherImageUrls.firstWhere((imageData) => imageData['image_type'] == imageName,orElse: () => null,);
+      if(urlMap != null){
+        return OtherAdsImagePreviewBox(
+          documentTypeName: imageName,
+          defaultImage:'assets/images/dummy/Room.jpg',
+          networkImageUrl: urlMap['url'],
         );
-      },
+      }
+    }
+    return OtherAdsImagePreviewBox(
+      documentTypeName: imageName,
+      defaultImage:'assets/images/dummy/Room.jpg',
     );
+  }
+
+  Map<String, dynamic> _moreInfoData(Map<String, dynamic> moreInfoData) {
+    Map<String, dynamic> moreInfo = {};
+    moreInfoData.forEach((key, value) {
+      if(value != null && value != "" && key != 'Website Link'){
+        if(value is! String && value['value'] ==""){
+          return;
+        }
+        moreInfo[key] = value;
+      }
+    });
+    return moreInfo;
   }
 }
 

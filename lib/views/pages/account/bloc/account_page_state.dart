@@ -8,27 +8,44 @@ abstract class AccountPageState extends Equatable {
 }
 
 class AccountPageInitial extends AccountPageState {}
+
 class AccountPageLoading extends AccountPageState {}
 
+class AccountDataLoaded extends AccountPageState {
+  final AccountModels accountModels;
+  final List<AdsModel> adsModelList;
+
+  const AccountDataLoaded(this.accountModels, this.adsModelList);
+  @override
+  List<Object> get props => [accountModels];
+}
+
+class AccountDataError extends AccountPageState {
+  final String error;
+
+  const AccountDataError(this.error);
+  @override
+  List<Object> get props => [error];
+}
+
 class ViewNotPressedState extends AccountPageState {}
+
 class ViewPressedState extends AccountPageState {}
 
+class AccountEditingState extends AccountPageState {}
 
-
-
-class AccountCreatingState extends AccountPageState {}
-
-class AccountCreatedState extends AccountPageState {
+class AccountEditedState extends AccountPageState {
   final AccountModels accountModal;
 
-  const AccountCreatedState(this.accountModal);
+  const AccountEditedState(this.accountModal);
   @override
   List<Object> get props => [accountModal];
 }
-class AccountCreatErrorState extends AccountPageState {
+
+class AccountEditErrorState extends AccountPageState {
   final String error;
 
-  const AccountCreatErrorState(this.error);
+  const AccountEditErrorState(this.error);
   @override
   List<Object> get props => [error];
 }

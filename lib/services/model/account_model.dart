@@ -36,18 +36,18 @@ class AccountModels {
   Map<String, dynamic> toJson(AccountModels accountModels) {
     return {
       'id': accountModels.id,
-    'user_id':accountModels.userId ?? '',
-    'name': accountModels.name ?? '',
-    'address': accountModels.address ?? '',
-    'whatsapp': accountModels.whatsapp ?? '',
-    'phone': accountModels.phone ?? '',
-    'created_at': accountModels.createDate ?? '',
-    'email': accountModels.email ?? '',
+      'user_id':accountModels.userId ,
+      'name': accountModels.name ,
+      'address': accountModels.address ,
+      'whatsapp': accountModels.whatsapp ,
+      'phone': accountModels.phone ,
+      // 'created_at': accountModels.createDate,
+      'email': accountModels.email ,
     };
   }
 
   @override
   String toString() {
-    return "Account: {user_id : $userId, name: $name, address: $address, phone: $phone }";
+    return "Account: {user_id : $userId, name: $name, address: $address, phone: $phone , whatsapp : $whatsapp}";
   }
 }

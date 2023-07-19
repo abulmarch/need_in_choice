@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../../services/repositories/repository_urls.dart';
 import '../../../../utils/colors.dart';
-import '../../../../utils/constants.dart';
 
 class FullImageView extends StatelessWidget {
   const FullImageView({super.key, required this.imageUrl});
@@ -10,49 +10,38 @@ class FullImageView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: kBlackColor,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(kpadding15),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: const SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: Icon(Icons.arrow_back_ios_new,
-                        color: kLightBlueWhite, size: kpadding20)),
-              ),
-            ),
-            const Spacer(),
-            Center(
-                child: InteractiveViewer(
-              child: _buildImageWidget(),
-            )),
-            const Spacer(),
-          ],
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: kBlackColor,
+          leading: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(Icons.arrow_back_ios_new),
+          ),
         ),
+        backgroundColor: kBlackColor,
+        body: Center(
+            child: InteractiveViewer(
+          child: _buildImageWidget(),
+        )),
       ),
     );
   }
 
   Widget _buildImageWidget() {
-    if (imageUrl.startsWith('http') || imageUrl.startsWith('https')) {
-      return Image.network(
+    return Image.network(
+      '$imageUrlEndpoint$imageUrl',
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return const CircularProgressIndicator();
+      },
+      errorBuilder: (context, error, stackTrace) {
+        return Image.asset(
         imageUrl,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return const CircularProgressIndicator();
-        },
-        errorBuilder: (context, error, stackTrace) {
-          return const Icon(Icons.error);
-        },
+        errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
       );
-    } else {
-      return Image.asset(imageUrl);
-    }
+      },
+    );
   }
 }

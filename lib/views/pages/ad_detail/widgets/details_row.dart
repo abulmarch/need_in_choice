@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ScrollDirection;
 import '../../../../utils/colors.dart';
@@ -31,22 +33,21 @@ class _DetailsRowState extends State<DetailsRow> {
 
   void activateListner() {
     _scrollController.addListener(() {
-      if (_scrollController.position.maxScrollExtent -
-                  _scrollController.position.pixels <
-              40 &&
-          _scrollEnd.value == false) {
+      if (_scrollController.position.maxScrollExtent - _scrollController.position.pixels < 40 && _scrollEnd.value == false) {
         _scrollEnd.value = true;
-      } else if (_scrollController.position.maxScrollExtent -
-                  _scrollController.position.pixels >
-              40 &&
-          _scrollEnd.value == true) {
+      } else if (_scrollController.position.maxScrollExtent - _scrollController.position.pixels > 40 && _scrollEnd.value == true) {
         _scrollEnd.value = false;
       }
+    });
+    Future.delayed(const Duration(milliseconds: 250)).then((value) {
+      if(_scrollController.position.maxScrollExtent == 0) _scrollEnd.value = true;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final keyList = widget.details.keys.toList();
+    final valueList = widget.details.values.toList();
     return SizedBox(
       height: 50,
       child: Row(
@@ -70,12 +71,9 @@ class _DetailsRowState extends State<DetailsRow> {
               scrollDirection: Axis.horizontal,
               itemCount: widget.details.length,
               itemBuilder: (BuildContext context, int index) {
-                var key = widget.details.keys.toList()[index];
-                var value = widget.details.values.toList()[index];
-
                 return LandWidget(
-                  value: value is String ? value : value['value'],
-                  name: key,
+                  value: valueList[index] is String ? valueList[index] : valueList[index]['value'],
+                  name: keyList[index],
                 );
               },
               separatorBuilder: (BuildContext context, int index) {
@@ -91,12 +89,12 @@ class _DetailsRowState extends State<DetailsRow> {
                 valueListenable: _scrollEnd,
                 builder: (context, isEndOfScroll, _) {
                   return !isEndOfScroll
-                      ? const Icon(
-                          Icons.arrow_forward_ios,
-                          color: kDottedBorder,
-                          size: 20,
-                        )
-                      : const SizedBox();
+                    ? const Icon(
+                        Icons.arrow_forward_ios,
+                        color: kDottedBorder,
+                        size: 20,
+                      )
+                    : const SizedBox();
                 }),
           ),
         ],

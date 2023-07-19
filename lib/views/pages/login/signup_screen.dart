@@ -48,29 +48,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
               return
-                  // Stack(
-                  //   children: [
-                  //     Container(
-                  //       height: screenHeight,
-                  //       width: screenWidth,
-                  //       decoration: const BoxDecoration(
-                  //         image: DecorationImage(
-                  //           image: AssetImage('assets/images/splash.png'),
-                  //           fit: BoxFit.cover,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     // Container(
-                  //     //   height: screenHeight,
-                  //     //   width: screenWidth,
-                  //     //   decoration:
-                  //     //       BoxDecoration(color: kBlackColor.withOpacity(.5)),
-                  //     // ),
-
-                  //     Positioned(
-                  //         top: screenHeight * .43, child: const SigninModalSheet()),
-                  //   ],
-                  // );
+                
 
                   SingleChildScrollView(
                 child: Column(

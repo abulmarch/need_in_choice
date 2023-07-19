@@ -10,13 +10,13 @@ class ImageCard extends StatelessWidget {
   ImageCard({
     super.key,
     required this.phouseFoRentr,
-    this.imageUrls,
+    required this.imageUrls,
     this.timeAgo,
   });
 
   final List<String> phouseFoRentr;
   final PageController controller = PageController();
-  final List<String>? imageUrls;
+  final List<String> imageUrls;
   final String? timeAgo;
 
   @override
@@ -28,17 +28,16 @@ class ImageCard extends StatelessWidget {
         ListView.builder(
           scrollDirection: Axis.vertical,
           controller: controller,
-          itemCount: imageUrls?.length ?? 0,
+          itemCount: imageUrls.length,
           cacheExtent: screenSize.width,
           itemBuilder: (context, index) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: InkWell(
-              onTap: () {
-                
+              onTap: () {                
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>  FullImageView(imageUrl: '$imageUrlEndpoint${imageUrls![index]}',)));
+                        builder: (context) =>  FullImageView(imageUrl: imageUrls[index],)));
               },
               child: Container(
                 height: 250,
@@ -54,7 +53,7 @@ class ImageCard extends StatelessWidget {
                     width: screenSize.width,
                     child: InteractiveViewer(
                       child: Image.network(
-                        '$imageUrlEndpoint${imageUrls![index]}',
+                        '$imageUrlEndpoint${imageUrls[index]}',
                         fit: BoxFit.cover,
                         loadingBuilder: (BuildContext context, Widget child,
                             ImageChunkEvent? loadingProgress) {
