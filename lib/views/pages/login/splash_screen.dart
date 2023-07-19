@@ -176,7 +176,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  checklogin(BuildContext context) {
+  checklogin(BuildContext context,) {
     context.read<AuthBloc>().add(AuthLoginEvent());
   }
 

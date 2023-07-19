@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
@@ -28,7 +29,6 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
 
   final bool isLoading = false;
   bool mobileverified = false;
-
   final GlobalKey<FormState> _phoneNumberFormKey = GlobalKey();
   final GlobalKey<FormState> _otpFormKey = GlobalKey();
 
@@ -47,16 +47,19 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
       key: _phoneNumberFormKey,
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
+          if (state is AuthVerified) {
+            login(context, state.user!.uid);
+          }
           if (state is AuthLoading) {
             const Center(
               child: CircularProgressIndicator(),
             );
           }
-          else if (state is AuthLoggedIn) {
+          if (state is AuthLoggedIn) {
             Navigator.pushReplacementNamed(context, mainNavigationScreen);
-          } else if (state is AuthNotLoggedIn) {
-             _openAddressBottomModalSheet();
-          }
+          } else if (state is AuthNotVerified) {
+            _openAddressBottomModalSheet();
+          } 
         },
         child: SingleChildScrollView(
           child: Container(
@@ -214,8 +217,7 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
                           ontap: () async {
                             if (_otpFormKey.currentState!.validate()) {
                               if (state is AuthCodeSentSuccess) {
-                                 verifyOTP(context, state.verificationId);
-                                 login(context);
+                                verifyOTP(context, state.verificationId);
                               }
                             } else {
                               showDialog(
@@ -263,8 +265,8 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
     );
   }
 
-  Future login(BuildContext context,) async {
-    context.read<AuthBloc>().add(AuthLoginEvent());
+  Future login(BuildContext context, uid) async {
+    context.read<AuthBloc>().add(AuthSigninCheckEvent(uid));
   }
 
   verifyOTP(BuildContext context, code) async {

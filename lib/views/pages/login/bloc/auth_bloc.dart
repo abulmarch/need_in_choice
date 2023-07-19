@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,7 +13,6 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final Authrepo authrepo;
-  final auth = FirebaseAuth.instance;
 
   AuthBloc({required this.authrepo}) : super(AuthInitial()) {
     on<SendOtpToPhoneEvent>(_onSendOtp);
@@ -38,6 +38,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthLoginEvent>(_login);
 
     on<AuthCraetionEvent>(_onCreate);
+    on<AuthSigninCheckEvent>(_checksignedIn);
   }
 
   FutureOr<void> _onSendOtp(
@@ -66,8 +67,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   FutureOr<void> _onVerifyOtp(
       VerifySentOtpEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
     try {
-      emit(AuthLoading());
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: event.verificationId, smsCode: event.otpCode);
       add(OnPhoneAuthVerificationCompleteEvent(credential: credential));
@@ -79,10 +80,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   FutureOr<void> _loginWithCredential(
       OnPhoneAuthVerificationCompleteEvent event,
       Emitter<AuthState> emit) async {
+    emit(AuthLoading());
     try {
-      await auth.signInWithCredential(event.credential).then((user) {
+      await authrepo.firebaseAuth
+          .signInWithCredential(event.credential)
+          .then((user) {
         if (user.user != null) {
-          emit(AuthVerified());
+          emit(AuthVerified(user.user));
         } else {
           emit(AuthNotVerified());
         }
@@ -98,7 +102,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       await authrepo.signOut();
-      emit(AuthNotVerified());
+      emit(AuthSignoutState());
+    } catch (e) {
+      emit(AuthError(error: e.toString()));
+    }
+  }
+
+  FutureOr<void> _checksignedIn(
+      AuthSigninCheckEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+      final accountData = await authrepo.fetchAccountsData(event.uid);
+      if (accountData!.userId!.isNotEmpty) {
+        emit(AuthLoggedIn(accountData));
+      } else {
+        emit(AuthNotLoggedIn());
+      }
     } catch (e) {
       emit(AuthError(error: e.toString()));
     }
@@ -107,12 +126,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   FutureOr<void> _login(AuthLoginEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final uid = auth.currentUser!.uid;
-      bool userExist = await authrepo.checkUserExists(uid);
+      final uid = authrepo.firebaseAuth.currentUser!.uid;
+      final userExist = await authrepo.checkUserExists();
+      final accountData = await authrepo.fetchAccountsData(uid);
       if (userExist) {
-        final AccountModels? accountdata =
-            await authrepo.fetchAccountsData(uid);
-        emit(AuthLoggedIn(accountdata!));
+        emit(AuthLoggedIn(accountData!));
       } else {
         emit(AuthNotLoggedIn());
       }
@@ -128,7 +146,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       bool accountCreated =
           await authrepo.createAccount(postData: event.accountModels);
       if (accountCreated) {
+        await Future.delayed(const Duration(seconds: 2));
         emit(AuthAccountCreated(event.accountModels));
+      } else {
+        emit(AuthCreatedfailed(e.toString()));
       }
     } catch (e) {
       emit(AuthCreatedfailed(e.toString()));

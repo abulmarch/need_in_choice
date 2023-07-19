@@ -22,7 +22,13 @@ class AuthError extends AuthState {
 
 class AuthNotVerified extends AuthState {}
 
-class AuthVerified extends AuthState {}
+class AuthVerified extends AuthState {
+  final User? user;
+
+  const AuthVerified(this.user);
+}
+
+class AuthSignoutState extends AuthState {}
 
 class AuthCodeSentSuccess extends AuthState {
   final String verificationId;

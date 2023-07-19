@@ -61,8 +61,14 @@ class OnPhoneAuthVerificationCompleteEvent extends AuthEvent {
   });
 }
 
-class AuthLoginEvent extends AuthEvent {
-  
+class AuthLoginEvent extends AuthEvent {}
+
+class AuthSigninCheckEvent extends AuthEvent {
+  final String uid;
+
+  const AuthSigninCheckEvent(this.uid);
+  @override
+  List<Object> get props => [uid];
 }
 
 class AuthCraetionEvent extends AuthEvent {

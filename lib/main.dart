@@ -34,8 +34,8 @@ class MyApp extends StatelessWidget {
         title: 'Need In Choice',
         theme: ThemeDataPrimary.primaryTheme,
         onGenerateRoute: PageRoutes.generateRoute,
-        // home: const SplashScreen(),
-        home: const MainNavigationScreen(),
+        home: const SplashScreen(),
+        
       ),
     );
   }

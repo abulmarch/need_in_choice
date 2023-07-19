@@ -81,6 +81,7 @@ class Authrepo {
 
   Future<AccountModels?> fetchAccountsData(String uid) async {
     try {
+      
       final String url = "$endpoint/get?user_id=$uid";
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -95,7 +96,8 @@ class Authrepo {
     }
   }
 
-  Future<bool> checkUserExists(String uid) async {
+  Future<bool> checkUserExists() async {
+    final uid = firebaseAuth.currentUser!.uid;
     final String url = "$endpoint/get?user_id=$uid";
     try {
       final response = await http.get(Uri.parse(url));
