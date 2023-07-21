@@ -80,18 +80,18 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+     final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
-      // id: 29,
+       id: id,
       currentPageRoute: commercialBuildingForRentRoot,
       mainCategory: MainCategory.realestate.name, //'realestate',
     ));
 
     return BlocBuilder<AdCreateOrUpdateBloc, AdCreateOrUpdateState>(
         builder: (context, state) {
-      List otherImageUrl = [];
-      List<Map> otherImageFiles = [];
+     
       if (state is FaildToFetchExceptionState ||
           state is AdCreateOrUpdateLoading) {
         return _loadingScaffoldWidget(state);
@@ -103,12 +103,7 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
       }
 
       if (state is! FaildToFetchExceptionState && state is! AdCreateOrUpdateLoading) {
-        try {
-          otherImageUrl = adCreateOrUpdateBloc.adCreateOrUpdateModel.otherImageUrls;
-          otherImageFiles = adCreateOrUpdateBloc.adCreateOrUpdateModel.otherImageFiles;
-        } catch (e) {
-          log(e.toString());
-        }
+        
       }
       return Scaffold(
           backgroundColor: kWhiteColor,
@@ -615,7 +610,7 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
     _titleController.text = adUpdateModel.adsTitle;
     _descriptionController.text = adUpdateModel.description;
     _brandNameController.text =
-        primaryData['Brand Name'] ?? "Dummy Brand Name is Null";
+        primaryData['Brand Name'] ?? "";
     _propertyAreaController.text = primaryData['Property Area']['value'];
     propertyArea = primaryData['Property Area']['dropname'];
     _buildupAreaController.text = primaryData['Buildup Area']['value'];
@@ -626,8 +621,9 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
 
     //-----------------------------------------------------------------
 
-    _monthlyRentController.text = '10000'; //---------------------------------
-    _securityDepositController.text = '50000';
+    _monthlyRentController.text = adUpdateModel.adPrice['Monthly'];
+    _securityDepositController.text = adUpdateModel.adPrice['Security Deposit'];
+
     _roadWidthController.text = moreInfoData['Road Width']['value'];
     roadWidth = moreInfoData['Road Width']['dropname'];
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
@@ -683,7 +679,10 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
         prymaryInfo: primaryInfo,
         moreInfo: moreInfo,
         level4Sub: building4saleCommercial[_level4Cat.value]['cat_name'],
-        adPrice: '',
+         adPrice: {
+          'Monthly': _monthlyRentController.text,
+          'Security Deposit': _securityDepositController.text
+        },
         adsLevels: {
           "route": commercialBuildingForRentRoot,
           "sub category":

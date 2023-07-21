@@ -65,10 +65,8 @@ class ImageCard extends StatelessWidget {
                             height: screenSize.width,
                             child: Center(
                               child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes !=
-                                        null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
                                     : null,
                               ),
                             ),
@@ -117,7 +115,7 @@ class ImageCard extends StatelessWidget {
               child: SmoothPageIndicator(
                   axisDirection: Axis.vertical,
                   controller: controller,
-                  count: phouseFoRentr.length,
+                  count: imageUrls.length,
                   effect: const ScrollingDotsEffect(
                     activeDotColor: kWhiteColor,
                     dotColor: kWhiteColor,

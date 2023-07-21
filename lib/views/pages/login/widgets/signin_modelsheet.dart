@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,8 +60,17 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
           if (state is AuthLoggedIn) {
             Navigator.pushReplacementNamed(context, mainNavigationScreen);
           } else if (state is AuthNotVerified) {
+            Navigator.pop(context);
             _openAddressBottomModalSheet();
-          } 
+          } else if (state is AuthError) {
+            Future.delayed(Duration.zero, () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Invalid OTP or Number $e'),
+                ),
+              );
+            });
+          }
         },
         child: SingleChildScrollView(
           child: Container(
@@ -95,7 +106,6 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
                         } else if (!validateMobileNumber(value)) {
                           return 'Please enter a valid mobile number';
                         }
-                        return null;
                       },
                       keyboardType: TextInputType.number,
                       controller: phoneController,
@@ -129,7 +139,7 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
                                     _sendOtp(
                                         context: context,
                                         phoneNumber: phoneController.text);
-                                  }
+                                  } 
                                 },
                                 child: Container(
                                   margin: const EdgeInsets.only(
@@ -218,7 +228,7 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
                             if (_otpFormKey.currentState!.validate()) {
                               if (state is AuthCodeSentSuccess) {
                                 verifyOTP(context, state.verificationId);
-                              }
+                              } 
                             } else {
                               showDialog(
                                 context: context,
@@ -255,6 +265,7 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
       ),
       context: context,
       isScrollControlled: true,
+      isDismissible: false,
       builder: (context) => SingleChildScrollView(
         reverse: false,
         padding: EdgeInsets.only(

@@ -127,10 +127,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final uid = authrepo.firebaseAuth.currentUser!.uid;
-      final userExist = await authrepo.checkUserExists();
       final accountData = await authrepo.fetchAccountsData(uid);
-      if (userExist) {
-        emit(AuthLoggedIn(accountData!));
+      if (accountData != null) {
+        AccountSingleton.instance.setAccountModels = accountData;
+        emit(AuthLoggedIn(accountData));
       } else {
         emit(AuthNotLoggedIn());
       }
@@ -146,6 +146,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       bool accountCreated =
           await authrepo.createAccount(postData: event.accountModels);
       if (accountCreated) {
+        AccountSingleton.instance.setAccountModels = event.accountModels;
+
         await Future.delayed(const Duration(seconds: 2));
         emit(AuthAccountCreated(event.accountModels));
       } else {

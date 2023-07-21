@@ -1,7 +1,6 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/colors.dart';
@@ -58,10 +57,11 @@ class _RealEstateAgencyScreenState extends State<RealEstateAgencyScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
-      // id: 29,
+      id: id,
       currentPageRoute: realestateAgencyRoot,
       mainCategory: MainCategory.realestate.name, //'realestate',
     ));
@@ -431,6 +431,9 @@ class _RealEstateAgencyScreenState extends State<RealEstateAgencyScreen> {
     log(adUpdateModel.toString());
 
     final primaryData = adUpdateModel.primaryData;
+     final daysListed =
+        primaryData['Time Range']['value'].toString().split(', ');
+    daysListed.removeLast();
 
     _titleController.text = adUpdateModel.adsTitle;
     _descriptionController.text = adUpdateModel.description;
@@ -439,9 +442,8 @@ class _RealEstateAgencyScreenState extends State<RealEstateAgencyScreen> {
     _landMarksController.text = primaryData['Landmark'];
     _websiteLinkController.text = primaryData['Website Link'];
     _timeRangeController.text = primaryData['Time Range'];
-    final selectedDays = primaryData['Selected Days'] as String;
-    // final selectedDaysList = selectedDaysString.split(',');
-    //  selectedDays = Set.from(selectedDaysList);
+    selectedDays = daysListed;
+   
   }
 
   _saveChangesAndContinue(BuildContext context) {
@@ -455,24 +457,22 @@ class _RealEstateAgencyScreenState extends State<RealEstateAgencyScreen> {
         'Landmark': _landMarksController.text,
         'Website Link': _websiteLinkController.text,
         'Time Range': {
-          'value': selectedDays.fold<String>('', (previousValue, element) => '$previousValue$element, '),
+          'value': selectedDays.join(', '),
           'groupValue': _timeRangeController.text,
         },
-        //  'Time Range': _timeRangeController.text,
-        //'Selected Days': selectedDays.toString(),
+      
       };
 
       context.read<AdCreateOrUpdateBloc>().savePrimaryMoreInfoDetails(
-        adsTitle: _titleController.text,
-        description: _descriptionController.text,
-        prymaryInfo: primaryInfo,
-        adsLevels: {
-          "route": realestateAgencyRoot,
-          "sub category": null,
-        },
-        moreInfo: {},
-        adPrice: '',
-      );
+            adsTitle: _titleController.text,
+            description: _descriptionController.text,
+            prymaryInfo: primaryInfo,
+            adsLevels: {
+              "route": realestateAgencyRoot,
+              "sub category": null,
+            },
+            moreInfo: {},
+          );
       Navigator.pushNamed(
         context,
         adConfirmScreen,

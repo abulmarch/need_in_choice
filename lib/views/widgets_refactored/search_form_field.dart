@@ -3,9 +3,10 @@
 import 'package:flutter/material.dart';
 
 class SearchFormField extends StatelessWidget {
-  const SearchFormField({super.key, this.controller, this.hintText});
+  const SearchFormField({super.key, this.controller, this.hintText, this.onTap});
   final TextEditingController? controller;
   final String? hintText;
+  final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -15,6 +16,7 @@ class SearchFormField extends StatelessWidget {
       child: TextFormField(
         
         controller: controller,
+        onTap: onTap,
         decoration: InputDecoration(
           hintText: hintText,contentPadding: const EdgeInsets.all(18),
           hintStyle: const  TextStyle(

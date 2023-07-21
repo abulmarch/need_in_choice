@@ -40,7 +40,7 @@ class AddressModalSheet extends StatelessWidget {
         } else if (state is AuthCreatedfailed) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('somthing happend'),
+              content: Text('Something happend'),
               duration: Duration(seconds: 20),
             ),
           );

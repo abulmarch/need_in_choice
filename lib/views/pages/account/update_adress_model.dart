@@ -24,9 +24,9 @@ class UpdateAdressModel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     nameController.text = accountModels.name!;
     addressController.text = accountModels.address!;
+    whatsappController.text = accountModels.whatsapp ?? '';
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
@@ -145,6 +145,18 @@ class UpdateAdressModel extends StatelessWidget {
                             ],
                           ),
                         );
+                      } else if (state is AccountEditedState) {
+                        context
+                            .read<AccountPageBloc>()
+                            .add(AccountLoadingEvent());
+                        Future.delayed(Duration.zero, () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Account Updated'),
+                            ),
+                          );
+                        });
+                        
                       }
                       return StartButton(
                         screenWidth: screenWidth,
@@ -155,9 +167,12 @@ class UpdateAdressModel extends StatelessWidget {
                               userId: accountModels.userId,
                               address: addressController.text,
                               name: nameController.text,
+                              phone: accountModels.phone,
                             );
-                            
-                          context.read<AccountPageBloc>().add(EditingAccount(accountDetails));
+                            context
+                                .read<AccountPageBloc>()
+                                .add(EditingAccount(accountDetails));
+                                 
                           } else {
                             showDialog(
                               context: context,
@@ -184,9 +199,5 @@ class UpdateAdressModel extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  updateAccount(AccountModels accountModels) async {
-    
   }
 }

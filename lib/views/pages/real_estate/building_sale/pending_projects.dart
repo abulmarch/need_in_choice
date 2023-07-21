@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
@@ -78,10 +78,11 @@ class _PendingProjectScreenState extends State<PendingProjectScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+     final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
-      // id: 29,
+       id: id,
       currentPageRoute: pendingProjectForSaleRoot,
       mainCategory: MainCategory.realestate.name, //'realestate',
     ));
@@ -592,14 +593,14 @@ class _PendingProjectScreenState extends State<PendingProjectScreen> {
                                                             .firstWhere(
                                                       (map) =>
                                                           map['image_type'] ==
-                                                          'floor_plan',
+                                                          'Floor Plan',
                                                       orElse: () => {},
                                                     )?['url'],
                                                     imageFile: otherImageFiles
                                                         .firstWhere(
                                                       (map) =>
                                                           map['image_type'] ==
-                                                          'floor_plan',
+                                                          'Floor Plan',
                                                       orElse: () => {},
                                                     )['file'],
                                                     onTap: () {
@@ -607,7 +608,7 @@ class _PendingProjectScreenState extends State<PendingProjectScreen> {
                                                           .read<
                                                               AdCreateOrUpdateBloc>()
                                                           .add(const PickOtherImageEvent(
-                                                              'floor_plan'));
+                                                              'Floor Plan'));
                                                     },
                                                   ),
                                                   ImageUploadDotedCircle(
@@ -701,7 +702,7 @@ class _PendingProjectScreenState extends State<PendingProjectScreen> {
     _titleController.text = adUpdateModel.adsTitle;
     _descriptionController.text = adUpdateModel.description;
     _brandNameController.text =
-        primaryData['Brand Name'] ?? "Dummy Brand Name is Null";
+        primaryData['Brand Name'] ?? "";
     _propertyAreaController.text = primaryData['Property Area']['value'];
     propertyArea = primaryData['Property Area']['dropname'];
     _buildupAreaController.text = primaryData['Buildup Area']['value'];
@@ -712,7 +713,7 @@ class _PendingProjectScreenState extends State<PendingProjectScreen> {
 
     //-----------------------------------------------------------------
 
-    _adsPriceController.text = '10000'; //---------------------------------
+    _adsPriceController.text = adUpdateModel.adPrice; 
     _roadWidthController.text = moreInfoData['Road Width']['value'];
     roadWidth = moreInfoData['Road Width']['dropname'];
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
@@ -772,10 +773,10 @@ class _PendingProjectScreenState extends State<PendingProjectScreen> {
         prymaryInfo: primaryInfo,
         moreInfo: moreInfo,
         // level4Sub: building4saleCommercial[_level4Cat.value]['cat_name'],
-        adPrice: '',
+        adPrice: _adsPriceController.text,
         adsLevels: {
           "route": pendingProjectForSaleRoot,
-          "sub category": Null,
+          "sub category": null,
         },
       );
       Navigator.pushNamed(

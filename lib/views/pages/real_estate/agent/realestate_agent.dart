@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/colors.dart';
@@ -58,10 +58,11 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
-      // id: 29,
+      id: id,
       currentPageRoute: realestateAgentRoot,
       mainCategory: MainCategory.realestate.name, //'realestate',
     ));
@@ -429,9 +430,12 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
   }
 
   void _initializeUpdatingAdData(AdCreateOrUpdateModel adUpdateModel) {
-    log(adUpdateModel.toString());
     final primaryData = adUpdateModel.primaryData;
 
+    final daysListed =
+        primaryData['Time Range']['value'].toString().split(', ');
+    daysListed.removeLast();
+    log(daysListed.toString());
     _titleController.text = adUpdateModel.adsTitle;
     _descriptionController.text = adUpdateModel.description;
     _workExperienceController.text = primaryData['Work Experience'];
@@ -439,7 +443,7 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
     _landMarksController.text = primaryData['Landmark'];
     _websiteLinkController.text = primaryData['Website Link'];
     _timeRangeController.text = primaryData['Time Range'];
-    final selectedDays = primaryData['Selected Days'] as String;
+    selectedDays = daysListed;
   }
 
   _saveChangesAndContinue(BuildContext context) {
@@ -453,8 +457,9 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
         'Landmark': _landMarksController.text,
         'Website Link': _websiteLinkController.text,
         'Time Range': {
-          'value': selectedDays.fold<String>(
-              '', (previousValue, element) => '$previousValue$element, '),
+          "value": selectedDays.join(', '),
+          // 'value': selectedDays.fold<String>(
+          //     '', (previousValue, element) => '$previousValue$element, '),
           'groupValue': _timeRangeController.text,
         },
       };
@@ -468,7 +473,6 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
           "sub category": null,
         },
         moreInfo: {},
-        adPrice: '',
       );
       Navigator.pushNamed(
         context,

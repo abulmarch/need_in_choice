@@ -21,6 +21,7 @@ class AdsModel {
 
   final Map<String, dynamic> primaryData;
   final Map<String, dynamic> moreInfoData;
+  final dynamic adPrice;
 
   AdsModel({
     required this.id,
@@ -40,6 +41,7 @@ class AdsModel {
     required this.primaryData,
     required this.moreInfoData,
     required this.otherimages,
+    this.adPrice,
   });
   factory AdsModel.fromJson(Map map) {
     try{
@@ -63,6 +65,7 @@ class AdsModel {
         whatsappNo: map['whatsapp'],
         primaryData: map[mainCategory]['primary_details'],
         moreInfoData: map[mainCategory]['more_info'],
+        adPrice: map['ad_price']
       );
     }
     catch (e){

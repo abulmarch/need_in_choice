@@ -65,10 +65,15 @@ class AdDetailScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        RealEstateDetailsBottomSheet(
-                          adsModel: adsModel,
-                          screenHeight: screenHeight,
-                          screenWidth: screenWidth,
+                        LayoutBuilder(
+                          builder: (context, boxConstraints) {
+                            return RealEstateDetailsBottomSheet(
+                              adsModel: adsModel,
+                              screenHeight: screenHeight,
+                              screenWidth: screenWidth,
+                              availableHeight: boxConstraints.maxHeight,
+                            );
+                          }
                         )
                       ],
                     );

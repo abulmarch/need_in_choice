@@ -1,8 +1,6 @@
 import 'dart:developer';
-
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/colors.dart';
@@ -20,7 +18,6 @@ import '../../../widgets_refactored/dashed_line_generator.dart';
 import '../../../widgets_refactored/dotted_border_textfield.dart';
 import '../../../widgets_refactored/image_upload_doted_circle.dart';
 import '../building_sale/apartment_flat_sale.dart';
-import '../building_sale/collect_ad_details.dart';
 
 class ApartmentRentScreen extends StatefulWidget {
   const ApartmentRentScreen({super.key});
@@ -49,6 +46,8 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
   late TextEditingController _monthlyRentController;
   late TextEditingController _landMarksController;
   late TextEditingController _websiteLinkController;
+
+  late List<String> selectedAmenities = [];
 
   ScrollController scrollController = ScrollController();
   String buildupArea = RealEstateDropdownList.buildupArea.first;
@@ -85,9 +84,11 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    final id = ModalRoute.of(context)!.settings.arguments as int?;
+
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
-      // id: 29,
+      id: id,
       currentPageRoute: appartmentAndFlatForRentRoot,
       mainCategory: MainCategory.realestate.name, //'realestate',
     ));
@@ -654,7 +655,8 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
                                               ),
                                             ),
                                             SizedBox(
-                                              width: cons.maxWidth * 0.19,
+                                              height: 70,
+                                              width: 70,
                                               child: ImageUploadDotedCircle(
                                                 color: kPrimaryColor,
                                                 documentTypeName: 'Floor\nPlan',
@@ -662,14 +664,14 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
                                                     otherImageUrl.firstWhere(
                                                   (map) =>
                                                       map['image_type'] ==
-                                                      'floor_plan',
+                                                      'Floor Plan',
                                                   orElse: () => {},
                                                 )?['url'],
                                                 imageFile:
                                                     otherImageFiles.firstWhere(
                                                   (map) =>
                                                       map['image_type'] ==
-                                                      'floor_plan',
+                                                      'Floor Plan',
                                                   orElse: () => {},
                                                 )['file'],
                                                 onTap: () {
@@ -678,7 +680,7 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
                                                           AdCreateOrUpdateBloc>()
                                                       .add(
                                                           const PickOtherImageEvent(
-                                                              'floor_plan'));
+                                                              'Floor Plan'));
                                                 },
                                               ),
                                             ),
@@ -784,7 +786,15 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
                                                             color: kWhiteColor,
                                                             width: width * 0.15,
                                                             textcolor:
-                                                                kGreyColor,
+                                                                kSecondaryColor,
+                                                            selected:
+                                                                selectedAmenities
+                                                                    .contains(
+                                                                        'Wifi'),
+                                                            onSelected: () {
+                                                              _toggleDaySelection(
+                                                                  'Wifi');
+                                                            },
                                                           ),
                                                           AmenitiesContainer(
                                                             text:
@@ -792,22 +802,45 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
                                                             color: kWhiteColor,
                                                             width: width * 0.5,
                                                             textcolor:
-                                                                kGreyColor,
+                                                                kSecondaryColor,
+                                                            selected:
+                                                                selectedAmenities
+                                                                    .contains(
+                                                                        'basement car parking'),
+                                                            onSelected: () {
+                                                              _toggleDaySelection(
+                                                                  'basement car parking');
+                                                            },
                                                           ),
                                                           AmenitiesContainer(
                                                             text: 'Lift',
                                                             color: kWhiteColor,
                                                             width: width * 0.15,
                                                             textcolor:
-                                                                kGreyColor,
+                                                                kSecondaryColor,
+                                                            selected:
+                                                                selectedAmenities
+                                                                    .contains(
+                                                                        'Lift'),
+                                                            onSelected: () {
+                                                              _toggleDaySelection(
+                                                                  'Lift');
+                                                            },
                                                           ),
                                                           AmenitiesContainer(
                                                             text: 'GYM',
-                                                            color:
-                                                                kSecondaryColor,
+                                                            color: kWhiteColor,
                                                             width: width * 0.15,
                                                             textcolor:
-                                                                kWhiteColor,
+                                                                kSecondaryColor,
+                                                            selected:
+                                                                selectedAmenities
+                                                                    .contains(
+                                                                        'GYM'),
+                                                            onSelected: () {
+                                                              _toggleDaySelection(
+                                                                  'GYM');
+                                                            },
                                                           ),
                                                           AmenitiesContainer(
                                                             text:
@@ -815,31 +848,61 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
                                                             color: kWhiteColor,
                                                             width: width * .35,
                                                             textcolor:
-                                                                kGreyColor,
+                                                                kSecondaryColor,
+                                                            selected:
+                                                                selectedAmenities
+                                                                    .contains(
+                                                                        'Gas Pipeline'),
+                                                            onSelected: () {
+                                                              _toggleDaySelection(
+                                                                  'Gas Pipeline');
+                                                            },
                                                           ),
                                                           AmenitiesContainer(
                                                             text:
                                                                 'Jogging Track',
-                                                            color:
-                                                                kSecondaryColor,
+                                                            color: kWhiteColor,
                                                             width: width * .33,
                                                             textcolor:
-                                                                kWhiteColor,
+                                                                kSecondaryColor,
+                                                            selected:
+                                                                selectedAmenities
+                                                                    .contains(
+                                                                        'Jogging Track'),
+                                                            onSelected: () {
+                                                              _toggleDaySelection(
+                                                                  'Jogging Track');
+                                                            },
                                                           ),
                                                           AmenitiesContainer(
                                                             text: 'intercom',
                                                             color: kWhiteColor,
                                                             width: width * .33,
                                                             textcolor:
-                                                                kGreyColor,
+                                                                kSecondaryColor,
+                                                            selected:
+                                                                selectedAmenities
+                                                                    .contains(
+                                                                        'intercom'),
+                                                            onSelected: () {
+                                                              _toggleDaySelection(
+                                                                  'intercom');
+                                                            },
                                                           ),
                                                           AmenitiesContainer(
                                                             text: 'fire safety',
-                                                            color:
-                                                                kSecondaryColor,
+                                                            color: kWhiteColor,
                                                             width: width * .33,
                                                             textcolor:
-                                                                kWhiteColor,
+                                                                kSecondaryColor,
+                                                            selected:
+                                                                selectedAmenities
+                                                                    .contains(
+                                                                        'fire safety'),
+                                                            onSelected: () {
+                                                              _toggleDaySelection(
+                                                                  'fire safety');
+                                                            },
                                                           ),
                                                           AmenitiesContainer(
                                                             text:
@@ -847,7 +910,15 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
                                                             color: kWhiteColor,
                                                             width: width * .39,
                                                             textcolor:
-                                                                kGreyColor,
+                                                                kSecondaryColor,
+                                                            selected:
+                                                                selectedAmenities
+                                                                    .contains(
+                                                                        'rain water harvest'),
+                                                            onSelected: () {
+                                                              _toggleDaySelection(
+                                                                  'rain water harvest');
+                                                            },
                                                           ),
                                                           AmenitiesContainer(
                                                             text:
@@ -855,7 +926,15 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
                                                             color: kWhiteColor,
                                                             width: width * .35,
                                                             textcolor:
-                                                                kGreyColor,
+                                                                kSecondaryColor,
+                                                            selected:
+                                                                selectedAmenities
+                                                                    .contains(
+                                                                        'covered parking'),
+                                                            onSelected: () {
+                                                              _toggleDaySelection(
+                                                                  'covered parking');
+                                                            },
                                                           ),
                                                         ],
                                                       ),
@@ -1001,8 +1080,7 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
     final moreInfoData = adUpdateModel.moreInfoData;
     _titleController.text = adUpdateModel.adsTitle;
     _descriptionController.text = adUpdateModel.description;
-    _brandNameController.text =
-        primaryData['Brand Name'] ?? "Dummy Brand Name is Null";
+    _brandNameController.text = primaryData['Brand Name'] ?? "";
     _bedroomController.text = primaryData['Bedroom'];
     _bathroomController.text = primaryData['Bathroom'];
     _floorNoController.text = primaryData['Floor No'];
@@ -1014,8 +1092,9 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
 
     //-----------------------------------------------------------------
 
-    _monthlyRentController.text = '10000'; //---------------------------------
-    _securityDepositController.text = '50000';
+    _monthlyRentController.text = adUpdateModel.adPrice['Monthly'];
+    _securityDepositController.text = adUpdateModel.adPrice['Security Deposit'];
+
     _roadWidthController.text = moreInfoData['Road Width']['value'];
     roadWidth = moreInfoData['Road Width']['dropname'];
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
@@ -1027,6 +1106,8 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
     furnishing = moreInfoData['Furnishing'];
     _landMarksController.text = moreInfoData['Landmark'];
     _websiteLinkController.text = moreInfoData['Website Link'];
+
+   selectedAmenities = moreInfoData['Selected Amenities'];
   }
 
   _saveChangesAndContinue(BuildContext context) {
@@ -1067,6 +1148,7 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
         'Furnishing': furnishing,
         'Landmark': _landMarksController.text,
         'Website Link': _websiteLinkController.text,
+        'Selected Amenities': selectedAmenities,
       };
 
       context.read<AdCreateOrUpdateBloc>().savePrimaryMoreInfoDetails(
@@ -1074,11 +1156,14 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
         description: _descriptionController.text,
         prymaryInfo: primaryInfo,
         moreInfo: moreInfo,
-        adPrice: '',
+        adPrice: {
+          'Monthly': _monthlyRentController.text,
+          'Security Deposit': _securityDepositController.text
+        },
         // level4Sub: building4saleCommercial[_level4Cat.value]['cat_name'],
         adsLevels: {
           "route": appartmentAndFlatForRentRoot,
-          "sub category": Null,
+          "sub category": null,
         },
       );
       Navigator.pushNamed(
@@ -1108,5 +1193,15 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
     _websiteLinkController.dispose();
 
     super.dispose();
+  }
+
+  void _toggleDaySelection(String day) {
+    setState(() {
+      if (selectedAmenities.contains(day)) {
+        selectedAmenities.remove(day);
+      } else {
+        selectedAmenities.add(day);
+      }
+    });
   }
 }

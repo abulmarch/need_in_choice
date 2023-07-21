@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:need_in_choice/blocs/ad_create_or_update_bloc/exception_file.dart';
 import 'package:need_in_choice/services/model/ad_create_or_update_model.dart';
+import '../../services/model/account_model.dart' show AccountSingleton;
 import '../../services/repositories/ad_create_or_update_service.dart';
 import '../../services/repositories/get_location.dart';
 
@@ -41,10 +43,10 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
     emit(AdCreateOrUpdateLoading());
     if(event.id == null){// new ad
       _adCreateOrUpdateModel = AdCreateOrUpdateModel(
-        userId: 'qwerty',//FirebaseAuth.instance.currentUser!.uid, 
+        userId: FirebaseAuth.instance.currentUser!.uid,
         mainCategory: event.mainCategory,
-        adPrice: null,
-        adsAddress: "Calletic Technologies Pvt Ltd 4th Floor, Nila, Technopark Campus, Technopark Campus, Kazhakkoottam, Thiruvananthapuram, Kerala 695581",
+        adPrice: null,//
+        adsAddress: AccountSingleton.instance.getAccountModels.address ?? "",//"Calletic Technologies Pvt Ltd 4th Floor, Nila, Technopark Campus, Technopark Campus, Kazhakkoottam, Thiruvananthapuram, Kerala 123356",
       );
       emit(const AdCreateOrUpdateLoaded());
     }else{// ad updateion
@@ -83,9 +85,8 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
       emit(ImageFileUploadedState(exception: ImageCountExceedException()));
     }
   }
-  Future<FutureOr<void>> _pickOtherImageEvent(PickOtherImageEvent event, Emitter<AdCreateOrUpdateState> emit) async {
-    log('------------------------- before --------------------');
-    log(adCreateOrUpdateModel.toString());
+  
+  FutureOr<void> _pickOtherImageEvent(PickOtherImageEvent event, Emitter<AdCreateOrUpdateState> emit) async {
     final ImagePicker picker = ImagePicker();
     emit(OtherImageFileUploadingState());
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -115,8 +116,6 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
         otherImgUrlsToDelete: otherImgUrlToDelete,
       );
     }
-    log('------------------------- after --------------------');
-    log(adCreateOrUpdateModel.toString());
     emit(OtherImageFileUploadedState());
   }
   
@@ -124,12 +123,26 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
   Future<FutureOr<void>> _uploadAdEvent(UploadAdEvent event, Emitter<AdCreateOrUpdateState> emit) async {
     emit(AdUploadingProgress());
     try {
+
+      verifyPincode();
       await createOrUpdateAdsRepo.updateOrCreateAd(adCreateOrUpdateModel);
-      emit(const AdUploadingCompletedState());
+      emit(AdUploadingCompletedState());
+
     } on FaildToUploadDataException{
-      emit(const AdUploadingCompletedState(isUploadFailed: true));
+      emit(AdUploadingExceptionState(exception: FaildToUploadDataException()));
+    } on InvalidAddressException{
+      emit(AdUploadingExceptionState(exception: InvalidAddressException()));
+    } on InvalidPincodeException{
+      emit(AdUploadingExceptionState(exception: InvalidPincodeException()));
+    } on PincodeGeneralException{
+      emit(AdUploadingExceptionState(exception: PincodeGeneralException()));
+    } catch(e){
+      print('------------$e----------------');
     }
-    
+  }
+  void verifyPincode(){
+    final pincode = findPinCode(adCreateOrUpdateModel.adsAddress);
+    _adCreateOrUpdateModel = adCreateOrUpdateModel.copyWith(pinCode: pincode);
   }
 
   void savePrimaryMoreInfoDetails({
@@ -150,7 +163,6 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
       level4Sub: level4Sub?.toLowerCase(),
       adPrice: adPrice,
     );
-    log('with --- \n${adCreateOrUpdateModel.toString()}');
   }
   
 

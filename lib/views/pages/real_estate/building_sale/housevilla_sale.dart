@@ -84,10 +84,11 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+     final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
-      // id: 29,
+       id: id,
       currentPageRoute: houseAndVillaForSaleRoot,
       mainCategory: MainCategory.realestate.name, //'realestate',
     ));
@@ -496,7 +497,6 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
                                 }
                               },
                             ),
-                         
                           ],
                         ),
                       ),
@@ -678,14 +678,14 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
                                                               .firstWhere(
                                                         (map) =>
                                                             map['image_type'] ==
-                                                            'land_sketch',
+                                                            'Land Sketch',
                                                         orElse: () => {},
                                                       )?['url'],
                                                       imageFile: otherImageFiles
                                                           .firstWhere(
                                                         (map) =>
                                                             map['image_type'] ==
-                                                            'land_sketch',
+                                                            'Land Sketch',
                                                         orElse: () => {},
                                                       )['file'],
                                                       onTap: () {
@@ -693,7 +693,7 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
                                                             .read<
                                                                 AdCreateOrUpdateBloc>()
                                                             .add(const PickOtherImageEvent(
-                                                                'land_sketch'));
+                                                                'Land Sketch'));
                                                       },
                                                     ),
                                                     ImageUploadDotedCircle(
@@ -705,14 +705,14 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
                                                               .firstWhere(
                                                         (map) =>
                                                             map['image_type'] ==
-                                                            'floor_plan',
+                                                            'Floor Plan',
                                                         orElse: () => {},
                                                       )?['url'],
                                                       imageFile: otherImageFiles
                                                           .firstWhere(
                                                         (map) =>
                                                             map['image_type'] ==
-                                                            'floor_plan',
+                                                            'Floor Plan',
                                                         orElse: () => {},
                                                       )['file'],
                                                       onTap: () {
@@ -720,7 +720,7 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
                                                             .read<
                                                                 AdCreateOrUpdateBloc>()
                                                             .add(const PickOtherImageEvent(
-                                                                'floor_plan'));
+                                                                'Floor Plan'));
                                                       },
                                                     ),
                                                   ],
@@ -830,7 +830,7 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
     _titleController.text = adUpdateModel.adsTitle;
     _descriptionController.text = adUpdateModel.description;
     _brandNameController.text =
-        primaryData['Brand Name'] ?? "Dummy Brand Name is Null";
+        primaryData['Brand Name'] ?? "";
     _bedroomController.text = primaryData['Bedroom'];
     _bathroomController.text = primaryData['Bathroom'];
     _propertyAreaController.text = primaryData['Property Area']['value'];
@@ -843,7 +843,7 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
 
     //-----------------------------------------------------------------
 
-    _adsPriceController.text = '10000'; //---------------------------------
+    _adsPriceController.text =  adUpdateModel.adPrice; 
     _roadWidthController.text = moreInfoData['Road Width']['value'];
     roadWidth = moreInfoData['Road Width']['dropname'];
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
@@ -908,10 +908,10 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
         prymaryInfo: primaryInfo,
         moreInfo: moreInfo,
         // level4Sub: building4saleCommercial[_level4Cat.value]['cat_name'],
-        adPrice: '',
+        adPrice: _adsPriceController.text,
         adsLevels: {
           "route": houseAndVillaForSaleRoot,
-          "sub category": Null,
+          "sub category": null,
         },
       );
       Navigator.pushNamed(
