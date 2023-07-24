@@ -1,8 +1,6 @@
 import 'dart:developer';
-
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart'  show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
@@ -12,7 +10,6 @@ import '../../../../utils/constants.dart';
 import '../../../../utils/dropdown_list_items.dart';
 import '../../../../utils/level4_category_data.dart';
 import '../../../../utils/main_cat_enum.dart';
-import '../../../widgets_refactored/circular_back_button.dart';
 import '../../../widgets_refactored/condinue_button.dart';
 import '../../../widgets_refactored/custom_dropdown_button.dart';
 import '../../../widgets_refactored/custom_text_field.dart';
@@ -20,7 +17,7 @@ import '../../../widgets_refactored/dashed_line_generator.dart';
 import '../../../widgets_refactored/dotted_border_textfield.dart';
 import '../../../widgets_refactored/image_upload_doted_circle.dart';
 import '../../../widgets_refactored/scrolling_app_bar.dart';
-import '../building_sale/commercial_building_sale.dart';
+
 
 class LandForSaleScreen extends StatefulWidget {
   const LandForSaleScreen({super.key});
@@ -30,7 +27,7 @@ class LandForSaleScreen extends StatefulWidget {
 }
 
 class _LandForSaleScreenState extends State<LandForSaleScreen> {
-  final ValueNotifier<bool> _addMoreEnabled = ValueNotifier(false); // false
+
   final _formKey = GlobalKey<FormState>();
   late ScrollController _scrollController;
 
@@ -63,10 +60,12 @@ class _LandForSaleScreenState extends State<LandForSaleScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+     final id = ModalRoute.of(context)!.settings.arguments as int?;
+
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
-      // id: 29,
+       id: id,
       currentPageRoute: landForSaleRoot,
       mainCategory: MainCategory.realestate.name, //'realestate',
     ));
@@ -231,18 +230,18 @@ class _LandForSaleScreenState extends State<LandForSaleScreen> {
                                     documentTypeName: 'Land\nSketch',
                                     networkImageUrl: otherImageUrl.firstWhere(
                                       (map) =>
-                                          map['image_type'] == 'land_sketch',
+                                          map['image_type'] == 'Land Sketch',
                                       orElse: () => {},
                                     )?['url'],
                                     imageFile: otherImageFiles.firstWhere(
                                       (map) =>
-                                          map['image_type'] == 'land_sketch',
+                                          map['image_type'] == 'Land Sketch',
                                       orElse: () => {},
                                     )['file'],
                                     onTap: () {
                                       context.read<AdCreateOrUpdateBloc>().add(
                                           const PickOtherImageEvent(
-                                              'land_sketch'));
+                                              'Land Sketch'));
                                     },
                                   ),
                                 ],
@@ -350,7 +349,7 @@ class _LandForSaleScreenState extends State<LandForSaleScreen> {
     facing = primaryData['Facing'];
 
      //-----------------------------------------------------------------
-    _adsPriceController.text = '10000'; //---------------------------------
+    _adsPriceController.text = adUpdateModel.adPrice;
    
   }
 
@@ -377,7 +376,7 @@ class _LandForSaleScreenState extends State<LandForSaleScreen> {
         description: _descriptionController.text,
         prymaryInfo: primaryInfo,
         level4Sub: land4saleLevel4Cat[_level4Cat.value]['cat_name'],
-        adPrice: '',
+        adPrice: _adsPriceController.text,
         adsLevels: {
           "route": landForSaleRoot,
           "sub category":

@@ -1,8 +1,6 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/colors.dart';
@@ -18,7 +16,6 @@ import '../../../widgets_refactored/custom_dropdown_button.dart';
 import '../../../widgets_refactored/custom_text_field.dart';
 import '../../../widgets_refactored/dashed_line_generator.dart';
 import '../../../widgets_refactored/dotted_border_textfield.dart';
-import '../building_sale/collect_ad_details.dart';
 
 class HouseVillaRentScreen extends StatefulWidget {
   const HouseVillaRentScreen({super.key});
@@ -43,7 +40,7 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
   late TextEditingController _roadWidthController;
   late TextEditingController _monthlyRentController;
   late TextEditingController _carpetAreaController;
- 
+
   late TextEditingController _parkingController;
 
   late TextEditingController _landMarksController;
@@ -75,9 +72,9 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
     _monthlyRentController = TextEditingController();
     _securityDepositController = TextEditingController();
     _carpetAreaController = TextEditingController();
-   
+
     _parkingController = TextEditingController();
-   
+
     _landMarksController = TextEditingController();
     _websiteLinkController = TextEditingController();
   }
@@ -86,18 +83,17 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+      final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
-      // id: 29,
       currentPageRoute: houseAndVillaForRentRoot,
+      id: id,
       mainCategory: MainCategory.realestate.name, //'realestate',
     ));
 
     return BlocBuilder<AdCreateOrUpdateBloc, AdCreateOrUpdateState>(
         builder: (context, state) {
-      List otherImageUrl = [];
-      List<Map> otherImageFiles = [];
       if (state is FaildToFetchExceptionState ||
           state is AdCreateOrUpdateLoading) {
         return _loadingScaffoldWidget(state);
@@ -109,16 +105,7 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
       }
 
       if (state is! FaildToFetchExceptionState &&
-          state is! AdCreateOrUpdateLoading) {
-        try {
-          otherImageUrl =
-              adCreateOrUpdateBloc.adCreateOrUpdateModel.otherImageUrls;
-          otherImageFiles =
-              adCreateOrUpdateBloc.adCreateOrUpdateModel.otherImageFiles;
-        } catch (e) {
-          log(e.toString());
-        }
-      }
+          state is! AdCreateOrUpdateLoading) {}
       return Scaffold(
         backgroundColor: kWhiteColor,
         appBar: PreferredSize(
@@ -329,7 +316,6 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
                                           return null;
                                         },
                                         inputFormatters: [
-                                          // FilteringTextInputFormatter.digitsOnly
                                           FilteringTextInputFormatter.allow(
                                               RegExp(r'^\d+\.?\d{0,2}')),
                                         ],
@@ -684,7 +670,7 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
     _titleController.text = adUpdateModel.adsTitle;
     _descriptionController.text = adUpdateModel.description;
     _brandNameController.text =
-        primaryData['Brand Name'] ?? "Dummy Brand Name is Null";
+        primaryData['Brand Name'] ?? "";
     _bedroomController.text = primaryData['Bedroom'];
     _bathroomController.text = primaryData['Bathroom'];
     _propertyAreaController.text = primaryData['Property Area']['value'];
@@ -696,8 +682,10 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
     facing = primaryData['Facing'];
 
     //-----------------------------------------------------------------
-    _monthlyRentController.text = '10000'; //---------------------------------
-    _securityDepositController.text = '50000';
+    _monthlyRentController.text = adUpdateModel.adPrice['Monthly'];
+    _securityDepositController.text = adUpdateModel.adPrice['Security Deposit'];
+
+
     _roadWidthController.text = moreInfoData['Road Width']['value'];
     roadWidth = moreInfoData['Road Width']['dropname'];
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
@@ -757,10 +745,13 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
         prymaryInfo: primaryInfo,
         moreInfo: moreInfo,
         // level4Sub: building4saleCommercial[_level4Cat.value]['cat_name'],
-        adPrice: '',
+        adPrice: {
+          'Monthly': _monthlyRentController.text,
+          'Security Deposit': _securityDepositController.text
+        },
         adsLevels: {
           "route": houseAndVillaForSaleRoot,
-          "sub category": Null,
+          "sub category": null,
         },
       );
       Navigator.pushNamed(

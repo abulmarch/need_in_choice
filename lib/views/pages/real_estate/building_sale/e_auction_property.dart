@@ -1,8 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
@@ -41,6 +42,7 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
   late TextEditingController _roadWidthController;
   late TextEditingController _startPriceController;
   late TextEditingController _preBidPriceController;
+  late TextEditingController _startEndDateController;
   late TextEditingController _carpetAreaController;
   late TextEditingController _floorNoController;
   late TextEditingController _parkingController;
@@ -48,12 +50,14 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
   late TextEditingController _landMarksController;
   late TextEditingController _websiteLinkController;
 
-  ScrollController scrollController = ScrollController();
   String propertyArea = RealEstateDropdownList.propertyArea.first;
   String buildupArea = RealEstateDropdownList.buildupArea.first;
   String carpetArea = RealEstateDropdownList.carpetArea.first;
   String roadWidth = RealEstateDropdownList.carpetArea.first;
   bool _checkValidation = false;
+
+  DateTime? bidStartDate;
+  DateTime? bidEndDate;
 
   @override
   void initState() {
@@ -64,6 +68,7 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
     _bankNameController = TextEditingController();
     _branchNameController = TextEditingController();
 
+    _startEndDateController = TextEditingController();
     _propertyAreaController = TextEditingController();
     _buildupAreaController = TextEditingController();
     _totalFloorController = TextEditingController();
@@ -82,10 +87,11 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
-      // id: 29,
+      id: id,
       currentPageRoute: eAuctionProjectForSaleRoot,
       mainCategory: MainCategory.realestate.name, //'realestate',
     ));
@@ -409,35 +415,47 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Container(
-                                      height: height * 0.045,
-                                      width: width * 0.36,
-                                      decoration: BoxDecoration(
-                                          color: kGreyColor,
-                                          borderRadius:
-                                              BorderRadius.circular(25)),
-                                      child: const Center(
-                                          child: Text(
-                                        'Bid Start Date',
-                                        style: TextStyle(
-                                            color: kWhiteColor,
-                                            fontWeight: FontWeight.w400),
-                                      )),
+                                    GestureDetector(
+                                      onTap: () => _selectDate(context, true),
+                                      child: Container(
+                                        height: height * 0.045,
+                                        width: width * 0.36,
+                                        decoration: BoxDecoration(
+                                            color: kGreyColor,
+                                            borderRadius:
+                                                BorderRadius.circular(25)),
+                                        child: Center(
+                                            child: Text(
+                                          //  'Bid Start Date',
+                                          bidStartDate != null
+                                              ? _formatDate(bidStartDate)
+                                              : 'Bid Start Date',
+                                          style: const TextStyle(
+                                              color: kWhiteColor,
+                                              fontWeight: FontWeight.w400),
+                                        )),
+                                      ),
                                     ),
-                                    Container(
-                                      height: height * 0.045,
-                                      width: width * 0.36,
-                                      decoration: BoxDecoration(
-                                          color: kGreyColor,
-                                          borderRadius:
-                                              BorderRadius.circular(25)),
-                                      child: const Center(
-                                          child: Text(
-                                        'Bid End Date',
-                                        style: TextStyle(
-                                            color: kWhiteColor,
-                                            fontWeight: FontWeight.w400),
-                                      )),
+                                    GestureDetector(
+                                      onTap: () => _selectDate(context, false),
+                                      child: Container(
+                                        height: height * 0.045,
+                                        width: width * 0.36,
+                                        decoration: BoxDecoration(
+                                            color: kGreyColor,
+                                            borderRadius:
+                                                BorderRadius.circular(25)),
+                                        child: Center(
+                                            child: Text(
+                                          // 'Bid End Date',
+                                          bidEndDate != null
+                                              ? _formatDate(bidEndDate)
+                                              : 'Bid End Date',
+                                          style: const TextStyle(
+                                              color: kWhiteColor,
+                                              fontWeight: FontWeight.w400),
+                                        )),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -683,14 +701,14 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
                                                             .firstWhere(
                                                       (map) =>
                                                           map['image_type'] ==
-                                                          'floor_plan',
+                                                          'Floor Plan',
                                                       orElse: () => {},
                                                     )?['url'],
                                                     imageFile: otherImageFiles
                                                         .firstWhere(
                                                       (map) =>
                                                           map['image_type'] ==
-                                                          'floor_plan',
+                                                          'Floor Plan',
                                                       orElse: () => {},
                                                     )['file'],
                                                     onTap: () {
@@ -698,7 +716,7 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
                                                           .read<
                                                               AdCreateOrUpdateBloc>()
                                                           .add(const PickOtherImageEvent(
-                                                              'floor_plan'));
+                                                              'Floor Plan'));
                                                     },
                                                   ),
                                                   ImageUploadDotedCircle(
@@ -710,14 +728,14 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
                                                             .firstWhere(
                                                       (map) =>
                                                           map['image_type'] ==
-                                                          'land_sketch',
+                                                          'Land Sketch',
                                                       orElse: () => {},
                                                     )?['url'],
                                                     imageFile: otherImageFiles
                                                         .firstWhere(
                                                       (map) =>
                                                           map['image_type'] ==
-                                                          'land_sketch',
+                                                          'Land Sketch',
                                                       orElse: () => {},
                                                     )['file'],
                                                     onTap: () {
@@ -725,7 +743,7 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
                                                           .read<
                                                               AdCreateOrUpdateBloc>()
                                                           .add(const PickOtherImageEvent(
-                                                              'land_sketch'));
+                                                              'Land Sketch'));
                                                     },
                                                   ),
                                                 ],
@@ -778,24 +796,24 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
 
   void _initializeUpdatingAdData(AdCreateOrUpdateModel adUpdateModel) {
     log(adUpdateModel.toString());
+
     final primaryData = adUpdateModel.primaryData;
     final moreInfoData = adUpdateModel.moreInfoData;
     _titleController.text = adUpdateModel.adsTitle;
     _descriptionController.text = adUpdateModel.description;
-    _bankNameController.text =
-        primaryData['Bank Name'] ?? "Dummy Bank Name is Null";
-    _branchNameController.text =
-        primaryData['Branch Name'] ?? "Dummy Branch Name is Null";
+    _bankNameController.text = primaryData['Bank Name'] ?? "";
+    _branchNameController.text = primaryData['Branch Name'] ?? "";
 
     _propertyAreaController.text = primaryData['Property Area']['value'];
     propertyArea = primaryData['Property Area']['dropname'];
     _buildupAreaController.text = primaryData['Buildup Area']['value'];
     buildupArea = primaryData['Buildup Area']['dropname'];
+    _startEndDateController.text = primaryData['Date Range'];
 
     //-----------------------------------------------------------------
 
-    _startPriceController.text = '10000'; //---------------------------------
-    _preBidPriceController.text = '2000';
+    _startPriceController.text = adUpdateModel.adPrice['Start Price'];
+    _preBidPriceController.text = adUpdateModel.adPrice['Prebid'];
     _roadWidthController.text = moreInfoData['Road Width']['value'];
     roadWidth = moreInfoData['Road Width']['dropname'];
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
@@ -809,18 +827,18 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
     _landMarksController.text = moreInfoData['Landmark'];
     _websiteLinkController.text = moreInfoData['Website Link'];
   }
- _saveChangesAndContinue(BuildContext context) {
+
+  _saveChangesAndContinue(BuildContext context) {
     _checkValidation = true;
     context
         .read<AdCreateOrUpdateBloc>()
         .add(AdCreateOrUpdateCheckDropDownValidattionEvent());
     if (_formKey.currentState!.validate() &&
-      _startPriceController.text.trim().isNotEmpty &&
+        _startPriceController.text.trim().isNotEmpty &&
         _preBidPriceController.text.trim().isNotEmpty) {
       final Map<String, dynamic> primaryInfo = {
         'Bank Name': _bankNameController.text,
-         'Branch Name': _branchNameController.text,
-      
+        'Branch Name': _branchNameController.text,
         'Property Area': {
           "value": _propertyAreaController.text,
           "dropname": propertyArea
@@ -829,7 +847,7 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
           "value": _buildupAreaController.text,
           "dropname": buildupArea
         },
-       
+        'Date Range': _startEndDateController.text,
       };
       final Map<String, dynamic> moreInfo = {
         'Road Width': {
@@ -843,23 +861,25 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
         'Floor No': _floorNoController.text,
         'Parking': _parkingController.text,
         'Age Of Building': _ageOfBuildingController.text,
-       'Total Floor': _totalFloorController.text,
+        'Total Floor': _totalFloorController.text,
         'Landmark': _landMarksController.text,
         'Website Link': _websiteLinkController.text,
       };
 
       context.read<AdCreateOrUpdateBloc>().savePrimaryMoreInfoDetails(
-        adsTitle: _titleController.text,
-        description: _descriptionController.text,
-        prymaryInfo: primaryInfo,
-        moreInfo: moreInfo,
-        // level4Sub: building4saleCommercial[_level4Cat.value]['cat_name'],
-        adPrice: '',
-        adsLevels: {
-          "route": eAuctionProjectForSaleRoot,
-          "sub category": Null,
-        },
-      );
+          adsTitle: _titleController.text,
+          description: _descriptionController.text,
+          prymaryInfo: primaryInfo,
+          moreInfo: moreInfo,
+          // level4Sub: building4saleCommercial[_level4Cat.value]['cat_name'],
+          adsLevels: {
+            "route": eAuctionProjectForSaleRoot,
+            "sub category": null,
+          },
+          adPrice: {
+            'Start Price': _startPriceController.text,
+            'Prebid': _preBidPriceController.text
+          });
       Navigator.pushNamed(
         context,
         adConfirmScreen,
@@ -879,15 +899,44 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
     _buildupAreaController.dispose();
     _roadWidthController.dispose();
     _startPriceController.dispose();
-     _preBidPriceController.dispose();
+    _preBidPriceController.dispose();
     _carpetAreaController.dispose();
     _floorNoController.dispose();
     _parkingController.dispose();
     _ageOfBuildingController.dispose();
     _landMarksController.dispose();
     _websiteLinkController.dispose();
-
     super.dispose();
   }
 
+  Future<void> _selectDate(BuildContext context, bool isStartDate) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2030),
+    );
+    if (picked != null) {
+      setState(() {
+        if (isStartDate) {
+          bidStartDate = picked;
+        } else {
+          bidEndDate = picked;
+        }
+        final startDate = _formatDate(bidStartDate);
+        final endDate = _formatDate(bidEndDate);
+        setState(() {
+          _startEndDateController.text = '$startDate - $endDate';
+        });
+      });
+    }
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date != null) {
+      final formatter = DateFormat('MMM d');
+      return formatter.format(date);
+    }
+    return '';
+  }
 }

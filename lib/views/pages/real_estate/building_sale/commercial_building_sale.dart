@@ -13,7 +13,6 @@ import '../../../../utils/constants.dart';
 import '../../../../utils/dropdown_list_items.dart';
 import '../../../../utils/level4_category_data.dart';
 import '../../../../utils/main_cat_enum.dart';
-import '../../../widgets_refactored/circular_back_button.dart';
 import '../../../widgets_refactored/custom_text_field.dart';
 import '../../../widgets_refactored/dotted_border_textfield.dart';
 import '../../../widgets_refactored/condinue_button.dart';
@@ -91,8 +90,9 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
   @override
   Widget build(BuildContext context) {
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
+    final id = ModalRoute.of(context)!.settings.arguments as int?;
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
-        // id: 29,
+        id: id,
         currentPageRoute: commercialBuildingForSaleRoot,
         mainCategory: MainCategory.realestate.name,//'realestate',
     ));
@@ -556,20 +556,20 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
                                                   ImageUploadDotedCircle(
                                                     color: kPrimaryColor,
                                                     documentTypeName: 'Floor\nPlan',
-                                                    networkImageUrl: otherImageUrl.firstWhere((map)=>map['image_type'] == 'floor_plan',orElse: () => {},)?['url'],
-                                                    imageFile: otherImageFiles.firstWhere((map) => map['image_type'] == 'floor_plan',orElse: () => {},)['file'],
+                                                    networkImageUrl: otherImageUrl.firstWhere((map)=>map['image_type'] == 'Floor Plan',orElse: () => {},)?['url'],
+                                                    imageFile: otherImageFiles.firstWhere((map) => map['image_type'] == 'Floor Plan',orElse: () => {},)['file'],
                                                     //'adsotherimage/64a9418c1584d3_13380405.jpg',
                                                     onTap: () {
-                                                      context.read<AdCreateOrUpdateBloc>().add(const PickOtherImageEvent('floor_plan'));
+                                                      context.read<AdCreateOrUpdateBloc>().add(const PickOtherImageEvent('Floor Plan'));
                                                     },
                                                   ),
                                                   ImageUploadDotedCircle(
                                                     color: kBlackColor,
                                                     documentTypeName: 'Land\nSketch',
-                                                    networkImageUrl: otherImageUrl.firstWhere((map)=>map['image_type'] == 'land_sketch',orElse: () => {},)?['url'],
-                                                    imageFile: otherImageFiles.firstWhere((map) => map['image_type'] == 'land_sketch',orElse: () => {},)['file'],
+                                                    networkImageUrl: otherImageUrl.firstWhere((map)=>map['image_type'] == 'Land Sketch',orElse: () => {},)?['url'],
+                                                    imageFile: otherImageFiles.firstWhere((map) => map['image_type'] == 'Land Sketch',orElse: () => {},)['file'],
                                                     onTap: () {
-                                                      context.read<AdCreateOrUpdateBloc>().add(const PickOtherImageEvent('land_sketch'));
+                                                      context.read<AdCreateOrUpdateBloc>().add(const PickOtherImageEvent('Land Sketch'));
                                                     },
                                                   ),
                                                 ],

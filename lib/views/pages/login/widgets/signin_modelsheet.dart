@@ -62,7 +62,15 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
           } else if (state is AuthNotVerified || state is AuthNotLoggedIn) {
             Navigator.pop(context);
             _openAddressBottomModalSheet();
-          } 
+          } else if (state is AuthError) {
+            Future.delayed(Duration.zero, () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Invalid OTP or Number $e'),
+                ),
+              );
+            });
+          }
         },
         child: SingleChildScrollView(
           child: Container(
@@ -215,17 +223,17 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
                     padding: const EdgeInsets.only(left: 10.0),
                     child: BlocBuilder<AuthBloc, AuthState>(
                       builder: (context, state) {
-                         if (state is AuthError) {
-            print(" AUTH ${state.error}");
-            Future.delayed( Duration.zero, () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  duration: Duration(seconds: 5),
-                  content: Text('Invalid OTP or Number $e'),
-                ),
-              );
-            });
-          }
+                        if (state is AuthError) {
+                          print(" AUTH ${state.error}");
+                          Future.delayed(Duration.zero, () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                duration: Duration(seconds: 5),
+                                content: Text('Invalid OTP or Number $e'),
+                              ),
+                            );
+                          });
+                        }
                         return StartButton(
                           screenWidth: screenWidth,
                           ontap: () async {

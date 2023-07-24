@@ -37,9 +37,12 @@ class OtherImageFileUploadingState extends AdCreateOrUpdateState {}
 class OtherImageFileUploadedState extends AdCreateOrUpdateState {}
 
 class AdUploadingProgress extends AdCreateOrUpdateState{}
-class AdUploadingCompletedState extends AdCreateOrUpdateState{
-  final bool isUploadFailed;
-  const AdUploadingCompletedState({this.isUploadFailed = false});
+
+class AdUploadingCompletedState extends AdCreateOrUpdateState{}
+
+class AdUploadingExceptionState extends AdCreateOrUpdateState{
+  final Exception exception;
+  const AdUploadingExceptionState({required this.exception});
 }
 
 

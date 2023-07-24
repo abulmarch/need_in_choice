@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:geocoding/geocoding.dart' show Placemark, placemarkFromCoordinates;
 import 'package:geolocator/geolocator.dart';
 
-import '../../blocs/ad_create_or_update_bloc/address_exception.dart';
+import '../../blocs/ad_create_or_update_bloc/exception_file.dart';
 
 Future<Position> determinePosition() async {
   bool serviceEnabled = false;
@@ -71,7 +71,7 @@ String findPinCode(String text) {
   if (pinCode != null) {
     return pinCode;    
   }else{
-    throw Exception();
+    throw PincodeGeneralException();
   }
 }
 

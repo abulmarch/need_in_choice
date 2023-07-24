@@ -22,3 +22,12 @@ class AllAdsLoaded extends AllAdsState {
   @override
   List<Object> get props => [adsList];
 }
+
+//---------------------------------------------------------------
+class InitialLoading extends AllAdsState{}
+
+class NextPageLoading extends AllAdsState{
+  final List<AdsModel> oldAdsList;
+
+  const NextPageLoading(this.oldAdsList);
+}

@@ -19,6 +19,7 @@ class _ConfirmLottieScreenState extends State<ConfirmLottieScreen> {
     super.initState();
     Future.delayed(const Duration(seconds: 1)).then((value) {
       Navigator.popUntil(context, ModalRoute.withName(mainNavigationScreen));
+      
     });
   }
   @override

@@ -13,10 +13,14 @@ part 'all_ads_state.dart';
 class AllAdsBloc extends Bloc<AllAdsEvent, AllAdsState> {
   final AllAdsRepo allAdsRepo;
   int _page = 1;
+  List<AdsModel>? _cachedAdsData;
+
   AllAdsBloc(this.allAdsRepo) : super(AllAdsInitial()) {
     on<GetAllAdsFirstFetch>(_onLoadAllAds);
 
     on<FetchNextPageAds>(_fetchNextPageAds);
+
+    on<FetchAllAds>(_fetchAllAds);
   }
   void _onLoadAllAds(GetAllAdsFirstFetch event, Emitter<AllAdsState> emit) async{
     emit(AllAdsInitial());
@@ -29,6 +33,21 @@ class AllAdsBloc extends Bloc<AllAdsEvent, AllAdsState> {
   Future<void> _fetchNextPageAds(FetchNextPageAds event, Emitter<AllAdsState> emit) async {
     final oldList = event.oldAdsList;
     emit(AllAdsLoding(oldList));
+    final adsList = await allAdsRepo.fetchAllAdsData(_page);
+    oldList.addAll(adsList);
+    emit(AllAdsLoaded(adsList: oldList));
+    if(_page <= AllAdsRepo.lastPage +1){// if AllAdsRepo.lastPage = 5 then _page can upto 6
+        _page++;
+    }
+  }
+
+  FutureOr<void> _fetchAllAds(FetchAllAds event, Emitter<AllAdsState> emit) async {
+    final oldList = event.oldAdsList;
+    if(event.isFirstFetch) {
+      emit(InitialLoading());
+    }else{
+      emit(NextPageLoading(oldList));
+    }
     final adsList = await allAdsRepo.fetchAllAdsData(_page);
     oldList.addAll(adsList);
     emit(AllAdsLoaded(adsList: oldList));

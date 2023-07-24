@@ -4,6 +4,7 @@ import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/utils/constants.dart';
 
 import '../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
+import '../../../blocs/ad_create_or_update_bloc/exception_file.dart';
 import '../../../config/routes/route_names.dart';
 import '../../../utils/dummy_data.dart';
 import '../../widgets_refactored/error_popup.dart';
@@ -29,69 +30,6 @@ class AdPreviewScreen extends StatelessWidget {
         final imageList = [...adDetails.imageFiles, ...adDetails.imageUrls];
         return SafeArea(
           child: Scaffold(
-            // body: Stack(
-            //   children: [
-            //     Padding(
-            //       padding: const EdgeInsets.all(kpadding10),
-            //       child: Column(
-            //         crossAxisAlignment: CrossAxisAlignment.stretch,
-            //         children: [
-            //           kHeight10,
-            //           AdPreviewImageCard(
-            //             houseFoRentr: houseFoRentAd,
-            //             imageUrlsOrFiles: imageList,
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //     Positioned(
-            //       bottom: 81,
-            //       child: AdPreviewBottomSheetRealEstate(
-            //         screenWidth: screenWidth,
-            //         screenHeight: screenHeight,
-            //       ),
-            //     ),
-            //     Positioned(
-            //       bottom: 0,
-            //       child: SizedBox(
-            //         width: screenWidth,
-            //         height: 80,
-            //         child: ColoredBox(
-            //           color: kWhiteColor,
-            //           child: Row(
-            //             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            //             children: [
-            //               TextIconButton(
-            //                 onpressed: () {
-            //                   Navigator.pop(context);
-            //                 },
-            //                 text: 'Edit',
-            //                 fontsize: 22,
-            //                 txtcolor: kFadedBlack,
-            //                 // size: const Size(126, 77),
-            //                 size: Size(screenWidth * 0.4, 60),
-            //                 bordercolor: const Color(0XFFB7B7B7),
-            //               ),
-            //               TextIconButton(
-            //                 onpressed: !isAdUloading ? () {
-            //                   context.read<AdCreateOrUpdateBloc>().add(UploadAdEvent());
-            //                 }
-            //                 : null,
-            //                 text: 'Confirm Ad',
-            //                 fontsize: 22,
-            //                 txtcolor: kWhiteColor,
-            //                 background: kPrimaryColor,
-            //                 // size: const Size(243, 77),
-            //                 size: Size(screenWidth * 0.5, 60),
-            //               )
-            //             ],
-            //           ),
-            //         ),
-            //       ),
-            //     )
-            //   ],
-            // ),
-
             body: Stack(
               alignment: Alignment.bottomCenter,
               children: [
@@ -117,9 +55,14 @@ class AdPreviewScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                AdPreviewBottomSheetRealEstate(
-                  screenWidth: screenWidth,
-                  screenHeight: screenHeight,
+                LayoutBuilder(
+                  builder: (context, boxConstraints) {
+                    return AdPreviewBottomSheetRealEstate(
+                      screenWidth: screenWidth,
+                      screenHeight: screenHeight,
+                      availableHeight: boxConstraints.maxHeight,
+                    );
+                  }
                 ),
               ],
             ),
@@ -166,13 +109,20 @@ class AdPreviewScreen extends StatelessWidget {
         );
       },
       listener: (context, state) {
-        if (state is AdUploadingCompletedState && !state.isUploadFailed) {
+        if (state is AdUploadingCompletedState) {
           Navigator.pushNamed(context, confirmLottieScreen);
-        }else if (state is AdUploadingCompletedState && state.isUploadFailed) {
-          showErrorDialog(context, 'Somthing went wrong. Please try again.').then((value) {
-           Navigator.popUntil(context, (mainNavigationScreen) => false);
-            // Navigator.popUntil(context, ModalRoute.withName(mainNavigationScreen));
-          });
+        }else if (state is AdUploadingExceptionState) {
+          if(state.exception is FaildToUploadDataException){
+            showErrorDialog(context, 'Something went wrong. Try again.').then((value) {
+              Navigator.popUntil(context, ModalRoute.withName(mainNavigationScreen));
+            });
+          }else if(state.exception is InvalidPincodeException){
+            showErrorDialog(context, 'Invalid Pincod');
+          }else if(state.exception is InvalidAddressException){
+            showErrorDialog(context, 'Invalid address, Include pincod in the address');
+          }else{
+            showErrorDialog(context, 'Verify your address');
+          }
         }
       },
     );

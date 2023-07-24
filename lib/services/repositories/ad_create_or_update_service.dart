@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart' show XFile;
 
 import 'package:need_in_choice/services/repositories/repository_urls.dart'show ApiEndpoints;
+import '../../blocs/ad_create_or_update_bloc/exception_file.dart' show FaildToFindAdException, FaildToUploadDataException;
 import '../model/ad_create_or_update_model.dart';
 
 class CreateOrUpdateAdsRepo {
@@ -82,11 +83,8 @@ class CreateOrUpdateAdsRepo {
         log(response.body);
       });      
     } catch (e) {
+      log('$e     ======  >>>>');
         throw FaildToUploadDataException();
     }
   }
 }
-
-class FaildToFindAdException implements Exception{}
-
-class FaildToUploadDataException implements Exception{}

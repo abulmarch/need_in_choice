@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/views/pages/ad_finalisation/ad_preview_screen.dart';
 import 'package:need_in_choice/views/widgets_refactored/circular_back_button.dart';
 import '../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
+import '../../../blocs/ad_create_or_update_bloc/exception_file.dart';
 import '../../../config/routes/route_names.dart';
 import '../../../services/repositories/repository_urls.dart';
 import '../../../utils/colors.dart';
@@ -393,12 +394,20 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                 );
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
-            } else if (state is AdUploadingCompletedState && !state.isUploadFailed) {
+            } else if (state is AdUploadingCompletedState) {
               Navigator.pushNamed(context, confirmLottieScreen);
-            }else if (state is AdUploadingCompletedState && state.isUploadFailed) {
-              showErrorDialog(context, 'Somthing went wrong. Try again.').then((value) {
-                // Navigator.popUntil(context, ModalRoute.withName(mainNavigationScreen));
-              });
+            }else if (state is AdUploadingExceptionState) {
+              if(state.exception is FaildToUploadDataException){
+                showErrorDialog(context, 'Something went wrong. Try again.').then((value) {
+                  Navigator.popUntil(context, ModalRoute.withName(mainNavigationScreen));
+                });
+              }else if(state.exception is InvalidPincodeException){
+                showErrorDialog(context, 'Invalid Pincod');
+              }else if(state.exception is InvalidAddressException){
+                showErrorDialog(context, 'Invalid address, Include pincod in the address');
+              }else{
+                showErrorDialog(context, 'Verify your address');
+              }
             }
           },
         ),

@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/services/model/ads_models.dart';
 import 'package:need_in_choice/utils/constants.dart';
-import 'package:need_in_choice/views/pages/ad_detail/widgets/realestate_details_bottomsheet.dart';
-import 'package:need_in_choice/views/pages/home_page/show_category_bottomsheet.dart';
 import '../../../blocs/all_ads_bloc/all_ads_bloc.dart';
 import '../../../services/repositories/repository_urls.dart';
 import '../../../utils/category_data.dart';
@@ -17,53 +15,70 @@ import '../../widgets_refactored/search_form_field.dart';
 import 'widgets.dart/advertisement_card_widget.dart';
 import 'widgets.dart/scrolling_category.dart';
 
-class HomePageScreen extends StatelessWidget {
+class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
 
-  scrollControllerListener(
-      BuildContext context,
-      ScrollController scrollController,
-      ValueNotifier<bool> searchbarNotifier,
-      ValueNotifier<ScrollPhysics> physicsNotifier) {
-    scrollController.addListener(
+  @override
+  State<HomePageScreen> createState() => _HomePageScreenState();
+}
+
+class _HomePageScreenState extends State<HomePageScreen> {
+
+  late ScrollController _scrollController;
+  late ValueNotifier<bool> _searchbarNotifier;
+  late ValueNotifier<ScrollPhysics> _physicsNotifier;
+  late ValueNotifier<int> _selectMainCategory;
+  late TextEditingController _searchTextController;
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _searchbarNotifier = ValueNotifier(false);
+    _physicsNotifier = ValueNotifier(const NeverScrollableScrollPhysics());
+    _selectMainCategory = ValueNotifier(-1);
+    _searchTextController = TextEditingController();
+    scrollControllerListener();
+  }
+  scrollControllerListener() {
+    _scrollController.addListener(
       () {
-        if (searchbarNotifier.value == false) {
-          if (scrollController.positions.first.maxScrollExtent - 50 <
-              scrollController.positions.first.pixels) {
-            searchbarNotifier.value = true;
+        if (_searchbarNotifier.value == false) {
+          if (_scrollController.positions.first.maxScrollExtent - 50 <
+              _scrollController.positions.first.pixels) {
+            _searchbarNotifier.value = true;
           }
         } else {
-          if (scrollController.positions.first.maxScrollExtent - 50 >
-              scrollController.positions.first.pixels) {
-            searchbarNotifier.value = false;
+          if (_scrollController.positions.first.maxScrollExtent - 50 >
+              _scrollController.positions.first.pixels) {
+            _searchbarNotifier.value = false;
           }
         }
-        if (scrollController.positions.last.maxScrollExtent == 0) {
+        if (_scrollController.positions.last.maxScrollExtent == 0) {
           return;
         }
-        if (physicsNotifier.value is NeverScrollableScrollPhysics) {
-          if ((scrollController.positions.first.maxScrollExtent ==
-                  scrollController.positions.first.pixels) &&
-              scrollController.positions.last.maxScrollExtent != 0 &&
-              scrollController.positions.last.userScrollDirection ==
+        if (_physicsNotifier.value is NeverScrollableScrollPhysics) {
+          if ((_scrollController.positions.first.maxScrollExtent ==
+                  _scrollController.positions.first.pixels) &&
+              _scrollController.positions.last.maxScrollExtent != 0 &&
+              _scrollController.positions.last.userScrollDirection ==
                   ScrollDirection.idle &&
-              scrollController.positions.last.atEdge == true) {
-            physicsNotifier.value = const BouncingScrollPhysics();
+              _scrollController.positions.last.atEdge == true) {
+            _physicsNotifier.value = const BouncingScrollPhysics();
           }
         } else {
-          if (scrollController.positions.last.pixels < 30 &&
-              scrollController.positions.last.userScrollDirection ==
+          if (_scrollController.positions.last.pixels < 30 &&
+              _scrollController.positions.last.userScrollDirection ==
                   ScrollDirection.forward) {
-            physicsNotifier.value = const NeverScrollableScrollPhysics();
-            scrollController.animateTo(0,
+            _physicsNotifier.value = const NeverScrollableScrollPhysics();
+            _scrollController.animateTo(0,
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.linear);
           }
         }
-        if (scrollController.positions.last.outOfRange == true &&
-            scrollController.positions.last.activity != null &&
-            scrollController.positions.last.activity!.velocity < -300 &&
-            scrollController.positions.last.userScrollDirection ==
+        if (_scrollController.positions.last.outOfRange == true &&
+            _scrollController.positions.last.activity != null &&
+            _scrollController.positions.last.activity!.velocity < -300 &&
+            _scrollController.positions.last.userScrollDirection ==
                 ScrollDirection.reverse) {
           if (context.read<AllAdsBloc>().state is AllAdsLoaded) {
             final state = context.read<AllAdsBloc>().state;
@@ -77,16 +92,10 @@ class HomePageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ScrollController scrollController = ScrollController();
-    ValueNotifier<bool> searchbarNotifier = ValueNotifier(false);
-    ValueNotifier<ScrollPhysics> physicsNotifier =
-        ValueNotifier(const NeverScrollableScrollPhysics());
-    scrollControllerListener(
-        context, scrollController, searchbarNotifier, physicsNotifier);
     return LayoutBuilder(
         // key: const PageStorageKey<String>('mySliverAppBar'),
         builder: (BuildContext ctx, BoxConstraints cons) => NestedScrollView(
-              controller: scrollController,
+              controller: _scrollController,
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
@@ -96,18 +105,18 @@ class HomePageScreen extends StatelessWidget {
                     leading: const SizedBox(),
                     toolbarHeight: 66,
                     title: ValueListenableBuilder(
-                        valueListenable: searchbarNotifier,
+                        valueListenable: _searchbarNotifier,
                         builder: (context, value, _) {
                           return value
-                              ? const SizedBox(
+                              ? SizedBox(
                                   height: kToolbarHeight,
                                   width: double.infinity,
                                   child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 5),
+                                    padding: const EdgeInsets.symmetric(horizontal: 5),
                                     child: SearchFormField(
-                                      hintText:
-                                          'Find vehicle, furniture and more',
+                                      controller: _searchTextController,
+                                      hintText: 'Find vehicle, furniture and more',
+                                      onTap: _searchFieldClicked,
                                     ),
                                   ),
                                 )
@@ -162,9 +171,9 @@ class HomePageScreen extends StatelessWidget {
                             alignment: Alignment.bottomCenter,
                             children: [
                               GridView.builder(
-                                  controller: scrollController,
+                                  controller: _scrollController,
                                   // key: const PageStorageKey<String>('myListView'),
-                                  physics: physicsNotifier.value,
+                                  physics: _physicsNotifier.value,
                                   itemCount:
                                       adsList.length + (isLoading ? 1 : 0),
                                   gridDelegate:
@@ -481,11 +490,19 @@ class HomePageScreen extends StatelessWidget {
             ],
           ),
         ),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: kpadding20),
-          child: SearchFormField(
-            hintText: 'Find vehicle, furniture and more',
-          ),
+        ValueListenableBuilder(
+          valueListenable: _searchbarNotifier,
+          builder: (context, value, _) {
+            return !value ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kpadding20),
+              child: SearchFormField(
+                controller: _searchTextController,
+                hintText: 'Find vehicle, furniture and more',
+                onTap: _searchFieldClicked,
+              ),
+            )
+            : const SizedBox(height: kToolbarHeight,);
+          }
         ),
       ],
     );
@@ -548,37 +565,22 @@ class HomePageScreen extends StatelessWidget {
                   itemCount: mainCategories.length,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
-                    return MainCategoryIconWithName(
-                      selectedCategory: -1,
-                      size: bConst.maxHeight,
-                      index: index,
-                      onTap: () {
-                        if (mainCategories[index]['is_comming_soon'] != null) {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) => ShowCatogoryBottomSheet(
-                                level2SubCat: mainCategories[index]
-                                    ['next_cat_list'],
-                                selectedMainCatIndex: index),
-                            backgroundColor: Colors.white.withOpacity(0),
-                            enableDrag: false,
-                          );
-                        } else if (mainCategories[index]['end_of_cat'] ==
-                            true) {
-                          Navigator.of(context)
-                              .pushNamed(mainCategories[index]['root_name']);
-                        } else {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) => ShowCatogoryBottomSheet(
-                                level2SubCat: mainCategories[index]
-                                    ['next_cat_list'],
-                                selectedMainCatIndex: index),
-                            backgroundColor: Colors.white.withOpacity(0),
-                            enableDrag: false,
-                          );
-                        }
-                      },
+                    return ValueListenableBuilder<int>(
+                      valueListenable: _selectMainCategory,
+                      builder: (context,selectedIndex,_) {
+                        return MainCategoryIconWithName(
+                          selectedCategory: selectedIndex,
+                          size: bConst.maxHeight,
+                          index: index,
+                          onTap: () {
+                            if(_selectMainCategory.value != index){
+                              _selectMainCategory.value = index;
+                            }else{
+                              _selectMainCategory.value = -1;
+                            }
+                          },
+                        );
+                      }
                     );
                   });
             }),
@@ -590,4 +592,27 @@ class HomePageScreen extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _physicsNotifier.dispose();
+    _scrollController.dispose();
+    _searchbarNotifier.dispose();
+    _selectMainCategory.dispose();
+    _searchTextController.dispose();
+  }
+
+  void _searchFieldClicked() {
+    _scrollController.animateTo(
+      _scrollController.positions.first.maxScrollExtent,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.bounceIn);
+  }
 }
+
+
+
+// class SearchNotifier{
+//   final bool isTopSearchBar;
+// }

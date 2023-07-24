@@ -1,8 +1,6 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/colors.dart';
@@ -12,7 +10,6 @@ import '../../../../utils/constants.dart';
 import '../../../../utils/dropdown_list_items.dart';
 import '../../../../utils/level4_category_data.dart';
 import '../../../../utils/main_cat_enum.dart';
-
 import '../../../widgets_refactored/condinue_button.dart';
 import '../../../widgets_refactored/custom_dropdown_button.dart';
 import '../../../widgets_refactored/custom_text_field.dart';
@@ -63,10 +60,11 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
-      // id: 29,
+      id: id,
       currentPageRoute: landForRentRoot,
       mainCategory: MainCategory.realestate.name, //'realestate',
     ));
@@ -103,7 +101,7 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
             child: ValueListenableBuilder<int>(
                 valueListenable: _level4Cat,
                 builder: (context, selectedIndex, _) {
-                  return  ScrollingAppBarLevel4Category(
+                  return ScrollingAppBarLevel4Category(
                     selectedIndex: selectedIndex,
                     level4List: land4saleLevel4Cat,
                     onTap: (index) {
@@ -228,17 +226,17 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
                                   color: kBlackColor,
                                   documentTypeName: 'Land\nSketch',
                                   networkImageUrl: otherImageUrl.firstWhere(
-                                    (map) => map['image_type'] == 'land_sketch',
+                                    (map) => map['image_type'] == 'Land Sketch',
                                     orElse: () => {},
                                   )?['url'],
                                   imageFile: otherImageFiles.firstWhere(
-                                    (map) => map['image_type'] == 'land_sketch',
+                                    (map) => map['image_type'] == 'Land Sketch',
                                     orElse: () => {},
                                   )['file'],
                                   onTap: () {
                                     context.read<AdCreateOrUpdateBloc>().add(
                                         const PickOtherImageEvent(
-                                            'land_sketch'));
+                                            'Land Sketch'));
                                   },
                                 ),
                               ],
@@ -363,8 +361,8 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
     listedBy = primaryData['Listed By'];
     facing = primaryData['Facing'];
     //-----------------------------------------------------------------
-    _monthlyRentController.text = '10000'; //---------------------------------
-    _securityDepositController.text = '50000';
+    _monthlyRentController.text = adUpdateModel.adPrice['Monthly'];
+    _securityDepositController.text = adUpdateModel.adPrice['Security Deposit'];
   }
 
   _saveChangesAndContinue(BuildContext context) {
@@ -391,7 +389,10 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
         description: _descriptionController.text,
         prymaryInfo: primaryInfo,
         level4Sub: land4saleLevel4Cat[_level4Cat.value]['cat_name'],
-        adPrice: '',
+        adPrice: {
+          'Monthly': _monthlyRentController.text,
+          'Security Deposit': _securityDepositController.text
+        },
         adsLevels: {
           "route": landForRentRoot,
           "sub category":
