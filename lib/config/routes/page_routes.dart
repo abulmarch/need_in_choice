@@ -5,6 +5,7 @@ import 'package:need_in_choice/services/repositories/auth_repo.dart';
 import 'package:need_in_choice/views/pages/account/account_screen.dart';
 import 'package:need_in_choice/views/pages/account/bloc/account_page_bloc.dart';
 import 'package:need_in_choice/views/pages/ad_finalisation/ad_confirm_screen.dart';
+import 'package:need_in_choice/views/pages/login/bloc/auth_bloc.dart';
 
 import '../../views/pages/ad_detail/ad_detail_screen.dart';
 import '../../views/pages/ad_finalisation/ad_preview_screen.dart';
@@ -25,9 +26,9 @@ import '../../views/pages/real_estate/land_rent/land_for_rent_screen.dart';
 import '../../views/pages/real_estate/land_sale/e_auction_land.dart';
 import '../../views/pages/real_estate/land_sale/land_for_sale_screen.dart';
 
+   AccountPageBloc accountPageBloc = AccountPageBloc(Authrepo())..add(AccountLoadingEvent());
 class PageRoutes {
-  final AccountPageBloc accountPageBloc = AccountPageBloc(Authrepo());
-  static Route<dynamic>? generateRoute(RouteSettings routeSettings) {
+   static Route<dynamic>? generateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case splashScreen:
         return MaterialPageRoute(
@@ -68,8 +69,8 @@ class PageRoutes {
       case accountScreen:
         return MaterialPageRoute(
           settings: routeSettings,
-          builder: (_) => BlocProvider(
-            create: (context) => AccountPageBloc(Authrepo())..add(AccountLoadingEvent()),
+          builder: (_) => BlocProvider<AccountPageBloc>.value(
+            value: accountPageBloc,
             child: const AccountScreen(),
           ),
         );

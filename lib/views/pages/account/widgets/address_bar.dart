@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 
 import 'package:need_in_choice/services/model/account_model.dart';
+import 'package:need_in_choice/services/repositories/auth_repo.dart';
 import 'package:need_in_choice/views/pages/account/bloc/account_page_bloc.dart';
 import 'package:need_in_choice/views/pages/login/bloc/auth_bloc.dart';
 
@@ -18,20 +19,21 @@ class AddressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AccountModels accountData = AccountModels();
+    AccountModels accountData = AccountSingleton.instance.getAccountModels;
     bool isPressed = false;
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSignoutState) {
-          Navigator.pushReplacementNamed(context, splashScreen);
+          Navigator.pushNamed(context, splashScreen);
         }
       },
       child: BlocBuilder<AccountPageBloc, AccountPageState>(
         builder: (context, state) {
+          if (state is AccountEditedState) {
+            accountData = state.accountModal;
+          }
           if (state is AccountDataError) {
             Center(child: Text(state.error));
-          } else if (state is AccountDataLoaded) {
-            accountData = state.accountModels;
           } else if (state is ViewPressedState) {
             isPressed = true;
           } else if (state is ViewNotPressedState) {
@@ -61,7 +63,6 @@ class AddressBar extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        
                         Navigator.pop(context);
                       },
                       child: Container(
@@ -159,19 +160,25 @@ class AddressBar extends StatelessWidget {
     );
   }
 
-  Future<dynamic> openUpdate(BuildContext ctx, AccountModels accountData) {
-    return showModalBottomSheet(
+  Future<dynamic> openUpdate(
+      BuildContext ctx, AccountModels accountData) async {
+    return await showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
       context: ctx,
       isScrollControlled: true,
-      builder: (context) => SingleChildScrollView(
-        reverse: false,
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
+      builder: (context) => BlocProvider<AccountPageBloc>.value(
+        value: AccountPageBloc(Authrepo()),
+        child: SingleChildScrollView(
+          reverse: false,
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: UpdateAdressModel(
+            accountModels: accountData,
+          ),
         ),
-        child: UpdateAdressModel(accountModels: accountData),
       ),
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,7 +59,8 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
           }
           if (state is AuthLoggedIn) {
             Navigator.pushReplacementNamed(context, mainNavigationScreen);
-          } else if (state is AuthNotVerified) {
+          } else if (state is AuthNotVerified || state is AuthNotLoggedIn) {
+            Navigator.pop(context);
             _openAddressBottomModalSheet();
           } 
         },
@@ -212,6 +215,17 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
                     padding: const EdgeInsets.only(left: 10.0),
                     child: BlocBuilder<AuthBloc, AuthState>(
                       builder: (context, state) {
+                         if (state is AuthError) {
+            print(" AUTH ${state.error}");
+            Future.delayed( Duration.zero, () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  duration: Duration(seconds: 5),
+                  content: Text('Invalid OTP or Number $e'),
+                ),
+              );
+            });
+          }
                         return StartButton(
                           screenWidth: screenWidth,
                           ontap: () async {
@@ -255,6 +269,7 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
       ),
       context: context,
       isScrollControlled: true,
+      isDismissible: false,
       builder: (context) => SingleChildScrollView(
         reverse: false,
         padding: EdgeInsets.only(

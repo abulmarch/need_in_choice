@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen>
           Future.delayed(const Duration(seconds: 3));
           Navigator.pushReplacementNamed(
             context,
-            mainNavigationScreen,
+            accountScreen,
           );
         }
       },
@@ -148,22 +148,26 @@ class _SplashScreenState extends State<SplashScreen>
                             ),
                           ),
                         );
+                      } else if (state is AuthError ||
+                          state is AuthNotVerified ||
+                          state is AuthSignoutState ||
+                          state is AuthNotLoggedIn) {
+                        return StartButton(
+                          screenWidth: screenWidth,
+                          boldText: 'Get Started',
+                          lightText: ' Now',
+                          circle: kWhiteColor,
+                          button: kPrimaryColor,
+                          ontap: () async {
+                            checklogin(context);
+                            if (state is AuthNotLoggedIn) {
+                              openSignInModalSheet(context);
+                            }
+                          },
+                          arrow: kPrimaryColor,
+                        );
                       }
-                      return StartButton(
-                        screenWidth: screenWidth,
-                        boldText: 'Get Started',
-                        lightText: ' Now',
-                        circle: kWhiteColor,
-                        button: kPrimaryColor,
-                        ontap: () async {
-                          checklogin(context);
-                          if (state is AuthNotLoggedIn) {
-                            openSignInModalSheet(context);
-                          }
-                          
-                        },
-                        arrow: kPrimaryColor,
-                      );
+                      return Container();
                     },
                   ),
                   kHeight20
@@ -176,7 +180,9 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  checklogin(BuildContext context,) {
+  checklogin(
+    BuildContext context,
+  ) {
     context.read<AuthBloc>().add(AuthLoginEvent());
   }
 
@@ -185,6 +191,7 @@ class _SplashScreenState extends State<SplashScreen>
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
+      isDismissible: false,
       builder: (context) => SingleChildScrollView(
         reverse: false,
         padding: EdgeInsets.only(

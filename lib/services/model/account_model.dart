@@ -41,7 +41,6 @@ class AccountModels {
       'address': accountModels.address ,
       'whatsapp': accountModels.whatsapp ,
       'phone': accountModels.phone ,
-      // 'created_at': accountModels.createDate,
       'email': accountModels.email ,
     };
   }
@@ -50,4 +49,17 @@ class AccountModels {
   String toString() {
     return "Account: {user_id : $userId, name: $name, address: $address, phone: $phone , whatsapp : $whatsapp}";
   }
+}
+
+class AccountSingleton{
+  factory AccountSingleton() => instance;
+  static final AccountSingleton instance = AccountSingleton._();
+  AccountSingleton._();
+
+
+  AccountModels? _accountModels;
+  set setAccountModels(AccountModels account) {
+     _accountModels = account;
+  }
+  AccountModels get getAccountModels => _accountModels!;
 }

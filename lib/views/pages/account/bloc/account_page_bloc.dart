@@ -34,10 +34,9 @@ class AccountPageBloc extends Bloc<AccountPageEvent, AccountPageState> {
       AccountLoadingEvent event, Emitter<AccountPageState> emit) async {
     emit(AccountPageLoading());
     try {
-      final uid = authrepo.firebaseAuth.currentUser!.uid;
-      final accountdata = await authrepo.fetchAccountsData(uid);
-      final adData = await _adsRepo.getUserAds(uid);
-      emit(AccountDataLoaded(accountdata!, adData));
+      final accountdata = AccountSingleton.instance.getAccountModels;
+      final adData = await _adsRepo.getUserAds(accountdata.userId!);
+      emit(AccountDataLoaded(accountdata, adData));
     } catch (e) {
       emit(AccountDataError(e.toString()));
     }
@@ -49,9 +48,12 @@ class AccountPageBloc extends Bloc<AccountPageEvent, AccountPageState> {
     try {
       bool accountUpdated =
           await authrepo.updateAccount(postData: event.accountModal);
-      accountUpdated
-          ? emit(AccountEditedState(event.accountModal))
-          : AccountEditErrorState(e.toString());
+      if (accountUpdated) {
+        AccountSingleton.instance.setAccountModels = event.accountModal;
+        emit(AccountEditedState(event.accountModal));
+      } else {
+        AccountEditErrorState(e.toString());
+      }
     } catch (e) {
       emit(AccountEditErrorState(e.toString()));
     }
