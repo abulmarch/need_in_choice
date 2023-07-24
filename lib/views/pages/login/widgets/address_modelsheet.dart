@@ -36,7 +36,7 @@ class AddressModalSheet extends StatelessWidget {
               duration: const Duration(seconds: 2),
             ),
           );
-          Navigator.pushNamed(context, mainNavigationScreen, arguments: state.accountModels);
+          Navigator.pushReplacementNamed(context, mainNavigationScreen, arguments: state.accountModels);
         } else if (state is AuthCreatedfailed) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
