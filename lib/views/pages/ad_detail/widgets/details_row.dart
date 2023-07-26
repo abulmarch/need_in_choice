@@ -47,8 +47,9 @@ class _DetailsRowState extends State<DetailsRow> {
         }
       });
       Future.delayed(const Duration(milliseconds: 250)).then((value) {
-        if (_scrollController.position.maxScrollExtent == 0)
+        if (_scrollController.position.maxScrollExtent == 0) {
           _scrollEnd.value = true;
+        }
       });
     }
   }

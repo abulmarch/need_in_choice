@@ -5,6 +5,7 @@ import 'package:need_in_choice/utils/constants.dart';
 import 'package:need_in_choice/views/pages/login/bloc/auth_bloc.dart';
 import 'package:need_in_choice/views/pages/login/widgets/signin_modelsheet.dart';
 import 'package:need_in_choice/views/pages/login/widgets/start_button.dart';
+import 'package:need_in_choice/views/widgets_refactored/lottie_widget.dart';
 import '../../../utils/colors.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -50,7 +51,8 @@ class _SplashScreenState extends State<SplashScreen>
           Future.delayed(const Duration(seconds: 3));
           Navigator.pushReplacementNamed(
             context,
-            accountScreen,
+            
+            mainNavigationScreen,
           );
         }
       },
@@ -122,12 +124,14 @@ class _SplashScreenState extends State<SplashScreen>
             ),
             Positioned(
               top: screenHeight / 2,
-              left: MediaQuery.of(context).size.height / 5 - 65,
+              left: 0,
+              right: 0,
               child: Image.asset('assets/images/profile/nic.png'),
             ),
             Positioned(
               top: screenHeight / 1.25,
-              left: MediaQuery.of(context).size.height / 8 - 60,
+              left: 0,
+              right: 0,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -142,11 +146,7 @@ class _SplashScreenState extends State<SplashScreen>
                         return SizedBox(
                           height: screenHeight * 0.085,
                           width: screenWidth * .8,
-                          child: const Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation(kPrimaryColor),
-                            ),
-                          ),
+                          child: LottieWidget.loading()
                         );
                       } else if (state is AuthError ||
                           state is AuthNotVerified ||

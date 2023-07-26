@@ -7,13 +7,7 @@ abstract class AllAdsState extends Equatable {
   List<Object> get props => [];
 }
 
-class AllAdsInitial extends AllAdsState {}
-
-class AllAdsLoding extends AllAdsState {
-  final List<AdsModel> oldAdsList;
-
-  const AllAdsLoding(this.oldAdsList);
-}
+class InitialLoading extends AllAdsState{}
 
 class AllAdsLoaded extends AllAdsState {
   final List<AdsModel> adsList;
@@ -24,7 +18,6 @@ class AllAdsLoaded extends AllAdsState {
 }
 
 //---------------------------------------------------------------
-class InitialLoading extends AllAdsState{}
 
 class NextPageLoading extends AllAdsState{
   final List<AdsModel> oldAdsList;

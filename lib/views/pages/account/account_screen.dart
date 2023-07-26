@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:need_in_choice/services/model/ads_models.dart';
+import 'package:need_in_choice/utils/lottie_collections.dart';
 import 'package:need_in_choice/views/pages/account/bloc/account_page_bloc.dart';
 import 'package:need_in_choice/views/pages/account/widgets/ad_tiles.dart';
 import 'package:need_in_choice/views/pages/account/widgets/address_bar.dart';
 import 'package:need_in_choice/views/pages/login/bloc/auth_bloc.dart';
+import 'package:need_in_choice/views/widgets_refactored/lottie_widget.dart';
 
 import '../../../config/routes/route_names.dart';
 import '../../../utils/constants.dart';
@@ -28,8 +31,8 @@ class AccountScreen extends StatelessWidget {
           body: BlocBuilder<AccountPageBloc, AccountPageState>(
             builder: (context, state) {
               if (state is AccountPageLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return  Center(
+                  child: Lottie.asset(LottieCollections.loading),
                 );
               } else if (state is AccountDataLoaded) {
                 adsData = state.adsModelList;
@@ -59,13 +62,9 @@ class AccountScreen extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: kpadding10),
                       child: isPressed
-                          ? const Center(
-                              child: Text('coming soon..'),
-                            )
+                          ?  LottieWidget.comingsoon()
                           : adsData.isEmpty
-                              ? const Center(
-                                  child: Text('No ads to preview'),
-                                )
+                              ?  LottieWidget.noData()
                               : ListView.builder(
                                   padding:
                                       const EdgeInsetsDirectional.symmetric(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/constants.dart';
 import '../../widgets_refactored/dashed_line_generator.dart';
+import '../../widgets_refactored/lottie_widget.dart' show LottieWidget;
 import '../../widgets_refactored/search_form_field.dart';
 import 'chat_view.dart';
 
@@ -105,137 +106,138 @@ class ChatScreen extends StatelessWidget {
                 height: height * .01,
               ),
               Expanded(
-                child: ListView.builder(
-                    padding: const EdgeInsets.all(8.0),
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          SizedBox(
-                            height: height * 0.095,
-                            child: Column(children: [
-                              SizedBox(
-                                height: height * 0.001,
-                              ),
-                              Row(
-                                children: [
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Stack(children: [
-                                    Card(
-                                      child: Container(
-                                        height: height * 0.08,
-                                        width: 60,
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Image.asset(
-                                            'assets/images/dummy/house_for_rent1.png'),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left: 11,
-                                      child: Container(
-                                        width: 45,
-                                        height: 13,
-                                        decoration: BoxDecoration(
-                                            color: Colors.green,
-                                            border: Border.all(
-                                                color: Colors.green),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(25))),
-                                        child: const Center(
-                                          child: Text(
-                                            'Price',
-                                            style: TextStyle(
-                                                color: kWhiteColor,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 6),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ]),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ChatView()));
-                                    },
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Anjitha',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleSmall
-                                              ?.copyWith(
-                                                  color: kBlackColor,
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize:
-                                                      15), //TextStyle(color: kFadedBlack),
-                                        ),
-                                        Text(
-                                          'Modern Contrper Home ...',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleSmall
-                                              ?.copyWith(
-                                                  color: kGreyColor,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize:
-                                                      12), //TextStyle(color: kFadedBlack),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        DashedLineGenerator(
-                                          width: constraints.maxWidth - 200,
-                                        ),
-                                        Text(
-                                          'we agreed on Rs 353453',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleSmall
-                                              ?.copyWith(
-                                                  color: kPrimaryColor,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize:
-                                                      9), //TextStyle(color: kFadedBlack),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 40,
-                                  ),
-                                  InkWell(
-                                      onTap: () {
-                                        _show(context);
-                                      },
-                                      child: Image.asset(
-                                          'assets/images/icons/Burger.png'))
-                                ],
-                              )
-                            ]),
-                          ),
-                          const SizedBox(
-                            height: 2,
-                          ),
-                          DashedLineGenerator(
-                            width: constraints.maxWidth - 65,
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          )
-                        ],
-                      );
-                    }),
+                child: LottieWidget.comingsoon(),
+                // ListView.builder(
+                //     padding: const EdgeInsets.all(8.0),
+                //     itemCount: 10,
+                //     itemBuilder: (context, index) {
+                //       return Column(
+                //         children: [
+                //           SizedBox(
+                //             height: height * 0.095,
+                //             child: Column(children: [
+                //               SizedBox(
+                //                 height: height * 0.001,
+                //               ),
+                //               Row(
+                //                 children: [
+                //                   const SizedBox(
+                //                     width: 10,
+                //                   ),
+                //                   Stack(children: [
+                //                     Card(
+                //                       child: Container(
+                //                         height: height * 0.08,
+                //                         width: 60,
+                //                         padding: const EdgeInsets.all(4.0),
+                //                         child: Image.asset(
+                //                             'assets/images/dummy/house_for_rent1.png'),
+                //                       ),
+                //                     ),
+                //                     Positioned(
+                //                       left: 11,
+                //                       child: Container(
+                //                         width: 45,
+                //                         height: 13,
+                //                         decoration: BoxDecoration(
+                //                             color: Colors.green,
+                //                             border: Border.all(
+                //                                 color: Colors.green),
+                //                             borderRadius:
+                //                                 const BorderRadius.all(
+                //                                     Radius.circular(25))),
+                //                         child: const Center(
+                //                           child: Text(
+                //                             'Price',
+                //                             style: TextStyle(
+                //                                 color: kWhiteColor,
+                //                                 fontFamily: 'Poppins',
+                //                                 fontWeight: FontWeight.w500,
+                //                                 fontSize: 6),
+                //                           ),
+                //                         ),
+                //                       ),
+                //                     ),
+                //                   ]),
+                //                   const SizedBox(
+                //                     width: 10,
+                //                   ),
+                //                   InkWell(
+                //                     onTap: () {
+                //                       Navigator.of(context).push(
+                //                           MaterialPageRoute(
+                //                               builder: (context) =>
+                //                                   ChatView()));
+                //                     },
+                //                     child: Column(
+                //                       crossAxisAlignment:
+                //                           CrossAxisAlignment.start,
+                //                       children: [
+                //                         Text(
+                //                           'Anjitha',
+                //                           style: Theme.of(context)
+                //                               .textTheme
+                //                               .titleSmall
+                //                               ?.copyWith(
+                //                                   color: kBlackColor,
+                //                                   fontWeight: FontWeight.w700,
+                //                                   fontSize:
+                //                                       15), //TextStyle(color: kFadedBlack),
+                //                         ),
+                //                         Text(
+                //                           'Modern Contrper Home ...',
+                //                           style: Theme.of(context)
+                //                               .textTheme
+                //                               .titleSmall
+                //                               ?.copyWith(
+                //                                   color: kGreyColor,
+                //                                   fontWeight: FontWeight.w600,
+                //                                   fontSize:
+                //                                       12), //TextStyle(color: kFadedBlack),
+                //                           overflow: TextOverflow.ellipsis,
+                //                         ),
+                //                         DashedLineGenerator(
+                //                           width: constraints.maxWidth - 200,
+                //                         ),
+                //                         Text(
+                //                           'we agreed on Rs 353453',
+                //                           style: Theme.of(context)
+                //                               .textTheme
+                //                               .titleSmall
+                //                               ?.copyWith(
+                //                                   color: kPrimaryColor,
+                //                                   fontWeight: FontWeight.w600,
+                //                                   fontSize:
+                //                                       9), //TextStyle(color: kFadedBlack),
+                //                         ),
+                //                       ],
+                //                     ),
+                //                   ),
+                //                   const SizedBox(
+                //                     width: 40,
+                //                   ),
+                //                   InkWell(
+                //                       onTap: () {
+                //                         _show(context);
+                //                       },
+                //                       child: Image.asset(
+                //                           'assets/images/icons/Burger.png'))
+                //                 ],
+                //               )
+                //             ]),
+                //           ),
+                //           const SizedBox(
+                //             height: 2,
+                //           ),
+                //           DashedLineGenerator(
+                //             width: constraints.maxWidth - 65,
+                //           ),
+                //           const SizedBox(
+                //             height: 5,
+                //           )
+                //         ],
+                //       );
+                //     }),
               )
             ]),
           ),

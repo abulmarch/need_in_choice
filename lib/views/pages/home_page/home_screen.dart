@@ -10,6 +10,7 @@ import '../../../utils/category_data.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/dummy_data.dart';
 import '../../widgets_refactored/dashed_line_generator.dart';
+import '../../widgets_refactored/lottie_widget.dart' show LottieWidget;
 import '../../widgets_refactored/rich_text_builder.dart';
 import '../../widgets_refactored/search_form_field.dart';
 import 'widgets.dart/advertisement_card_widget.dart';
@@ -81,9 +82,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
             _scrollController.positions.last.userScrollDirection ==
                 ScrollDirection.reverse) {
           if (context.read<AllAdsBloc>().state is AllAdsLoaded) {
-            final state = context.read<AllAdsBloc>().state;
-            BlocProvider.of<AllAdsBloc>(context).add(FetchNextPageAds(
-                oldAdsList: state.props.first as List<AdsModel>));
+            // final state = context.read<AllAdsBloc>().state;
+            BlocProvider.of<AllAdsBloc>(context).add(const FetchAllAds());
           }
         }
       },
@@ -149,23 +149,23 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: kpadding15),
                   child: LayoutBuilder(builder: (ctx, bC) {
-                    double imageSize = bC.maxWidth * 0.5 -
-                        15; // subtract padding form half of width
-
+                    double imageSize = bC.maxWidth * 0.5 - 15; // subtract padding form half of width
                     return BlocBuilder<AllAdsBloc, AllAdsState>(
                       builder: (context, state) {
-                        if (state is AllAdsInitial) {
+                        if (state is InitialLoading) {
                           //state is AllAdsLoding ||
-                          return const Center(
-                              child: CircularProgressIndicator());
+                            return LottieWidget.loading();
                         } else {
                           List<AdsModel> adsList = [];
                           bool isLoading = false;
                           if (state is AllAdsLoaded) {
                             adsList = state.adsList;
-                          } else if (state is AllAdsLoding) {
+                          } else if (state is NextPageLoading) {
                             adsList = state.oldAdsList;
                             isLoading = true;
+                          }
+                          if(adsList.isEmpty){
+                            return LottieWidget.noData();
                           }
                           return Stack(
                             alignment: Alignment.bottomCenter,
@@ -174,8 +174,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   controller: _scrollController,
                                   // key: const PageStorageKey<String>('myListView'),
                                   physics: _physicsNotifier.value,
-                                  itemCount:
-                                      adsList.length + (isLoading ? 1 : 0),
+                                  itemCount: adsList.length + (isLoading ? 1 : 0),
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
@@ -185,8 +184,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   ),
                                   itemBuilder: (context, index) {
                                     if (index < adsList.length) {
-                                      return _gridViewCard(
-                                          context, imageSize, adsList[index]);
+                                      return _gridViewCard(context, imageSize, adsList[index]);
                                     } else {
                                       return const Center(
                                         child: SizedBox(),
@@ -194,12 +192,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                     }
                                   }),
                               SizedBox(
-                                height: cons.maxHeight * 0.2,
+                                height: cons.maxHeight * 0.3,
                                 width: double.maxFinite,
                                 child: isLoading
-                                    ? const Center(
-                                        child: CircularProgressIndicator(),
-                                      )
+                                    ? LottieWidget.loading(size: 100,)
+                                    //  const Center(
+                                    //     child: CircularProgressIndicator(),
+                                    //   )
                                     : null,
                               ),
                             ],
@@ -306,32 +305,37 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     RichText(
                       text: const TextSpan(
                           text: '₹',
-                          style: TextStyle(fontSize: 10, color: kFadedBlack),
+                          style: TextStyle(fontSize: 12, color: kFadedBlack),
                           children: <TextSpan>[
                             TextSpan(
-                                text: '19950123654/-',
+                                text: '19950123/-',
                                 style: TextStyle(
-                                    fontSize: 15,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.w700,
                                     color: kFadedBlack))
                           ]),
                     ),
-                    CircleAvatar(
-                      maxRadius: 10,
-                      child: ClipRRect(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
-                        child: Image.network(
-                          '$imageUrlEndpoint${adsModel.profileImage}',
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Image.asset(
-                                'assets/images/profile/no_profile_img.png');
-                          },
-                          errorBuilder: (context, error, stackTrace) =>
-                              Image.asset(
-                                  'assets/images/profile/no_profile_img.png'),
-                          fit: BoxFit.cover,
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, accountScreen);
+                      },
+                      child: CircleAvatar(
+                        maxRadius: 13,
+                        child: ClipRRect(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          child: Image.network(
+                            '$imageUrlEndpoint${adsModel.profileImage}',
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Image.asset(
+                                  'assets/images/profile/no_profile_img.png');
+                            },
+                            errorBuilder: (context, error, stackTrace) =>
+                                Image.asset(
+                                    'assets/images/profile/no_profile_img.png'),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
@@ -376,36 +380,65 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     Stack(
                       alignment: Alignment.bottomLeft,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: kpadding10),
-                          child: DropdownButton<String>(
-                            menuMaxHeight: 250,
-                            value: 'Trivandrum',
-                            underline: const SizedBox(),
-                            icon: Container(
-                              decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(6))),
-                              child: const Icon(Icons.keyboard_arrow_down,
-                                  color: Color(0xFF736F6F), size: 17),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(bottom: kpadding10),
+                        //   child: DropdownButton<String>(
+                        //     menuMaxHeight: 250,
+                        //     value: 'Trivandrum',
+                        //     underline: const SizedBox(),
+                        //     icon: Container(
+                        //       decoration: const BoxDecoration(
+                        //           color: Colors.white,
+                        //           borderRadius:
+                        //               BorderRadius.all(Radius.circular(6))),
+                        //       child: const Icon(Icons.keyboard_arrow_down,
+                        //           color: Color(0xFF736F6F), size: 17),
+                        //     ),
+                        //     elevation: 8,
+                        //     isDense: true,
+                        //     style: Theme.of(context)
+                        //         .textTheme
+                        //         .bodySmall
+                        //         ?.copyWith(
+                        //             fontWeight: FontWeight.bold,
+                        //             color: const Color(0xFF736F6F)),
+                        //     onChanged: (String? value) {},
+                        //     items: cityName
+                        //         .map<DropdownMenuItem<String>>((String value) {
+                        //       return DropdownMenuItem<String>(
+                        //         value: value,
+                        //         child: Text(value),
+                        //       );
+                        //     }).toList(),
+                        //   ),
+                        // ),
+                        InkWell(
+                          onTap: () {
+                            _openLocationBottomSheet();
+                          },
+                          child: SizedBox(
+                            height: 30,
+                            width: screenWidth * .28,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Location',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.copyWith(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFF736F6F)),
+                                ),
+                                const Icon(
+                                  Icons.location_on,
+                                  size: 20,
+                                  color: Color(0xFF736F6F),
+                                )
+                              ],
                             ),
-                            elevation: 8,
-                            isDense: true,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: const Color(0xFF736F6F)),
-                            onChanged: (String? value) {},
-                            items: cityName
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
                           ),
                         ),
                         SizedBox(
@@ -530,30 +563,30 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     fontWeight: FontWeight.bold,
                     color: const Color(0xFF484848)),
               ),
-              TextButton(
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                        EdgeInsets.zero),
-                    minimumSize:
-                        MaterialStateProperty.all<Size>(const Size(5, 5)),
-                    alignment: Alignment.topCenter,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  onPressed: () {},
-                  child: Row(
-                    children: const [
-                      Text(
-                        'See all',
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w500),
-                      ),
-                      RotatedBox(
-                          quarterTurns: 3,
-                          child: Icon(
-                            Icons.arrow_drop_down_circle_rounded,
-                          ))
-                    ],
-                  )),
+              // TextButton(
+              //     style: ButtonStyle(
+              //       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+              //           EdgeInsets.zero),
+              //       minimumSize:
+              //           MaterialStateProperty.all<Size>(const Size(5, 5)),
+              //       alignment: Alignment.topCenter,
+              //       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              //     ),
+              //     onPressed: () {},
+              //     child: Row(
+              //       children: const [
+              //         Text(
+              //           'See all',
+              //           style: TextStyle(
+              //               fontSize: 14, fontWeight: FontWeight.w500),
+              //         ),
+              //         RotatedBox(
+              //             quarterTurns: 3,
+              //             child: Icon(
+              //               Icons.arrow_drop_down_circle_rounded,
+              //             ))
+              //       ],
+              //     )),
             ],
           ),
           Expanded(
@@ -575,6 +608,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                           onTap: () {
                             if(_selectMainCategory.value != index){
                               _selectMainCategory.value = index;
+                              context.read<AllAdsBloc>().add(SortAdsByCategory(category: mainCategories[index]['MainCategory']));
                             }else{
                               _selectMainCategory.value = -1;
                             }
@@ -589,6 +623,23 @@ class _HomePageScreenState extends State<HomePageScreen> {
             width: constraints.maxWidth - 30,
           )
         ],
+      ),
+    );
+  }
+  void _openLocationBottomSheet() {
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      builder: (context) => SingleChildScrollView(
+          reverse: false,
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: const LocationSheet(),
       ),
     );
   }
@@ -612,7 +663,150 @@ class _HomePageScreenState extends State<HomePageScreen> {
 }
 
 
+class LocationSheet extends StatelessWidget {
+  const LocationSheet({
+    super.key,
+  });
 
-// class SearchNotifier{
-//   final bool isTopSearchBar;
-// }
+  @override
+  Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    return SingleChildScrollView(
+      child: Form(
+        child: Container(
+          decoration: const BoxDecoration(
+            color: kPrimaryColor,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(20),
+            ),
+          ),
+          height: screenHeight * 0.45,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                kHeight5,
+                SizedBox(
+                  width: screenWidth * .9,
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: kWhiteColor,
+                      ),
+                      hintText: "Search City Area or Locality",
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .titleLarge!
+                          .copyWith(fontSize: 20, fontWeight: FontWeight.w500),
+                      filled: true,
+                      fillColor: kWhiteColor.withOpacity(.24),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                ),
+                kHeight20,
+                SizedBox(
+                    width: screenWidth * .9,
+                    height: 200,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_searching_sharp,
+                              color: kWhiteColor,
+                            ),
+                            kWidth10,
+                            Text(
+                              'Your current location',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w500,
+                                      color: kWhiteColor),
+                            )
+                          ],
+                        ),
+                        kHeight15,
+                        const MySeparator(
+                          color: kWhiteColor,
+                        ),
+                        kHeight15,
+                        Text(
+                          'Your Recent location',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: kWhiteColor.withOpacity(0.7)),
+                        ),
+                        kHeight15,
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_searching_sharp,
+                              color: kWhiteColor,
+                            ),
+                            kWidth10,
+                            Text(
+                              'Poojapura Trivandrum',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w500,
+                                      color: kWhiteColor),
+                            )
+                          ],
+                        ),
+                        kHeight15,
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_searching_sharp,
+                              color: kWhiteColor,
+                            ),
+                            kWidth10,
+                            Text(
+                              'Kazhakutam Trivandrum',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w500,
+                                      color: kWhiteColor),
+                            )
+                          ],
+                        ),
+                      ],
+                    )),
+                kHeight10,
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

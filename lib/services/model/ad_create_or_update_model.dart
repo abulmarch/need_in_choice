@@ -92,6 +92,7 @@ class AdCreateOrUpdateModel {
     adsAddress : $adsAddress
     primaryData : $primaryData
     moreInfoData : $moreInfoData
+    adsLevels : $adsLevels
     ''';
   }
 

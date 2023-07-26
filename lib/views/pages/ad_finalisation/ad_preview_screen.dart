@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/utils/colors.dart';
@@ -25,8 +27,8 @@ class AdPreviewScreen extends StatelessWidget {
         if (state is AdUploadingProgress) {
           isAdUloading = true;
         }
-        final adDetails = BlocProvider.of<AdCreateOrUpdateBloc>(context)
-            .adCreateOrUpdateModel;
+        final adDetails = BlocProvider.of<AdCreateOrUpdateBloc>(context).adCreateOrUpdateModel;
+        log('${adDetails.adsLevels}');
         final imageList = [...adDetails.imageFiles, ...adDetails.imageUrls];
         return SafeArea(
           child: Scaffold(
@@ -41,6 +43,7 @@ class AdPreviewScreen extends StatelessWidget {
                       Container(
                         height: screenHeight - screenHeight * .24,
                         width: screenWidth * .9,
+                        padding: EdgeInsets.only(bottom: screenHeight*0.15),
                         decoration: BoxDecoration(
                           color: kLightBlueWhite,
                           borderRadius: BorderRadius.circular(10),
@@ -77,7 +80,7 @@ class AdPreviewScreen extends StatelessWidget {
                   children: [
                     TextIconButton(
                       onpressed: () {
-                        Navigator.pop(context);
+                        Navigator.popUntil(context, ModalRoute.withName('${adDetails.adsLevels['route']}'));
                       },
                       text: 'Edit',
                       fontsize: 22,
@@ -86,7 +89,9 @@ class AdPreviewScreen extends StatelessWidget {
                       size: Size(screenWidth * 0.4, 60),
                       bordercolor: const Color(0XFFB7B7B7),
                     ),
-                    TextIconButton(
+                    imageList.isEmpty 
+                    ? TextIconButtonDisabled.blue(width: screenWidth * 0.5, height: 60, text: 'Confirm Ad')
+                    : TextIconButton(
                       onpressed: !isAdUloading
                           ? () {
                               context

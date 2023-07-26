@@ -9,6 +9,7 @@ const String endpoint = 'http://nic.calletic.com/api/userads/';
 class UserAdsRepo {
   getUserAds(String uid) async {
     final url = "$endpoint$uid";
+    print(url);
     try {
       final response = await http.get(Uri.parse(url));
 

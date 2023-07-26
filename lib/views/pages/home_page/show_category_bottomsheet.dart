@@ -4,6 +4,7 @@ import '../../../utils/colors.dart';
 import '../../../utils/constants.dart';
 import '../../widgets_refactored/circular_back_button.dart';
 import '../../widgets_refactored/dashed_line_generator.dart';
+import '../../widgets_refactored/lottie_widget.dart' show LottieWidget;
 import '../../widgets_refactored/rich_text_builder.dart';
 import 'widgets.dart/scrolling_category.dart';
 
@@ -87,6 +88,9 @@ class ShowCatogoryBottomSheet extends StatelessWidget {
                         child: ValueListenableBuilder(
                           valueListenable: categoryNotifier,
                           builder: (context, level2SubCatList, _) {
+                            if(level2SubCatList.first['cat_name'] == 'COMMING SOON'){
+                              return LottieWidget.comingsoon();
+                            }
                             return Wrap(
                               runSpacing: kpadding10,spacing: 5,
                               crossAxisAlignment: WrapCrossAlignment.center,
@@ -193,25 +197,25 @@ class ShowCatogoryBottomSheet extends StatelessWidget {
 
   Container subCategoryGreyContainer(BoxConstraints cons, String subCate) {
     return Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                                // width: cons.maxWidth*0.45,
-                                constraints: BoxConstraints(
-                                  minWidth: cons.maxWidth*0.3,
-                                  maxWidth: cons.maxWidth,
-                                  minHeight: 35,
-                                ),
-                                decoration: const BoxDecoration(
-                                  color: kDisabledBackground,
-                                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                                ),
-                                child: Text(
-                                  subCate,
-                                  style: const TextStyle(
-                                    color: kDisabledText,
-                                    fontWeight: FontWeight.w600,
-                                  ), //------------------------------
-                                ),
-                              );
+      padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+      // width: cons.maxWidth*0.45,
+      constraints: BoxConstraints(
+        minWidth: cons.maxWidth*0.3,
+        maxWidth: cons.maxWidth,
+        minHeight: 35,
+      ),
+      decoration: const BoxDecoration(
+        color: kDisabledBackground,
+        borderRadius: BorderRadius.all(Radius.circular(30)),
+      ),
+      child: Text(
+        subCate,
+        style: const TextStyle(
+          color: kDisabledText,
+          fontWeight: FontWeight.w600,
+        ), //------------------------------
+      ),
+    );
   }
 
   void switchPage(int index, PageController pageController) {

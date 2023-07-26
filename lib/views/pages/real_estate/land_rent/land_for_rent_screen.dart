@@ -16,6 +16,7 @@ import '../../../widgets_refactored/custom_text_field.dart';
 import '../../../widgets_refactored/dashed_line_generator.dart';
 import '../../../widgets_refactored/dotted_border_textfield.dart';
 import '../../../widgets_refactored/image_upload_doted_circle.dart';
+import '../../../widgets_refactored/lottie_widget.dart';
 import '../../../widgets_refactored/scrolling_app_bar.dart';
 
 class LandForRentScreen extends StatefulWidget {
@@ -342,11 +343,10 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
 
   Scaffold _loadingScaffoldWidget(AdCreateOrUpdateState state) {
     return Scaffold(
-      body: Center(
-        child: state is FaildToFetchExceptionState
-            ? Text(state.errorMessagge)
-            : const CircularProgressIndicator(),
-      ),
+      body: state is FaildToFetchExceptionState ? Center(
+        child:  Text(state.errorMessagge),
+      )
+      : LottieWidget.loading(),
     );
   }
 

@@ -1,4 +1,5 @@
 import '../config/routes/route_names.dart';
+import 'main_cat_enum.dart';
 
 // enum MainCategory {realestate,vehicle,electronics,jobs,professional,services,business,skilledPerson,antique,socialWorker}
 
@@ -10,6 +11,7 @@ const List<Map<String, dynamic>> mainCategories = [
     'cat_img': 'assets/images/category/level1-main-category/realestate.png',
     'end_of_cat': false,
     'next_cat_list' : realEstateSubCategory,
+    'MainCategory': MainCategory.realestate
   },
   {
     'cat_name': 'VEHICLE', 
@@ -17,14 +19,16 @@ const List<Map<String, dynamic>> mainCategories = [
     'end_of_cat': false,
     // 'next_cat_list' : vehicleSubCategory,
     'next_cat_list' : commingSoon,
+    'MainCategory': MainCategory.vehicle,
     'is_comming_soon': true,
   },
   {
-    'cat_name': 'ELECTRONICS ELECTRONICS',
+    'cat_name': 'ELECTRONICS & FURNITURE',
     'cat_img': 'assets/images/category/level1-main-category/electronics.png',
     'end_of_cat': true,
     // 'root_name': collectAdDetails,
     'next_cat_list' : commingSoon,
+    'MainCategory': MainCategory.electronics,
     'is_comming_soon': true,
   },
   {
@@ -33,6 +37,7 @@ const List<Map<String, dynamic>> mainCategories = [
     'end_of_cat': false,
     // 'next_cat_list' : <Map<String, dynamic>>[],
     'next_cat_list' : commingSoon,
+    'MainCategory': MainCategory.jobs,
     'is_comming_soon': true,
   },
 ];

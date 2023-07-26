@@ -56,3 +56,65 @@ class TextIconButton extends StatelessWidget {
     );
   }
 }
+
+
+class TextIconButtonDisabled extends StatelessWidget {
+  const TextIconButtonDisabled({
+    super.key, 
+    required this.width, 
+    required this.height,
+    required this.fontsize,
+    required this.text,
+    required this.backgroundColor,
+  });
+  const TextIconButtonDisabled.black({
+    super.key, 
+    required this.width, 
+    required this.height, 
+    required this.text,
+    }) : backgroundColor = Colors.black, fontsize = 15;
+
+  const TextIconButtonDisabled.blue({
+    super.key, 
+    required this.width, 
+    required this.height, 
+    required this.text,
+    }) : backgroundColor = kPrimaryColor, fontsize = 22;
+
+  final double width;
+  final double height;
+  final String text;
+  final double fontsize;
+  final Color backgroundColor;
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        SnackBar snackBar = const SnackBar(
+                  content: Text('You have to select ads image...!'),
+                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Color(0xFF00000e),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
+      child: Container(
+        width: width,
+        height: height,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: backgroundColor.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(30)
+        ),
+        child: Text(
+          text,
+          style: Theme.of(context)
+                  .textTheme
+                  .titleSmall!
+                  .copyWith(color: kWhiteColor.withOpacity(0.5), fontSize: fontsize),
+        ),
+      ),
+    );
+  }
+}

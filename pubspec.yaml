@@ -28,6 +28,7 @@ dependencies:
   geocoding: ^2.1.0
   image_picker: ^1.0.0
   extended_text: ^10.0.1
+  lottie: ^2.3.2
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +53,7 @@ flutter:
     - assets/images/category/vehicles-rent/
     - assets/images/dummy/
     - assets/images/icons/
+    - assets/images/lotties/
 
 
   fonts:

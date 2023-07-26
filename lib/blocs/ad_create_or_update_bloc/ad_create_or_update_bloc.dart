@@ -137,7 +137,7 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
     } on PincodeGeneralException{
       emit(AdUploadingExceptionState(exception: PincodeGeneralException()));
     } catch(e){
-      print('------------$e----------------');
+      log('------------$e----------------');
     }
   }
   void verifyPincode(){

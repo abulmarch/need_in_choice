@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/utils/constants.dart';
@@ -7,15 +6,21 @@ import 'package:need_in_choice/views/pages/ad_detail/ad_detail_bloc/bloc/ad_deta
 import 'package:need_in_choice/views/pages/ad_detail/widgets/image_card.dart';
 import 'package:need_in_choice/views/pages/ad_detail/widgets/realestate_details_bottomsheet.dart';
 import 'package:need_in_choice/views/pages/ad_detail/widgets/top_account_bar.dart';
+import 'package:need_in_choice/views/widgets_refactored/lottie_widget.dart';
 import '../../../services/repositories/selected_ads_service.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/dummy_data.dart';
 
-class AdDetailScreen extends StatelessWidget {
+class AdDetailScreen extends StatefulWidget {
   const AdDetailScreen({
     super.key,
   });
 
+  @override
+  State<AdDetailScreen> createState() => _AdDetailScreenState();
+}
+
+class _AdDetailScreenState extends State<AdDetailScreen> {
   @override
   Widget build(BuildContext context) {
     int adId = ModalRoute.of(context)!.settings.arguments as int;
@@ -48,7 +53,7 @@ class AdDetailScreen extends StatelessWidget {
                               ),
                               kHeight5,
                               Container(
-                                height: screenHeight - screenHeight * .35,
+                                height: screenHeight - screenHeight * .41,
                                 width: screenWidth * .9,
                                 decoration: BoxDecoration(
                                   color: kLightBlueWhite,
@@ -65,21 +70,16 @@ class AdDetailScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        LayoutBuilder(
-                          builder: (context, boxConstraints) {
-                            return RealEstateDetailsBottomSheet(
-                              adsModel: adsModel,
-                              screenHeight: screenHeight,
-                              screenWidth: screenWidth,
-                              availableHeight: boxConstraints.maxHeight,
-                            );
-                          }
-                        )
+                        LayoutBuilder(builder: (context, boxConstraints) {
+                          return RealEstateDetailsBottomSheet(
+                            adsModel: adsModel,
+                            screenHeight: screenHeight,
+                            screenWidth: screenWidth,
+                            availableHeight: boxConstraints.maxHeight,
+                          );
+                        })
                       ],
                     );
-                 
-                 
-                 
                   } else {
                     // ignore: prefer_const_constructors
                     return Center(
@@ -87,9 +87,7 @@ class AdDetailScreen extends StatelessWidget {
                     );
                   }
                 } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return LottieWidget.loading();
                 }
               },
             )),

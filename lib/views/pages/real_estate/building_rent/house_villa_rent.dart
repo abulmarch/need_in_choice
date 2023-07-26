@@ -16,6 +16,7 @@ import '../../../widgets_refactored/custom_dropdown_button.dart';
 import '../../../widgets_refactored/custom_text_field.dart';
 import '../../../widgets_refactored/dashed_line_generator.dart';
 import '../../../widgets_refactored/dotted_border_textfield.dart';
+import '../../../widgets_refactored/lottie_widget.dart';
 
 class HouseVillaRentScreen extends StatefulWidget {
   const HouseVillaRentScreen({super.key});
@@ -655,11 +656,10 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
 
   Scaffold _loadingScaffoldWidget(AdCreateOrUpdateState state) {
     return Scaffold(
-      body: Center(
-        child: state is FaildToFetchExceptionState
-            ? Text(state.errorMessagge)
-            : const CircularProgressIndicator(),
-      ),
+      body: state is FaildToFetchExceptionState ? Center(
+        child:  Text(state.errorMessagge),
+      )
+      : LottieWidget.loading(),
     );
   }
 

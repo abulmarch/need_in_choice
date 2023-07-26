@@ -14,6 +14,7 @@ import '../../../../utils/dropdown_list_items.dart';
 import '../../../../utils/level4_category_data.dart';
 import '../../../../utils/main_cat_enum.dart';
 import '../../../widgets_refactored/custom_text_field.dart';
+import '../../../widgets_refactored/lottie_widget.dart' show LottieWidget;
 import '../../../widgets_refactored/dotted_border_textfield.dart';
 import '../../../widgets_refactored/condinue_button.dart';
 import '../../../widgets_refactored/custom_dropdown_button.dart';
@@ -656,9 +657,10 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
   }
   Scaffold _loadingScaffoldWidget(AdCreateOrUpdateState state) {
     return Scaffold(
-      body: Center(
-        child: state is FaildToFetchExceptionState ? Text(state.errorMessagge) : const CircularProgressIndicator(),
-      ),
+      body: state is FaildToFetchExceptionState ? Center(
+        child:  Text(state.errorMessagge),
+      )
+      : LottieWidget.loading(),
     );
   }
   void _initializeUpdatingAdData(AdCreateOrUpdateModel adUpdateModel) {

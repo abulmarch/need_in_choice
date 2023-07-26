@@ -3,10 +3,11 @@
 import 'package:flutter/material.dart';
 
 class SearchFormField extends StatelessWidget {
-  const SearchFormField({super.key, this.controller, this.hintText, this.onTap});
+  const SearchFormField({super.key, this.controller, this.hintText, this.onTap,this.autofocus});
   final TextEditingController? controller;
   final String? hintText;
   final void Function()? onTap;
+  final bool? autofocus;
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -35,6 +36,7 @@ class SearchFormField extends StatelessWidget {
           fillColor: Colors.white,
           border: InputBorder.none,
         ),
+        autofocus: autofocus ?? false,
       ),
     );
   }

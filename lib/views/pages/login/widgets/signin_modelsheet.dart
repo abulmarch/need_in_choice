@@ -144,8 +144,8 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
                                 },
                                 child: Container(
                                   margin: const EdgeInsets.only(
-                                      right: kpadding10,
-                                      top: kpadding10,
+                                      right: 5,
+                                      top: 5,
                                       bottom: kpadding10),
                                   width: 80,
                                   alignment: Alignment.center,

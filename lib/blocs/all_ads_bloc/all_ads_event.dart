@@ -7,26 +7,25 @@ abstract class AllAdsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetAllAdsFirstFetch extends AllAdsEvent {}
 
-class FetchNextPageAds extends AllAdsEvent {
-  final List<AdsModel> oldAdsList;
-
-  const FetchNextPageAds({required this.oldAdsList});
-}
 class FetchAllAds extends AllAdsEvent{
-  final List<AdsModel> oldAdsList;
   final bool isFirstFetch;
   const FetchAllAds({
-    required this.oldAdsList,
     this.isFirstFetch = false,
   });
 }
+
 class SearchAllAds extends AllAdsEvent{
-  final List<AdsModel> oldAdsList;
   final bool isFirstFetch;
   const SearchAllAds({
-    required this.oldAdsList,
     this.isFirstFetch = false,
+  });
+}
+class SortAdsByCategory extends AllAdsEvent{
+  final MainCategory? category;
+  final bool isFirstFetch;
+  const SortAdsByCategory({
+    this.isFirstFetch = false,
+    this.category
   });
 }

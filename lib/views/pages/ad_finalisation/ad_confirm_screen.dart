@@ -349,21 +349,27 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                     size: const Size(246, 50),
                   ),
                   kHeight15,
-                  TextIconButton(
-                    text: 'Confirm Ad',
-                    txtcolor: kWhiteColor,
-                    fontsize: 15,
-                    onpressed: !isAdUloading
-                        ? () {
-                            context
-                                .read<AdCreateOrUpdateBloc>()
-                                .add(UploadAdEvent());
-                          }
-                        : null,
-                    size: const Size(321, 61),
-                    background: const Color(0XFF303030),
-                    bordercolor: kWhiteColor,
-                  ),
+                  StreamBuilder<List<dynamic>>(
+                    stream: adCreateOrUpdateBloc.imageListStream,
+                    builder: (context, snapshot) {
+                      return (snapshot.data ?? []).isEmpty 
+                      ?  const TextIconButtonDisabled.black(width: double.infinity, height: 61,text: 'Confirm Ad',)
+                      :TextIconButton(
+                        text: 'Confirm Ad',
+                        txtcolor: kWhiteColor,
+                        fontsize: 15,
+                        onpressed: !isAdUloading
+                            ? () {
+                                context
+                                    .read<AdCreateOrUpdateBloc>()
+                                    .add(UploadAdEvent());
+                              }
+                            : null,
+                        size: const Size(321, 61),
+                        background: const Color(0XFF303030),
+                        bordercolor: kWhiteColor,
+                      );                      
+                    }),
                   kHeight20,
                 ],
               ),

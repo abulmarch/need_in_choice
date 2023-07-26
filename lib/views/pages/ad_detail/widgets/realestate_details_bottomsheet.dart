@@ -491,7 +491,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                               adsModel.moreInfoData[
                                                   'Selected Amenities'][index],
                                               // 'Gym',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   color: kWhiteColor),
                                             ),
                                           );

@@ -18,7 +18,7 @@ class MainNavigationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     indexChangeNotifier.value = selectIndex;
     return BlocProvider(
-      create: (context) => AllAdsBloc(AllAdsRepo())..add(GetAllAdsFirstFetch()),
+      create: (context) => AllAdsBloc(AllAdsRepo())..add(const FetchAllAds(isFirstFetch: true)),
       child: Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: const Color(0xFFFFFFFF),
