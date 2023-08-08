@@ -3,14 +3,13 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
-import 'package:need_in_choice/services/repositories/repository_urls.dart'show ApiEndpoints;
 import '../model/ads_models.dart';
 
 class AllAdsRepo {
   static int lastPage = -1;
-  Future<List<AdsModel>> fetchAllAdsData(int page) async {
+  Future<List<AdsModel>> fetchAllAdsData(String url) async {
     try {
-      final response = await http.get(Uri.parse('${ApiEndpoints.getAdsUrl}?page=$page'));
+      final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final result = jsonDecode(response.body)['result'];
         AllAdsRepo.lastPage = result['last_page'];

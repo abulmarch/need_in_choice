@@ -37,6 +37,7 @@ class _AdDetailScreenState extends State<AdDetailScreen> {
               builder: (context, state) {
                 if (state is AdDetailsLoaded) {
                   final adsModel = state.adsModel;
+                  log(adsModel.toString());
                   if (adsModel != null) {
                     return Stack(
                       alignment: Alignment.bottomCenter,

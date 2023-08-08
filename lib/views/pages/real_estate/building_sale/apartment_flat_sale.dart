@@ -47,7 +47,7 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
   late TextEditingController _landMarksController;
   late TextEditingController _websiteLinkController;
 
-  late List<String> selectedAmenities = [];
+  late List selectedAmenities = [];
 
   String buildupArea = RealEstateDropdownList.buildupArea.first;
   String? saleType;
@@ -100,9 +100,12 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
       if (state is FaildToFetchExceptionState ||
           state is AdCreateOrUpdateLoading) {
         return _loadingScaffoldWidget(state);
-      } else if (state is AdCreateOrUpdateLoaded &&
-          state.adUpdateModel != null) {
-        _initializeUpdatingAdData(state.adUpdateModel!);
+      } else if (state is AdCreateOrUpdateLoaded) {
+          if(state.adUpdateModel != null){
+            _initializeUpdatingAdData(state.adUpdateModel!);
+          }else{
+            _checkValidation = false;
+          }
       } else if (state is AdCreateOrUpdateValidateState) {
         _checkValidation = true;
       }
@@ -1088,7 +1091,7 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
     _bathroomController.text = primaryData['Bathroom'];
     _floorNoController.text = primaryData['Floor No'];
     _buildupAreaController.text = primaryData['Buildup Area']['value'];
-    buildupArea = primaryData['Buildup Area']['dropname'];
+    buildupArea = primaryData['Buildup Area']['unit'];
     saleType = primaryData['Sale Type'];
     listedBy = primaryData['Listed By'];
     facing = primaryData['Facing'];
@@ -1098,10 +1101,10 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
     _adsPriceController.text =
         adUpdateModel.adPrice; //---------------------------------
     _roadWidthController.text = moreInfoData['Road Width']['value'];
-    roadWidth = moreInfoData['Road Width']['dropname'];
+    roadWidth = moreInfoData['Road Width']['unit'];
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
     carpetArea =
-        'sq.feet'; //moreInfoData['Carpet Area']['dropname'];//    ERROR
+        'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
     _totalFloorController.text = moreInfoData['Total Floor'];
     _parkingController.text = moreInfoData['Parking'];
     _ageOfBuildingController.text = moreInfoData['Age Of Building'];
@@ -1130,7 +1133,7 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
         'Floor No': _floorNoController.text,
         'Buildup Area': {
           "value": _buildupAreaController.text,
-          "dropname": buildupArea
+          "unit": buildupArea
         },
         'Sale Type': saleType!,
         'Listed By': listedBy!,
@@ -1139,11 +1142,11 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
       final Map<String, dynamic> moreInfo = {
         'Road Width': {
           'value': _roadWidthController.text,
-          'dropname': roadWidth,
+          'unit': roadWidth,
         },
         'Carpet Area': {
           'value': _carpetAreaController.text,
-          'dropname': carpetArea,
+          'unit': carpetArea,
         },
         'Total Floor': _totalFloorController.text,
         'Parking': _parkingController.text,

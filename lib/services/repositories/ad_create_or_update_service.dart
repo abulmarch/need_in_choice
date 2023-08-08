@@ -10,7 +10,8 @@ import '../model/ad_create_or_update_model.dart';
 class CreateOrUpdateAdsRepo {
   Future<AdCreateOrUpdateModel> fetchAdDataToUpdate(int id) async {
     try {
-      final response = await http.get(Uri.parse("${ApiEndpoints.getAdsUrl}/$id"));
+      log("${ApiEndpoints.getSelectedAd}/$id");
+      final response = await http.get(Uri.parse("${ApiEndpoints.getSelectedAd}/$id"));
 
       if (response.statusCode == 200) { 
         final Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -37,12 +38,13 @@ class CreateOrUpdateAdsRepo {
         'primary_details':jsonEncode(adData.primaryData),
         'more_info':jsonEncode(adData.moreInfoData),
         'ads_address':adData.adsAddress,
-        'ads_levels':jsonEncode(adData.adsLevels),
         'main_category':adData.mainCategory,
         'other_image_to_delete': jsonEncode(adData.otherImgUrlsToDelete),
         'ads_image_to_delete': jsonEncode(adData.urlsToDelete),
         'ad_price' : jsonEncode(adData.adPrice),
         'pincode': adData.pinCode,
+        'route_name':adData.adsLevels['route'],
+        'ads_levels':jsonEncode(adData.adsLevels),
       };
       final url = Uri.parse(apiUrl);
       final request = http.MultipartRequest('POST', url);

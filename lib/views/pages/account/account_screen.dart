@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:need_in_choice/services/model/ads_models.dart';
-import 'package:need_in_choice/utils/lottie_collections.dart';
 import 'package:need_in_choice/views/pages/account/bloc/account_page_bloc.dart';
 import 'package:need_in_choice/views/pages/account/widgets/ad_tiles.dart';
 import 'package:need_in_choice/views/pages/account/widgets/address_bar.dart';

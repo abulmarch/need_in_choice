@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart' show Lottie;
 
-import '../../utils/lottie_collections.dart';
 
 
 class LottieCollections{

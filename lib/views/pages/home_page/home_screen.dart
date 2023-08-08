@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:need_in_choice/blocs/main_category_bloc/main_category_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/services/model/ads_models.dart';
 import 'package:need_in_choice/utils/constants.dart';
@@ -8,27 +9,28 @@ import '../../../blocs/all_ads_bloc/all_ads_bloc.dart';
 import '../../../services/repositories/repository_urls.dart';
 import '../../../utils/category_data.dart';
 import '../../../utils/colors.dart';
-import '../../../utils/dummy_data.dart';
 import '../../widgets_refactored/dashed_line_generator.dart';
 import '../../widgets_refactored/lottie_widget.dart' show LottieWidget;
 import '../../widgets_refactored/rich_text_builder.dart';
 import '../../widgets_refactored/search_form_field.dart';
+import 'show_category_bottomsheet.dart';
 import 'widgets.dart/advertisement_card_widget.dart';
 import 'widgets.dart/scrolling_category.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
+  static late ValueNotifier<int> selectMainCategory;
 
   @override
   State<HomePageScreen> createState() => _HomePageScreenState();
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
-
+  
   late ScrollController _scrollController;
   late ValueNotifier<bool> _searchbarNotifier;
   late ValueNotifier<ScrollPhysics> _physicsNotifier;
-  late ValueNotifier<int> _selectMainCategory;
+  // late ValueNotifier<int> selectMainCategory;
   late TextEditingController _searchTextController;
   @override
   void initState() {
@@ -36,7 +38,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
     _scrollController = ScrollController();
     _searchbarNotifier = ValueNotifier(false);
     _physicsNotifier = ValueNotifier(const NeverScrollableScrollPhysics());
-    _selectMainCategory = ValueNotifier(-1);
+    HomePageScreen.selectMainCategory = ValueNotifier(-1);
     _searchTextController = TextEditingController();
     scrollControllerListener();
   }
@@ -83,7 +85,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 ScrollDirection.reverse) {
           if (context.read<AllAdsBloc>().state is AllAdsLoaded) {
             // final state = context.read<AllAdsBloc>().state;
-            BlocProvider.of<AllAdsBloc>(context).add(const FetchAllAds());
+            BlocProvider.of<AllAdsBloc>(context).add(FetchNextPage());
           }
         }
       },
@@ -94,127 +96,144 @@ class _HomePageScreenState extends State<HomePageScreen> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         // key: const PageStorageKey<String>('mySliverAppBar'),
-        builder: (BuildContext ctx, BoxConstraints cons) => NestedScrollView(
-              controller: _scrollController,
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return <Widget>[
-                  SliverAppBar(
-                    leadingWidth: 0,
-                    elevation: 0,
-                    leading: const SizedBox(),
-                    toolbarHeight: 66,
-                    title: ValueListenableBuilder(
-                        valueListenable: _searchbarNotifier,
-                        builder: (context, value, _) {
-                          return value
-                              ? SizedBox(
-                                  height: kToolbarHeight,
-                                  width: double.infinity,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                                    child: SearchFormField(
-                                      controller: _searchTextController,
-                                      hintText: 'Find vehicle, furniture and more',
-                                      onTap: _searchFieldClicked,
+        builder: (BuildContext ctx, BoxConstraints cons) => RefreshIndicator(
+          onRefresh: () async{
+            if(BlocProvider.of<AllAdsBloc>(context).state is! InitialLoading){
+              BlocProvider.of<AllAdsBloc>(context).add(RefreshPageAndFetchAds());
+            }
+          },
+          child: NestedScrollView(        
+                controller: _scrollController,
+                headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    SliverAppBar(
+                      leadingWidth: 0,
+                      elevation: 0,
+                      leading: const SizedBox(),
+                      toolbarHeight: 66,
+                      title: ValueListenableBuilder(
+                          valueListenable: _searchbarNotifier,
+                          builder: (context, value, _) {
+                            return value
+                                ? SizedBox(
+                                    height: kToolbarHeight,
+                                    width: double.infinity,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                                      child: SearchFormField(
+                                        controller: _searchTextController,
+                                        hintText: 'Find vehicle, furniture and more',
+                                        onTap: _searchFieldClicked,
+                                      ),
                                     ),
-                                  ),
-                                )
-                              : const SizedBox();
-                        }),
-                    floating: true,
-                    pinned: true,
-                    backgroundColor: Colors.white,
-                    expandedHeight: 320,
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
-                          children: [
-                            // top avatar card
-                            buyAndSellAnything(context),
-                            //category listing
-                            whatAreYouLokkingFor(context, cons),
-                          ],
+                                  )
+                                : const SizedBox();
+                          }),
+                      floating: true,
+                      pinned: true,
+                      backgroundColor: Colors.white,
+                      expandedHeight: 320,
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(
+                            children: [
+                              // top avatar card
+                              buyAndSellAnything(context),
+                              //category listing
+                              whatAreYouLokkingFor(context, cons),
+                            ],
+                          ),
                         ),
                       ),
                     ),
+                  ];
+                },
+                body: SizedBox(
+                  // key: const PageStorageKey<String>('mySizedBox'),
+                  width: cons.maxWidth,
+                  height: cons.maxHeight,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: kpadding15),
+                    child: LayoutBuilder(builder: (ctx, bC) {
+                      double imageSize = bC.maxWidth * 0.5 - 15; // subtract padding form half of width
+                      return BlocBuilder<AllAdsBloc, AllAdsState>(
+                        builder: (context, state) {
+                          if (state is InitialLoading) {
+                            //state is AllAdsLoding ||
+                              return LottieWidget.loading();
+                          } else {
+                            List<AdsModel> adsList = [];
+                            bool isLoading = false;
+                            if (state is AllAdsLoaded) {
+                              adsList = state.adsList;
+                            } else if (state is NextPageLoading) {
+                              adsList = state.oldAdsList;
+                              isLoading = true;
+                            }
+                            if(adsList.isEmpty){
+                              return LottieWidget.noData();
+                            }
+                            return Stack(
+                              alignment: Alignment.bottomCenter,
+                              children: [
+                                GridView.builder(
+                                    controller: _scrollController,
+                                    // key: const PageStorageKey<String>('myListView'),
+                                    physics: _physicsNotifier.value,
+                                    itemCount: adsList.length + (isLoading ? 1 : 0),
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      crossAxisSpacing: 5,
+                                      mainAxisSpacing: 5,
+                                      childAspectRatio: 0.70,
+                                    ),
+                                    itemBuilder: (context, index) {
+                                      if (index < adsList.length) {
+                                        return _gridViewCard(context, imageSize, adsList[index]);
+                                      } else {
+                                        return const Center(
+                                          child: SizedBox(),
+                                        );
+                                      }
+                                    }),
+                                SizedBox(
+                                  height: cons.maxHeight * 0.3,
+                                  width: double.maxFinite,
+                                  child: isLoading
+                                      ? LottieWidget.loading(size: 100,)
+                                      //  const Center(
+                                      //     child: CircularProgressIndicator(),
+                                      //   )
+                                      : null,
+                                ),
+                              ],
+                            );
+                          }
+                        },
+                      );
+                    }),
                   ),
-                ];
-              },
-              body: SizedBox(
-                // key: const PageStorageKey<String>('mySizedBox'),
-                width: cons.maxWidth,
-                height: cons.maxHeight,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: kpadding15),
-                  child: LayoutBuilder(builder: (ctx, bC) {
-                    double imageSize = bC.maxWidth * 0.5 - 15; // subtract padding form half of width
-                    return BlocBuilder<AllAdsBloc, AllAdsState>(
-                      builder: (context, state) {
-                        if (state is InitialLoading) {
-                          //state is AllAdsLoding ||
-                            return LottieWidget.loading();
-                        } else {
-                          List<AdsModel> adsList = [];
-                          bool isLoading = false;
-                          if (state is AllAdsLoaded) {
-                            adsList = state.adsList;
-                          } else if (state is NextPageLoading) {
-                            adsList = state.oldAdsList;
-                            isLoading = true;
-                          }
-                          if(adsList.isEmpty){
-                            return LottieWidget.noData();
-                          }
-                          return Stack(
-                            alignment: Alignment.bottomCenter,
-                            children: [
-                              GridView.builder(
-                                  controller: _scrollController,
-                                  // key: const PageStorageKey<String>('myListView'),
-                                  physics: _physicsNotifier.value,
-                                  itemCount: adsList.length + (isLoading ? 1 : 0),
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 5,
-                                    mainAxisSpacing: 5,
-                                    childAspectRatio: 0.70,
-                                  ),
-                                  itemBuilder: (context, index) {
-                                    if (index < adsList.length) {
-                                      return _gridViewCard(context, imageSize, adsList[index]);
-                                    } else {
-                                      return const Center(
-                                        child: SizedBox(),
-                                      );
-                                    }
-                                  }),
-                              SizedBox(
-                                height: cons.maxHeight * 0.3,
-                                width: double.maxFinite,
-                                child: isLoading
-                                    ? LottieWidget.loading(size: 100,)
-                                    //  const Center(
-                                    //     child: CircularProgressIndicator(),
-                                    //   )
-                                    : null,
-                              ),
-                            ],
-                          );
-                        }
-                      },
-                    );
-                  }),
                 ),
               ),
-            ));
+        ));
   }
 
   Container _gridViewCard(
       BuildContext context, double imageSize, AdsModel adsModel) {
     Map primaryDetails = adsModel.categoryInfo['primary_details'];
+    String adPrice = '';
+
+    if (adsModel.adPrice is Map) {
+      if (adsModel.adPrice.containsKey('Start Price')) {
+        adPrice = adsModel.adPrice['Start Price'].toString();
+      } else if (adsModel.adPrice.containsKey('Monthly')) {
+        adPrice = adsModel.adPrice['Monthly'].toString();
+      }
+    } else if (adsModel.adPrice is String) {
+      adPrice = adsModel.adPrice;
+    }
     return Container(
       padding: const EdgeInsets.all(5),
       decoration: const BoxDecoration(
@@ -302,38 +321,37 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    RichText(
-                      text: const TextSpan(
+                    adPrice.isNotEmpty ? RichText(
+                      text: TextSpan(
                           text: '₹',
-                          style: TextStyle(fontSize: 12, color: kFadedBlack),
+                          style: const TextStyle(fontSize: 12, color: kFadedBlack),
                           children: <TextSpan>[
                             TextSpan(
-                                text: '19950123/-',
-                                style: TextStyle(
+                                text: adPrice,//'19950123/-',
+                                style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700,
                                     color: kFadedBlack))
                           ]),
-                    ),
+                    )
+                    : const SizedBox(width: 20,),
                     InkWell(
                       onTap: () {
                         Navigator.pushNamed(context, accountScreen);
                       },
+                      // child: const SizedBox()
                       child: CircleAvatar(
                         maxRadius: 13,
                         child: ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
+                          borderRadius: const BorderRadius.all(Radius.circular(10)),
                           child: Image.network(
                             '$imageUrlEndpoint${adsModel.profileImage}',
                             loadingBuilder: (context, child, loadingProgress) {
                               if (loadingProgress == null) return child;
-                              return Image.asset(
-                                  'assets/images/profile/no_profile_img.png');
+                              return Image.asset('assets/images/profile/no_profile_img.png');
                             },
                             errorBuilder: (context, error, stackTrace) =>
-                                Image.asset(
-                                    'assets/images/profile/no_profile_img.png'),
+                                Image.asset('assets/images/profile/no_profile_img.png'),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -442,7 +460,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                           ),
                         ),
                         SizedBox(
-                            width: screenWidth * 0.35,
+                            width: screenWidth * 0.3,
                             child: const MySeparator(
                               color: kDottedBorder,
                             ))
@@ -563,30 +581,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     fontWeight: FontWeight.bold,
                     color: const Color(0xFF484848)),
               ),
-              // TextButton(
-              //     style: ButtonStyle(
-              //       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-              //           EdgeInsets.zero),
-              //       minimumSize:
-              //           MaterialStateProperty.all<Size>(const Size(5, 5)),
-              //       alignment: Alignment.topCenter,
-              //       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              //     ),
-              //     onPressed: () {},
-              //     child: Row(
-              //       children: const [
-              //         Text(
-              //           'See all',
-              //           style: TextStyle(
-              //               fontSize: 14, fontWeight: FontWeight.w500),
-              //         ),
-              //         RotatedBox(
-              //             quarterTurns: 3,
-              //             child: Icon(
-              //               Icons.arrow_drop_down_circle_rounded,
-              //             ))
-              //       ],
-              //     )),
             ],
           ),
           Expanded(
@@ -599,19 +593,37 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     return ValueListenableBuilder<int>(
-                      valueListenable: _selectMainCategory,
+                      valueListenable: HomePageScreen.selectMainCategory,
                       builder: (context,selectedIndex,_) {
                         return MainCategoryIconWithName(
                           selectedCategory: selectedIndex,
                           size: bConst.maxHeight,
                           index: index,
-                          onTap: () {
-                            if(_selectMainCategory.value != index){
-                              _selectMainCategory.value = index;
-                              context.read<AllAdsBloc>().add(SortAdsByCategory(category: mainCategories[index]['MainCategory']));
-                            }else{
-                              _selectMainCategory.value = -1;
-                            }
+                          onTap: (mainCategory) async {
+                            HomePageScreen.selectMainCategory.value = index;
+                            showModalBottomSheet<String?>(
+                              context: context,
+                              builder: (context) => ShowCatogoryBottomSheet(
+                                purpose: CategoryBottomSheetPurpose.forSearcinghAd,
+                                selectedCategory: index,
+                              ),
+                              backgroundColor: Colors.white.withOpacity(0),
+                              enableDrag: false,
+                            ).then((searchingWord) {
+                              if(searchingWord == null){
+                                if(context.read<AllAdsBloc>().indexOfMainCatForSort == -1){
+                                  HomePageScreen.selectMainCategory.value = -1;
+                                }else{
+                                  HomePageScreen.selectMainCategory.value = context.read<AllAdsBloc>().indexOfMainCatForSort;
+                                }
+                              }else{
+                                context.read<AllAdsBloc>().add(SortAdsByCategory(
+                                  categoryEndRoute: searchingWord,
+                                  selectedMainCat: mainCategory,
+                                  typeOfFetching: AdsFetchingType.fetchSortedAds
+                                ));
+                              }
+                            });
                           },
                         );
                       }
@@ -650,7 +662,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
     _physicsNotifier.dispose();
     _scrollController.dispose();
     _searchbarNotifier.dispose();
-    _selectMainCategory.dispose();
+    HomePageScreen.selectMainCategory.dispose();
     _searchTextController.dispose();
   }
 

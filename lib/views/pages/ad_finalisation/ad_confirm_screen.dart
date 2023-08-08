@@ -1,4 +1,5 @@
 import 'dart:io' show File;
+import 'package:flutter_svg/svg.dart' show SvgPicture;
 import 'package:image_picker/image_picker.dart' show XFile;
 
 import 'package:flutter/material.dart';
@@ -225,16 +226,13 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                                         right: 5,
                                         child: InkWell(
                                           onTap: () {
-                                            context
-                                                .read<AdCreateOrUpdateBloc>()
-                                                .deleteImage(
-                                                    index: index,
-                                                    data: adImages[index]);
+                                            context.read<AdCreateOrUpdateBloc>().deleteImage(index: index, data: adImages[index]);
                                           },
-                                          child: Image.asset(
-                                            'assets/images/icons/close_icon.png',
-                                            scale: 0.85,
-                                          ),
+                                          child: SvgPicture.asset(
+                                            'assets/images/icons/close_icon.svg',
+                                            width: 20,
+                                            height: 20,
+                                          )
                                         ),
                                       )
                                     ],
@@ -269,10 +267,11 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(
-                        Icons.flutter_dash_rounded,
-                        color: kGreyColor,
-                      ),
+                      SvgPicture.asset(
+                                            'assets/images/icons/address.svg',
+                                            width: 20,
+                                            height: 20,
+                                          ),
                       kWidth10,
                       ConstrainedBox(
                         constraints: BoxConstraints(
@@ -316,19 +315,7 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                     txtcolor: const Color(0XFF6F6F6F),
                     fontsize: 15,
                     onpressed: () {
-                      showModalBottomSheet<void>(
-                        isScrollControlled: true,
-                        backgroundColor: kWhiteColor,
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                        )),
-                        context: context,
-                        builder: (context) {
-                          return const UpdateAdressBottomSheet();
-                        },
-                      );
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const UpdateAdressBottomSheet(),));
                     },
                     size: const Size(222, 38),
                   ),

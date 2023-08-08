@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../../utils/category_data.dart';
+import '../../../../utils/main_cat_enum.dart';
 import '../../../widgets_refactored/rich_text_builder.dart';
+
+typedef SelectedMainCategory = void Function(MainCategory);
+
 
 class MainCategoryIconWithName extends StatelessWidget {
   const MainCategoryIconWithName({
@@ -9,17 +13,20 @@ class MainCategoryIconWithName extends StatelessWidget {
     required this.size,
     required this.selectedCategory,
     required this.index,
-    this.onTap,
+    required this.onTap,
   });
 
   final int selectedCategory;
   final int index;
   final double size;
-  final void Function()? onTap;
+  // final void Function()? onTap;
+  final SelectedMainCategory onTap;
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        onTap(mainCategories[index]['MainCategory']);
+      },
       child: Container(
         foregroundDecoration: selectedCategory != index
             ? const BoxDecoration(

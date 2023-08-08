@@ -28,7 +28,6 @@ class AdPreviewScreen extends StatelessWidget {
           isAdUloading = true;
         }
         final adDetails = BlocProvider.of<AdCreateOrUpdateBloc>(context).adCreateOrUpdateModel;
-        log('${adDetails.adsLevels}');
         final imageList = [...adDetails.imageFiles, ...adDetails.imageUrls];
         return SafeArea(
           child: Scaffold(

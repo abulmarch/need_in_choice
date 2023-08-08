@@ -81,31 +81,32 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-     final id = ModalRoute.of(context)!.settings.arguments as int?;
+    final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
-       id: id,
+      id: id,
       currentPageRoute: commercialBuildingForRentRoot,
       mainCategory: MainCategory.realestate.name, //'realestate',
     ));
 
     return BlocBuilder<AdCreateOrUpdateBloc, AdCreateOrUpdateState>(
         builder: (context, state) {
-     
       if (state is FaildToFetchExceptionState ||
           state is AdCreateOrUpdateLoading) {
         return _loadingScaffoldWidget(state);
-      } else if (state is AdCreateOrUpdateLoaded &&
-          state.adUpdateModel != null) {
-        _initializeUpdatingAdData(state.adUpdateModel!);
+      } else if (state is AdCreateOrUpdateLoaded) {
+          if(state.adUpdateModel != null){
+            _initializeUpdatingAdData(state.adUpdateModel!);
+          }else{
+            _checkValidation = false;
+          }
       } else if (state is AdCreateOrUpdateValidateState) {
         _checkValidation = true;
       }
 
-      if (state is! FaildToFetchExceptionState && state is! AdCreateOrUpdateLoading) {
-        
-      }
+      if (state is! FaildToFetchExceptionState &&
+          state is! AdCreateOrUpdateLoading) {}
       return Scaffold(
           backgroundColor: kWhiteColor,
           appBar: PreferredSize(
@@ -144,38 +145,44 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
                               kHeight10,
                               Row(
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        building4saleCommercial[1]['cat_name']!,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium
-                                            ?.copyWith(
-                                                fontSize: 20,
-                                                color: kPrimaryColor),
-                                      ),
-                                      // title arrow underline
-                                      Stack(
-                                        alignment: Alignment.centerRight,
-                                        children: [
-                                          DashedLineGenerator(
-                                              width: building4saleCommercial[1]
-                                                          ['cat_name']!
-                                                      .length *
-                                                  width *
-                                                  0.05),
-                                          const Icon(
-                                            Icons.arrow_forward,
-                                            size: 15,
-                                            color: kDottedBorder,
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  ),
+                                  ValueListenableBuilder<int>(
+                                      valueListenable: _level4Cat,
+                                      builder: (context, selectedIndex, _) {
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              building4saleCommercial[
+                                                  selectedIndex]['cat_name']!,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.copyWith(
+                                                      fontSize: 20,
+                                                      color: kPrimaryColor),
+                                            ),
+                                            // title arrow underline
+                                            Stack(
+                                              alignment: Alignment.centerRight,
+                                              children: [
+                                                DashedLineGenerator(
+                                                    width: building4saleCommercial[
+                                                                    selectedIndex]
+                                                                ['cat_name']!
+                                                            .length *
+                                                        width *
+                                                        0.033),
+                                                const Icon(
+                                                  Icons.arrow_forward,
+                                                  size: 15,
+                                                  color: kDottedBorder,
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        );
+                                      }),
                                 ],
                               ),
                               kHeight20,
@@ -596,10 +603,11 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
 
   Scaffold _loadingScaffoldWidget(AdCreateOrUpdateState state) {
     return Scaffold(
-      body: state is FaildToFetchExceptionState ? Center(
-        child:  Text(state.errorMessagge),
-      )
-      : LottieWidget.loading(),
+      body: state is FaildToFetchExceptionState
+          ? Center(
+              child: Text(state.errorMessagge),
+            )
+          : LottieWidget.loading(),
     );
   }
 
@@ -612,9 +620,9 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
     _brandNameController.text =
         primaryData['Brand Name'] ?? "";
     _propertyAreaController.text = primaryData['Property Area']['value'];
-    propertyArea = primaryData['Property Area']['dropname'];
+    propertyArea = primaryData['Property Area']['unit'];
     _buildupAreaController.text = primaryData['Buildup Area']['value'];
-    buildupArea = primaryData['Buildup Area']['dropname'];
+    buildupArea = primaryData['Buildup Area']['unit'];
 
     listedBy = primaryData['Listed By'];
     facing = primaryData['Facing'];
@@ -625,10 +633,10 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
     _securityDepositController.text = adUpdateModel.adPrice['Security Deposit'];
 
     _roadWidthController.text = moreInfoData['Road Width']['value'];
-    roadWidth = moreInfoData['Road Width']['dropname'];
+    roadWidth = moreInfoData['Road Width']['unit'];
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
     carpetArea =
-        'sq.feet'; //moreInfoData['Carpet Area']['dropname'];//    ERROR
+        'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
     _parkingController.text = moreInfoData['Parking'];
     furnishing = moreInfoData['Furnishing'];
     _landMarksController.text = moreInfoData['Landmark'];
@@ -649,11 +657,11 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
         'Brand Name': _brandNameController.text,
         'Property Area': {
           "value": _propertyAreaController.text,
-          "dropname": propertyArea
+          "unit": propertyArea
         },
         'Buildup Area': {
           "value": _buildupAreaController.text,
-          "dropname": buildupArea
+          "unit": buildupArea
         },
         'Listed By': listedBy!,
         'Facing': facing!,
@@ -661,11 +669,11 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
       final Map<String, dynamic> moreInfo = {
         'Road Width': {
           'value': _roadWidthController.text,
-          'dropname': roadWidth,
+          'unit': roadWidth,
         },
         'Carpet Area': {
           'value': _carpetAreaController.text,
-          'dropname': carpetArea,
+          'unit': carpetArea,
         },
         'Parking': _parkingController.text,
         'Furnishing': furnishing,

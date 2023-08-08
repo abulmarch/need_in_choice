@@ -101,9 +101,12 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
         if (state is FaildToFetchExceptionState ||
             state is AdCreateOrUpdateLoading) {
           return _loadingScaffoldWidget(state);
-        } else if (state is AdCreateOrUpdateLoaded &&
-            state.adUpdateModel != null) {
-          _initializeUpdatingAdData(state.adUpdateModel!);
+        } else if (state is AdCreateOrUpdateLoaded) {
+          if(state.adUpdateModel != null){
+            _initializeUpdatingAdData(state.adUpdateModel!);
+          }else{
+            _checkValidation = false;
+          }
         } else if (state is AdCreateOrUpdateValidateState) {
           _checkValidation = true;
         }
@@ -834,9 +837,9 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
     _bedroomController.text = primaryData['Bedroom'];
     _bathroomController.text = primaryData['Bathroom'];
     _propertyAreaController.text = primaryData['Property Area']['value'];
-    propertyArea = primaryData['Property Area']['dropname'];
+    propertyArea = primaryData['Property Area']['unit'];
     _buildupAreaController.text = primaryData['Buildup Area']['value'];
-    buildupArea = primaryData['Buildup Area']['dropname'];
+    buildupArea = primaryData['Buildup Area']['unit'];
     saleType = primaryData['Sale Type'];
     listedBy = primaryData['Listed By'];
     facing = primaryData['Facing'];
@@ -845,10 +848,10 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
 
     _adsPriceController.text =  adUpdateModel.adPrice; 
     _roadWidthController.text = moreInfoData['Road Width']['value'];
-    roadWidth = moreInfoData['Road Width']['dropname'];
+    roadWidth = moreInfoData['Road Width']['unit'];
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
     carpetArea =
-        'sq.feet'; //moreInfoData['Carpet Area']['dropname'];//    ERROR
+        'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
     _floorNoController.text = moreInfoData['Floor No'];
     _parkingController.text = moreInfoData['Parking'];
     _ageOfBuildingController.text = moreInfoData['Age Of Building'];
@@ -874,11 +877,11 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
         'Bathroom': _bathroomController.text,
         'Property Area': {
           "value": _propertyAreaController.text,
-          "dropname": propertyArea
+          "unit": propertyArea
         },
         'Buildup Area': {
           "value": _buildupAreaController.text,
-          "dropname": buildupArea
+          "unit": buildupArea
         },
         'Sale Type': saleType!,
         'Listed By': listedBy!,
@@ -887,11 +890,11 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
       final Map<String, dynamic> moreInfo = {
         'Road Width': {
           'value': _roadWidthController.text,
-          'dropname': roadWidth,
+          'unit': roadWidth,
         },
         'Carpet Area': {
           'value': _carpetAreaController.text,
-          'dropname': carpetArea,
+          'unit': carpetArea,
         },
         'Floor No': _floorNoController.text,
         'Parking': _parkingController.text,

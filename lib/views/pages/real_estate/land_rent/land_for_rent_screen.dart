@@ -39,8 +39,8 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
   late ValueNotifier<int> _level4Cat;
 
   ScrollController scrollController = ScrollController();
-  String buildupArea = RealEstateDropdownList.buildupArea.first;
-  String? listedBy;
+  String _propertyArea = RealEstateDropdownList.propertyArea.first;
+  String? _listedBy;
   String? facing;
   bool _checkValidation = false;
 
@@ -77,9 +77,12 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
       if (state is FaildToFetchExceptionState ||
           state is AdCreateOrUpdateLoading) {
         return _loadingScaffoldWidget(state);
-      } else if (state is AdCreateOrUpdateLoaded &&
-          state.adUpdateModel != null) {
-        _initializeUpdatingAdData(state.adUpdateModel!);
+      } else if (state is AdCreateOrUpdateLoaded) {
+          if(state.adUpdateModel != null){
+            _initializeUpdatingAdData(state.adUpdateModel!);
+          }else{
+            _checkValidation = false;
+          }
       } else if (state is AdCreateOrUpdateValidateState) {
         _checkValidation = true;
       }
@@ -133,33 +136,44 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
                             kHeight10,
                             Row(
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Farm',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
-                                              fontSize: 20,
-                                              color: kPrimaryColor),
-                                    ),
-                                    // title arrow underline
-                                    Stack(
-                                      alignment: Alignment.centerRight,
-                                      children: [
-                                        DashedLineGenerator(
-                                            width: width * 0.15),
-                                        const Icon(
-                                          Icons.arrow_forward,
-                                          size: 15,
-                                          color: kDottedBorder,
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                ),
+                                ValueListenableBuilder<int>(
+                                    valueListenable: _level4Cat,
+                                    builder: (context, selectedIndex, _) {
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            land4saleLevel4Cat[selectedIndex]
+                                                ['cat_name']!,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium
+                                                ?.copyWith(
+                                                    fontSize: 20,
+                                                    color: kPrimaryColor),
+                                          ),
+                                          // title arrow underline
+                                          Stack(
+                                            alignment: Alignment.centerRight,
+                                            children: [
+                                              DashedLineGenerator(
+                                                  width: land4saleLevel4Cat[
+                                                                  selectedIndex]
+                                                              ['cat_name']!
+                                                          .length *
+                                                      width *
+                                                      0.033),
+                                              const Icon(
+                                                Icons.arrow_forward,
+                                                size: 15,
+                                                color: kDottedBorder,
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      );
+                                    }),
                               ],
                             ),
                             kHeight20,
@@ -213,11 +227,11 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
                                       FocusScope.of(context).unfocus();
                                     },
                                     suffixIcon: CustomDropDownButton(
-                                      initialValue: buildupArea,
+                                      initialValue: _propertyArea,
                                       itemList:
-                                          RealEstateDropdownList.buildupArea,
+                                          RealEstateDropdownList.propertyArea,
                                       onChanged: (String? value) {
-                                        buildupArea = value!;
+                                        _propertyArea = value!;
                                       },
                                     ),
                                     // focusNode: ,
@@ -266,8 +280,8 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
                                     },
                                   ),
                                   CustomDropDownButton(
-                                    initialValue: listedBy,
-                                    hideValidationError: listedBy != null ||
+                                    initialValue: _listedBy,
+                                    hideValidationError: _listedBy != null ||
                                         _checkValidation == false,
                                     hint: Text(
                                       'Listed by',
@@ -277,7 +291,7 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
                                     maxWidth: width * 0.27,
                                     itemList: RealEstateDropdownList.listedBy,
                                     onChanged: (String? value) {
-                                      listedBy = value!;
+                                      _listedBy = value!;
                                     },
                                   ),
                                 ],
@@ -343,10 +357,11 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
 
   Scaffold _loadingScaffoldWidget(AdCreateOrUpdateState state) {
     return Scaffold(
-      body: state is FaildToFetchExceptionState ? Center(
-        child:  Text(state.errorMessagge),
-      )
-      : LottieWidget.loading(),
+      body: state is FaildToFetchExceptionState
+          ? Center(
+              child: Text(state.errorMessagge),
+            )
+          : LottieWidget.loading(),
     );
   }
 
@@ -357,8 +372,8 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
     _titleController.text = adUpdateModel.adsTitle;
     _descriptionController.text = adUpdateModel.description;
     _landAreaController.text = primaryData['Land Area']['value'];
-    buildupArea = primaryData['Land Area']['dropname'];
-    listedBy = primaryData['Listed By'];
+    _propertyArea = primaryData['Land Area']['unit'];
+    _listedBy = primaryData['Listed By'];
     facing = primaryData['Facing'];
     //-----------------------------------------------------------------
     _monthlyRentController.text = adUpdateModel.adPrice['Monthly'];
@@ -371,16 +386,16 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
         .read<AdCreateOrUpdateBloc>()
         .add(AdCreateOrUpdateCheckDropDownValidattionEvent());
     if (_formKey.currentState!.validate() &&
-        listedBy != null &&
+        _listedBy != null &&
         facing != null &&
         _monthlyRentController.text.trim().isNotEmpty &&
         _securityDepositController.text.trim().isNotEmpty) {
       final Map<String, dynamic> primaryInfo = {
         'Land Area': {
           "value": _landAreaController.text,
-          "dropname": buildupArea
+          "unit": _propertyArea
         },
-        'Listed By': listedBy!,
+        'Listed By': _listedBy!,
         'Facing': facing!,
       };
 

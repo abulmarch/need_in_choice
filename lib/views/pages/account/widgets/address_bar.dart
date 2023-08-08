@@ -19,6 +19,7 @@ class AddressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     AccountModels accountData = AccountSingleton.instance.getAccountModels;
     bool isPressed = false;
     return BlocListener<AuthBloc, AuthState>(
@@ -80,27 +81,30 @@ class AddressBar extends StatelessWidget {
                     ),
                   ],
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      accountData.name ?? "",
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    kHeight5,
-                    GestureDetector(
-                      onTap: () {
-                        openUpdate(context, accountData);
-                      },
-                      child: Text(
-                        accountData.address ?? "",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(fontSize: 12),
+                SizedBox(
+                  width: width*0.55,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        accountData.name ?? "",
+                        style: Theme.of(context).textTheme.labelMedium,
                       ),
-                    ),
-                  ],
+                      kHeight5,
+                      GestureDetector(
+                        onTap: () {
+                          openUpdate(context, accountData);
+                        },
+                        child: Text(
+                          accountData.address ?? "",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Column(
                   children: [

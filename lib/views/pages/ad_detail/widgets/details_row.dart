@@ -34,15 +34,9 @@ class _DetailsRowState extends State<DetailsRow> {
   void activateListner() {
     if(_scrollController.hasClients){
       _scrollController.addListener(() {
-        if (_scrollController.position.maxScrollExtent -
-                    _scrollController.position.pixels <
-                40 &&
-            _scrollEnd.value == false) {
+        if (_scrollController.position.maxScrollExtent - _scrollController.position.pixels < 40 && _scrollEnd.value == false) {
           _scrollEnd.value = true;
-        } else if (_scrollController.position.maxScrollExtent -
-                    _scrollController.position.pixels >
-                40 &&
-            _scrollEnd.value == true) {
+        } else if (_scrollController.position.maxScrollExtent - _scrollController.position.pixels > 40 && _scrollEnd.value == true) {
           _scrollEnd.value = false;
         }
       });
@@ -133,5 +127,18 @@ class _DetailsRowState extends State<DetailsRow> {
     _scrollController.dispose();
     _scrollEnd.dispose();
     super.dispose();
+  }
+}
+
+
+
+extension ExcludedMap on Map<String, dynamic>{
+  /// it removes list of items from the map
+  Map<String, dynamic> exclude(List<String> keyList) {
+    Map<String, dynamic> newList = Map.from(this);
+    for (String key in keyList) {
+      newList.remove(key);
+    }
+    return newList;
   }
 }

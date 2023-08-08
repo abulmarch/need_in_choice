@@ -9,23 +9,33 @@ abstract class AllAdsEvent extends Equatable {
 
 
 class FetchAllAds extends AllAdsEvent{
-  final bool isFirstFetch;
+  final AdsFetchingType typeOfFetching;
   const FetchAllAds({
-    this.isFirstFetch = false,
+    required this.typeOfFetching,
   });
 }
 
+class FetchNextPage extends AllAdsEvent{}
+
 class SearchAllAds extends AllAdsEvent{
-  final bool isFirstFetch;
+  final AdsFetchingType typeOfFetching;
   const SearchAllAds({
-    this.isFirstFetch = false,
+    required this.typeOfFetching,
   });
 }
+
 class SortAdsByCategory extends AllAdsEvent{
-  final MainCategory? category;
-  final bool isFirstFetch;
+  final String? categoryEndRoute;
+  final MainCategory? selectedMainCat;
+  final AdsFetchingType typeOfFetching;
   const SortAdsByCategory({
-    this.isFirstFetch = false,
-    this.category
+    this.categoryEndRoute,
+    this.selectedMainCat,
+    required this.typeOfFetching,
   });
 }
+
+class BackToFetchAllAds extends AllAdsEvent{}
+
+class RefreshPageAndFetchAds extends AllAdsEvent{}
+

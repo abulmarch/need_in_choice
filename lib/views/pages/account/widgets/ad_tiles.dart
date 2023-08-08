@@ -150,9 +150,7 @@ class Adtiles extends StatelessWidget {
                             text: "Edit Ad",
                             textcolor: kPrimaryColor,
                             ontap: () {
-                              log(adsData.categoryInfo['ads_levels']['route'].toString());
-                              log(adsData.categoryInfo.toString());
-                              Navigator.pushNamed(context, adsData.categoryInfo['ads_levels']['route'],arguments: adsData.id);
+                              Navigator.pushNamed(context, adsData.routeName,arguments: adsData.id);
                             },
                           ),
                           const VerticalDivider(

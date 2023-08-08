@@ -50,9 +50,6 @@ class AdCreateOrUpdateModel {
   });
 
   factory AdCreateOrUpdateModel.fromJson(Map json) {
-    // json.forEach((key, value) {
-    //   log('$key  :  $value');
-    // });
     final String mainCategoryName = json['main_category'];
     return AdCreateOrUpdateModel(
       id: json['id'],

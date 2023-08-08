@@ -79,6 +79,10 @@ class AddressModalSheet extends StatelessWidget {
                     width: screenWidth * .9,
                     child: TextFormField(
                       controller: nameController,
+                      style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(fontSize: 23),
                       decoration: InputDecoration(
                         hintText: "Your Name",
                         hintStyle: Theme.of(context)
@@ -100,6 +104,10 @@ class AddressModalSheet extends StatelessWidget {
                     child: TextFormField(
                       controller: addressController,
                       maxLines: 3,
+                      style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(fontSize: 23),
                       decoration: InputDecoration(
                         hintText: "Your Address",
                         hintStyle: Theme.of(context)

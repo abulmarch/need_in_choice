@@ -40,8 +40,10 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
 
   FutureOr<void> _adCreateOrUpdateInitialEvent(AdCreateOrUpdateInitialEvent event, Emitter<AdCreateOrUpdateState> emit) async{
     _adCreateOrUpdateModel = null;
-    emit(AdCreateOrUpdateLoading());
+    
     if(event.id == null){// new ad
+        log('----------New Ad-----------${event.id}------');
+      emit(AdCreateOrUpdateInitial());
       _adCreateOrUpdateModel = AdCreateOrUpdateModel(
         userId: FirebaseAuth.instance.currentUser!.uid,
         mainCategory: event.mainCategory,
@@ -50,7 +52,9 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
       );
       emit(const AdCreateOrUpdateLoaded());
     }else{// ad updateion
+      emit(AdCreateOrUpdateLoading());
       try {
+        log('----------event.id-----------${event.id}------');
         final result = await createOrUpdateAdsRepo.fetchAdDataToUpdate(event.id!);
         _adCreateOrUpdateModel = result;
         emit(AdCreateOrUpdateLoaded(adUpdateModel: result)); 
@@ -123,7 +127,6 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
   Future<FutureOr<void>> _uploadAdEvent(UploadAdEvent event, Emitter<AdCreateOrUpdateState> emit) async {
     emit(AdUploadingProgress());
     try {
-
       verifyPincode();
       await createOrUpdateAdsRepo.updateOrCreateAd(adCreateOrUpdateModel);
       emit(AdUploadingCompletedState());
@@ -195,6 +198,7 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
       pinCode: pinCode,
     );
     _notifyAddressStreamController();
+    _notifyImageStreamController();
   }
   void _notifyImageStreamController(){
     final newList = [...adCreateOrUpdateModel.imageFiles,...adCreateOrUpdateModel.imageUrls];
@@ -218,3 +222,4 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
     _addressStreamController?.close();
   }
 }
+

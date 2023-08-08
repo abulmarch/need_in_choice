@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'  show FilteringTextInputFormatter;
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:need_in_choice/utils/colors.dart';
@@ -19,7 +19,6 @@ import '../../../widgets_refactored/dashed_line_generator.dart';
 import '../../../widgets_refactored/dotted_border_textfield.dart';
 import '../../../widgets_refactored/image_upload_doted_circle.dart';
 import '../../../widgets_refactored/lottie_widget.dart';
-
 
 class EAuctionLandScreen extends StatefulWidget {
   const EAuctionLandScreen({super.key});
@@ -42,9 +41,9 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
   late TextEditingController _preBidPriceController;
   late TextEditingController _landMarksController;
   late TextEditingController _websiteLinkController;
-   late TextEditingController _startEndDateController;
+  late TextEditingController _startEndDateController;
 
-   DateTime? bidStartDate;
+  DateTime? bidStartDate;
   DateTime? bidEndDate;
 
   ScrollController scrollController = ScrollController();
@@ -65,18 +64,18 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
     _preBidPriceController = TextEditingController();
     _landMarksController = TextEditingController();
     _websiteLinkController = TextEditingController();
-     _startEndDateController = TextEditingController();
+    _startEndDateController = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-     final id = ModalRoute.of(context)!.settings.arguments as int?;
+    final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
-       id: id,
+      id: id,
       currentPageRoute: eAuctionLandForSaleRoot,
       mainCategory: MainCategory.realestate.name,
     ));
@@ -87,9 +86,12 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
       if (state is FaildToFetchExceptionState ||
           state is AdCreateOrUpdateLoading) {
         return _loadingScaffoldWidget(state);
-      } else if (state is AdCreateOrUpdateLoaded &&
-          state.adUpdateModel != null) {
-        _initializeUpdatingAdData(state.adUpdateModel!);
+      } else if (state is AdCreateOrUpdateLoaded) {
+          if(state.adUpdateModel != null){
+            _initializeUpdatingAdData(state.adUpdateModel!);
+          }else{
+            _checkValidation = false;
+          }
       } else if (state is AdCreateOrUpdateValidateState) {
         _checkValidation = true;
       }
@@ -207,8 +209,11 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
                             },
                           ),
                           kHeight20,
-                          SizedBox(
-                            height: height * 0.53,
+                          ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: 255,
+                              maxHeight: height * 0.56,
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
@@ -377,48 +382,75 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    GestureDetector(
-                                      onTap: () => _selectDate(context, true),
-                                      child: Container(
-                                        height: height * 0.045,
-                                        width: width * 0.36,
-                                        decoration: BoxDecoration(
-                                            color: kGreyColor,
-                                            borderRadius:
-                                                BorderRadius.circular(25)),
-                                        child:  Center(
-                                            child: Text(
-                                               bidStartDate != null
+                                    ElevatedButton(
+                                      onPressed: () =>
+                                          _selectDate(context, true),
+                                      style: ElevatedButton.styleFrom(
+                                        maximumSize:
+                                            Size(width * .35, height * .04),
+                                        minimumSize:
+                                            Size(width * .2, height * 0.01),
+                                        shadowColor: kPrimaryColor,
+                                        backgroundColor: kPrimaryColor,
+                                        elevation: 10,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          side: bidStartDate == null &&
+                                                  _checkValidation
+                                              ? const BorderSide(
+                                                  color: Colors.red)
+                                              : BorderSide.none,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          bidStartDate != null
                                               ? _formatDate(bidStartDate)
                                               : 'Bid Start Date',
-                                         // 'Bid Start Date',
-                                          style:const TextStyle(
-                                              color: kWhiteColor,
-                                              fontWeight: FontWeight.w400),
-                                        )),
+                                          style: const TextStyle(
+                                            color: kWhiteColor,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                    GestureDetector(
-                                       onTap: () => _selectDate(context, false),
+                                    ElevatedButton(
+                                      onPressed: () =>
+                                          _selectDate(context, false),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: kPrimaryColor,
+                                        maximumSize:
+                                            Size(width * .35, height * .04),
+                                        minimumSize:
+                                            Size(width * .2, height * 0.01),
+                                        shadowColor: kPrimaryColor,
+                                        elevation: 10,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          side: bidEndDate == null &&
+                                                  _checkValidation
+                                              ? const BorderSide(
+                                                  color: Colors.red)
+                                              : BorderSide.none,
+                                        ),
+                                      ),
                                       child: Container(
                                         height: height * 0.045,
                                         width: width * 0.36,
-                                        decoration: BoxDecoration(
-                                            color: kGreyColor,
-                                            borderRadius:
-                                                BorderRadius.circular(25)),
-                                        child:  Center(
-                                            child: Text(
-                                         // 'Bid End Date',
-                                         bidEndDate != null
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          bidEndDate != null
                                               ? _formatDate(bidEndDate)
                                               : 'Bid End Date',
                                           style: const TextStyle(
-                                              color: kWhiteColor,
-                                              fontWeight: FontWeight.w400),
-                                        )),
+                                            color: kWhiteColor,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    )
                                   ],
                                 ),
                                 kHeight15
@@ -551,10 +583,11 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
 
   Scaffold _loadingScaffoldWidget(AdCreateOrUpdateState state) {
     return Scaffold(
-      body: state is FaildToFetchExceptionState ? Center(
-        child:  Text(state.errorMessagge),
-      )
-      : LottieWidget.loading(),
+      body: state is FaildToFetchExceptionState
+          ? Center(
+              child: Text(state.errorMessagge),
+            )
+          : LottieWidget.loading(),
     );
   }
 
@@ -569,7 +602,7 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
     _branchNameController.text =
         primaryData['Branch Name'] ?? "Dummy Branch Name is Null";
     _propertyAreaController.text = primaryData['Property Area']['value'];
-    propertyArea = primaryData['Property Area']['dropname'];
+    propertyArea = primaryData['Property Area']['unit'];
 facing = primaryData['Facing'];
  _startEndDateController.text = primaryData['Date Range'];
 
@@ -594,7 +627,7 @@ facing = primaryData['Facing'];
         'Branch Name': _branchNameController.text,
         'Property Area': {
           "value": _propertyAreaController.text,
-          "dropname": propertyArea
+          "unit": propertyArea
         },
         'Date Range': _startEndDateController.text,
       };

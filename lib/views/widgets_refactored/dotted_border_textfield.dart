@@ -108,7 +108,7 @@ class DarkTextChip extends StatelessWidget {
         text,
         style: const TextStyle(
             color: kWhiteColor,
-            fontSize: 12),
+            fontSize: 11),
       ),
     );
   }

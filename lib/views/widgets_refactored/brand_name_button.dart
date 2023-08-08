@@ -54,7 +54,7 @@ class WorkTimeContainer extends StatelessWidget {
       onTap: onSelected,
       child: Container(
         height: 35,
-        width: 40,
+        width: 42,
         decoration: BoxDecoration(
             color: selected ? textcolor : color,
             borderRadius: BorderRadius.circular(10),

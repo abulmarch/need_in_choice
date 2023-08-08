@@ -48,7 +48,8 @@ class CustomDropDownButton extends StatelessWidget {
         underline: const SizedBox(),
         borderRadius: BorderRadius.circular(kpadding10),
         dropdownColor: kWhiteColor,
-        menuMaxHeight: 250,isExpanded: true,
+        menuMaxHeight: 250,
+        isExpanded: true,
         onChanged: onChanged,
         selectedItemBuilder: (context) => itemList.map((item) => Center(
           child: Text(item,style: const TextStyle(color: kWhiteColor,overflow: TextOverflow.ellipsis),),

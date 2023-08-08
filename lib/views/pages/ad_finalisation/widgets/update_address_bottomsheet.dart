@@ -1,206 +1,194 @@
+import 'dart:async';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
+import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder, BlocProvider;
+import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
 import '../../../../blocs/ad_create_or_update_bloc/exception_file.dart';
+import '../../../../blocs/find_address/find_address_bloc.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 import '../../../widgets_refactored/error_popup.dart';
 
+const LatLng currentLocation = LatLng(8.690652240831222, 76.9709836319089);
+
 class UpdateAdressBottomSheet extends StatefulWidget {
-  const UpdateAdressBottomSheet({super.key});
+  const UpdateAdressBottomSheet({Key? key}) : super(key: key);
 
   @override
   State<UpdateAdressBottomSheet> createState() => _UpdateAdressBottomSheetState();
 }
 
 class _UpdateAdressBottomSheetState extends State<UpdateAdressBottomSheet> {
- late TextEditingController _addressController;
-  late ValueNotifier<bool> _fetchLocationLoader;
-  late ScrollController _scrollController;
-  bool _firstFocustap = true;
+  late final GoogleMapController _controller;
   late AdCreateOrUpdateBloc adCreateOrUpdateBloc;
+
+  String _currentAddress = '';
+  LatLng? _selectedLocation;
+
+  static const CameraPosition _kGooglePlex = CameraPosition(
+    target: currentLocation,
+    zoom: 10,
+  );
+
   @override
   void initState() {
     super.initState();
-    _addressController = TextEditingController();
-    _fetchLocationLoader = ValueNotifier(false);
-    _scrollController = ScrollController();
+    _selectedLocation = currentLocation;
     adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
-    _addressController.text = adCreateOrUpdateBloc.adCreateOrUpdateModel.adsAddress;
   }
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: _scrollController,
-      padding: EdgeInsets.only(left: 30,right: 30,top: 30,bottom: MediaQuery.of(context).viewInsets.bottom,),
-      child: Column(
-        children: [
-          SizedBox(
-            height: 520,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  'Update Location',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge!
-                      .copyWith(color: kBlackColor, fontSize: 35),
-                ),
-                kHeight10,
-                Text(
-                  'Saved Adress',
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-                kHeight10,
-                ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minHeight: 50,
-                    maxHeight: 70,
-                  ),
-                  child: Text(
-                    adCreateOrUpdateBloc.adCreateOrUpdateModel.adsAddress,
-                    // 'Calletic Technologies Pvt Ltd 4th Floor, Nila, Technopark Campus, Technopark Campus, Kazhakkoottam, Thiruvananthapuram, Kerala 695581',
-                    style: Theme.of(context).textTheme.bodySmall,
-                    maxLines: 5,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                kHeight20,
+    final height = MediaQuery.of(context).size.height;
+    return BlocProvider(
+      create: (context) => FindAddressBloc(),
+      child: BlocBuilder<FindAddressBloc, FindAddressState>(
+        builder: (context, state) {
+          if (state is AddressLoaded) {
+            _selectedLocation = state.latLng;
+            _currentAddress = state.address;
+            log(_currentAddress);
+            _controller .animateCamera(CameraUpdate.newLatLngZoom(state.latLng, 12));
+            _showSnackBar();
+          }
+
+          return SafeArea(
+            child: Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Stack(children: [
                 SizedBox(
-                  height: 30,
-                  child: InkWell(
-                    onTap: () async {
-                      try {
-                        _fetchLocationLoader.value = true;
-                        _addressController.text = await adCreateOrUpdateBloc.getCurrentLocation();
-                        _fetchLocationLoader.value = false;
-                      } catch (e) {
-                        _fetchLocationLoader.value = false;
-                        log(e.toString());
-                      }
+                  height: height,
+                  width: double.infinity,
+                  child: GoogleMap(mapToolbarEnabled: false,
+                      padding: const EdgeInsets.only(bottom: 150),
+                      // buildingsEnabled: true,
+                      onCameraMove: (CameraPosition position) {
+                        _selectedLocation = position.target;
+                      },
+                      mapType: MapType.normal,
+                      initialCameraPosition: _kGooglePlex,
+                      onMapCreated: (GoogleMapController controller) {
+                        _controller = controller;
+                      },
+                      onTap: (latLng) {
+                        BlocProvider.of<FindAddressBloc>(context)
+                            .add(MarkAddress(latLng));
+                      }, 
+                      markers: {
+                        Marker(
+                          markerId: const MarkerId('selectedLocation'),
+                          position: _selectedLocation!,
+                          draggable: true,
+                          infoWindow: InfoWindow(
+                            title: 'Location',
+                            snippet: _currentAddress,
+                          ),
+                        ),
+                      }),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: TextField(
+                    onSubmitted: (value) {
+                      BlocProvider.of<FindAddressBloc>(context)
+                          .add(SearchAddress(value));
                     },
-                    child: Row(
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                              text: 'Auto Fetch',
-                              style: Theme.of(context).textTheme.labelMedium,
-                              children: [
-                                TextSpan(
-                                  text: ' Location',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium!
-                                      .copyWith(color: kPrimaryColor),
-                                )
-                              ]),
+                    textInputAction: TextInputAction.search,
+                    decoration: InputDecoration(
+                      hintText: 'Search for a location',
+                      hintStyle: const TextStyle(color: kGreyColor),
+                      prefixIcon: const Icon(Icons.search),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      filled: true,
+                      fillColor: kWhiteColor.withOpacity(0.9),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                          width: 0,
                         ),
-                        kWidth5,
-                        ValueListenableBuilder(
-                          valueListenable: _fetchLocationLoader,
-                          builder: (context, isLoading, _) {
-                            return isLoading 
-                            ? const SizedBox(
-                              width: 18, height: 18,
-                              child: CircularProgressIndicator(color: Colors.black,strokeWidth: 3),
-                            ) 
-                            : const Icon(Icons.refresh,size: 30);
-                          }
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                kHeight10,
-                SizedBox(
-                  height: 217,
-                  width: 359,
-                  child: TextFormField(
-                    controller: _addressController,
-                    // initialValue: 'Calletic Technologies Pvt Ltd 4th Floor, Nila, Technopark Campus, Technopark Campus, Kazhakkoottam, Thiruvananthapuram, Kerala 695581',
-                    minLines: 15,
-                    maxLines: 19,
-                    textAlignVertical: TextAlignVertical.center,
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 16, color: const Color(0XFF525151)),
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFFCACACA)),
                       ),
                     ),
-                    onTapOutside: (event) {
-                      _firstFocustap = true;
-                      FocusScope.of(context).unfocus();
-                    },
-                    onTap: () async {
-                        if(_firstFocustap){
-                          _firstFocustap = false;
-                          await Future.delayed(const Duration(milliseconds: 700));
-                        }
-                        if (_scrollController.position.maxScrollExtent *0.55 > _scrollController.position.pixels) {
-                          _scrollController.animateTo(
-                            _scrollController.position.maxScrollExtent,
-                            duration: const Duration(milliseconds: 400), 
-                            curve: Curves.linear,
-                          );
-                        }
-                    },
                   ),
                 ),
-                const Spacer(),
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(const Color(0XFF303030)),
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+                Positioned(
+                  bottom: 20,
+                  left: 20,
+                  right: 20,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(const Color(0XFF303030)),
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100)),
+                      ),
+                      elevation: MaterialStateProperty.all<double>(0),
+                      minimumSize:
+                          MaterialStateProperty.all<Size>(const Size(321, 61)),
                     ),
-                    elevation: MaterialStateProperty.all<double>(0),
-                    minimumSize: MaterialStateProperty.all<Size>(const Size(321, 61)),
-                    ),
-                  onPressed: () {
-                    try {
-                      adCreateOrUpdateBloc.saveAdsAddress(_addressController.text);
-                      Navigator.pop(context);
-                    } on InvalidPincodeException{
-                      showErrorDialog(context, 'Invalid Pincod');
-                    } on InvalidAddressException{
-                      showErrorDialog(context, 'Invalid address, Include pincod in the address');
-                    }
-                    catch (e) {
-                      showErrorDialog(context, 'Something went wrong');
-                    }
-                  },
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'Save', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: kWhiteColor, fontSize: 23),
-                      children: [
-                        TextSpan(
-                      text: 'Location', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: kPrimaryColor, fontSize: 23),),
-                      ]
+                    onPressed: () async {
+                      try {
+                        adCreateOrUpdateBloc
+                            .saveAdsAddress(_currentAddress.toString());
+                        log("Address saved successfully.");
+
+                        Navigator.pop(context);
+                      } on InvalidPincodeException {
+                        showErrorDialog(context, 'Invalid Pincode');
+                      } on InvalidAddressException {
+                        showErrorDialog(
+                          context,
+                          'Invalid address, Include pincode in the address',
+                        );
+                      } catch (e) {
+                        showErrorDialog(context, 'Something went wrong');
+                        log('Error saving address: $e');
+                      }
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                          text: 'Save ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge!
+                              .copyWith(color: kWhiteColor, fontSize: 23),
+                          children: [
+                            TextSpan(
+                              text: 'Location',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(color: kPrimaryColor, fontSize: 23),
+                            ),
+                          ]),
                     ),
                   ),
                 ),
-                const Spacer()
-              ],
+                kHeight20
+              ]),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
-
-
-  @override
-  void dispose() {
-    _addressController.dispose();
-    _fetchLocationLoader.dispose();
-    _scrollController.dispose();
-    super.dispose();
+  
+  void _showSnackBar() {
+    Future.delayed(const Duration(microseconds: 600)).then((value) {
+      SnackBar snackBar = SnackBar(
+        content: Center(child: Text(_currentAddress,style: const TextStyle(fontSize: 11),)),
+        margin: const EdgeInsets.only(left: 10, right: 10, bottom: 100),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: const Color(0XFF979797),
+        duration: const Duration(seconds: 2),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    });
   }
 }

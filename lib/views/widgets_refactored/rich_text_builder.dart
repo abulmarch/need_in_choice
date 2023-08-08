@@ -69,9 +69,9 @@ class RichTextBuildFromMap extends StatelessWidget {
           style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: fontSize,color: kFadedBlack),
           children: <TextSpan>[
             TextSpan(
-              text: mapEntry.value.runtimeType.toString() != '_Map<String, dynamic>' 
+              text: mapEntry.value is! Map 
               ? '${mapEntry.value}'.toUpperCase()
-              : '${mapEntry.value['value']} ${mapEntry.value['dropname']}'.toUpperCase(),
+              : '${mapEntry.value['value']} ${mapEntry.value['unit']}'.toUpperCase(),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500,fontSize: fontSize,color: kPrimaryColor)
             ),
           ],

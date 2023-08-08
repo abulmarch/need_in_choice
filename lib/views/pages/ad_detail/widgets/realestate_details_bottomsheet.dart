@@ -233,13 +233,19 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   kWidth5,
-                                  Text(adsModel.adsTitle,
-                                      // "Modern Restaurant aluva",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge),
+                                  SizedBox(
+                                    width: screenWidth*0.8,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Text(adsModel.adsTitle,
+                                          // "Modern Restaurant aluva",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge),
+                                    ),
+                                  ),
                                   const Spacer(),
                                   const Icon(
                                     Icons.favorite_border_outlined,
@@ -269,7 +275,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                 ],
                               ),
                               DetailsRow(
-                                details: _primaryData(),
+                                details: adsModel.primaryData.exclude(['Date Range','Website Link','Landmark']),
                                 dotColor: kDottedBorder,
                               ),
                               kHeight5,
@@ -279,8 +285,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                               ),
                               kHeight5,
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   adPriceWidget,
                                   IconWithButton(
@@ -294,9 +299,8 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                 ],
                               ),
                               DetailsRow(
-                                details: _moreInfoData(),
-                                dotColor:
-                                    kSecondaryColor, //adsModel.moreInfoData,//
+                                details: adsModel.moreInfoData.exclude(['Website Link','Landmark','Selected Amenities']),
+                                dotColor: kSecondaryColor,
                               ),
                               kHeight5,
                               SizedBox(
@@ -394,7 +398,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                     Expanded(
                                       child: RichText(
                                         text: TextSpan(
-                                          text: adsModel.moreInfoData['Landmark'],
+                                          text: _getWebsiteLink(adsModel),
                                           //"Near PRS Hospital",
                                           style: Theme.of(context)
                                               .textTheme
@@ -405,7 +409,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                           children: [
                                             TextSpan(
                                               text:
-                                                  "\n${adsModel.moreInfoData['Website Link']}",
+                                                  "\n${_getWebsiteLink(adsModel)}",
                                               //"\nwww.calletic.com",
                                               style: Theme.of(context)
                                                   .textTheme
@@ -608,6 +612,25 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
     );
   }
 
+
+ String _getLandmark(AdsModel) {
+    String? landmark = adsModel.moreInfoData['Landmark'];
+    if (landmark == null || landmark.isEmpty) {
+      landmark = adsModel.primaryData['Landmark'];
+    }
+
+    return landmark ?? '';
+  }
+
+  String _getWebsiteLink(AdsModel) {
+    String? websiteLink = adsModel.moreInfoData['Website Link'];
+    if (websiteLink == null || websiteLink.isEmpty) {
+      websiteLink = adsModel.primaryData['Website Link'];
+    }
+
+    return websiteLink ?? '';
+  }
+
   Widget _otherAdsImagePreview({required String imageName, required String defaultImage}) {
     String? imageUrl = adsModel.otherimages.firstWhere((element) => element['image_type'] == imageName, orElse: () => {},)['url'];
     return imageUrl != null ? OtherAdsImagePreviewBox(
@@ -618,34 +641,4 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
     : const SizedBox();
   }
 
-  Map<String, dynamic> _moreInfoData() {
-    log('---------------------------------------\n${adsModel.moreInfoData}');
-    Map<String, dynamic> moreInfo = {};
-    adsModel.moreInfoData.forEach((key, value) {
-      if (value != null && value != "" && key != 'Website Link'&& key != 'Landmark' && key != 'Selected Amenities') {
-        if (value is! String && value['value'] == "") {
-          return;
-        }
-        moreInfo[key] = value;
-      }
-    });
-    // return adsModel.moreInfoData;
-    log(moreInfo.toString());
-    return moreInfo;
-  }
-
- Map<String, dynamic> _primaryData() {
-    Map<String, dynamic> primaryInfo = {};
-    adsModel.primaryData.forEach((key, value) {
-      if (value != null && value != "" && key != 'Date Range') {
-        if (value is! String && value['value'] == "") {
-          return;
-        }
-        primaryInfo[key] = value;
-      }
-    });
-    // return adsModel.moreInfoData;
-    log(primaryInfo.toString());
-    return primaryInfo;
-  }
 }

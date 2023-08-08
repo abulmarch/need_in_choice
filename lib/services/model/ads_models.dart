@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:need_in_choice/utils/extension_data.dart';
+
 class AdsModel {
   final int id;
   final String userId;
@@ -23,6 +25,8 @@ class AdsModel {
   final Map<String, dynamic> moreInfoData;
   final dynamic adPrice;
 
+  final String routeName;
+
   AdsModel({
     required this.id,
     required this.userId,
@@ -42,6 +46,8 @@ class AdsModel {
     required this.moreInfoData,
     required this.otherimages,
     this.adPrice,
+
+    required this.routeName,
   });
   factory AdsModel.fromJson(Map map) {
     try{
@@ -58,14 +64,15 @@ class AdsModel {
         profileImage: map['profile_image'],
         images: (map['images'] as List).map((img) => img['url'] as String).toList(), // images : [{'url':'imagepath1.png'},{'url':'imagepath2.png'}]
         otherimages: map['otherimage'],
-        categoryInfo: map['realestate'],
+        categoryInfo: map[mainCategory],
         timeAgo: ConvertToTimeAgo.calculateTimeAgo(map['created_at']), 
         phoneNo: map['phone'] ?? '',
         userName: map['name'] ?? '',
         whatsappNo: map['whatsapp'],
         primaryData: map[mainCategory]['primary_details'],
-        moreInfoData: map[mainCategory]['more_info'],
-        adPrice: map['ad_price']
+        moreInfoData: (map[mainCategory]['more_info'] as Map<String, dynamic>).removeEmptyValue(),//map[mainCategory]['more_info'],//
+        adPrice: map['ad_price'],
+        routeName: map['route_name'],
       );
     }
     catch (e){
@@ -91,14 +98,26 @@ class AdsModel {
   String toString() {
     return '''
     ----------------------------------->
-    id : $id, 'userId : $userId, 'adsTitle' : $adsTitle, images : $images,
-    description : $description, isPremium : $isPremium, timeAgo : $timeAgo, 
+    id : $id, userId : $userId, 
+    adsTitle : $adsTitle, 
+    images : $images,
+    description : $description, 
+    isPremium : $isPremium, 
+    timeAgo : $timeAgo, 
     mainCategory : $mainCategory,
-
+    primaryData : $primaryData
+    moreInfoData : $moreInfoData
+    adPrice : $adPrice
+    routeName : $routeName
+    
     categoryInfo : $categoryInfo
+
     ''';
   }
+  
 }
+
+
 
 class ConvertToTimeAgo {
   static String calculateTimeAgo(String date) {

@@ -104,9 +104,12 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
       if (state is FaildToFetchExceptionState ||
           state is AdCreateOrUpdateLoading) {
         return _loadingScaffoldWidget(state);
-      } else if (state is AdCreateOrUpdateLoaded &&
-          state.adUpdateModel != null) {
-        _initializeUpdatingAdData(state.adUpdateModel!);
+      } else if (state is AdCreateOrUpdateLoaded) {
+          if(state.adUpdateModel != null){
+            _initializeUpdatingAdData(state.adUpdateModel!);
+          }else{
+            _checkValidation = false;
+          }
       } else if (state is AdCreateOrUpdateValidateState) {
         _checkValidation = true;
       }
@@ -416,48 +419,75 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    GestureDetector(
-                                      onTap: () => _selectDate(context, true),
-                                      child: Container(
-                                        height: height * 0.045,
-                                        width: width * 0.36,
-                                        decoration: BoxDecoration(
-                                            color: kGreyColor,
-                                            borderRadius:
-                                                BorderRadius.circular(25)),
-                                        child: Center(
-                                            child: Text(
-                                          //  'Bid Start Date',
+                                    ElevatedButton(
+                                      onPressed: () =>
+                                          _selectDate(context, true),
+                                      style: ElevatedButton.styleFrom(
+                                        maximumSize:
+                                            Size(width * .35, height * .04),
+                                        minimumSize:
+                                            Size(width * .2, height * 0.01),
+                                        shadowColor: kPrimaryColor,
+                                        backgroundColor: kPrimaryColor,
+                                        elevation: 10,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          side: bidStartDate == null &&
+                                                  _checkValidation
+                                              ? const BorderSide(
+                                                  color: Colors.red)
+                                              : BorderSide.none,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
                                           bidStartDate != null
                                               ? _formatDate(bidStartDate)
                                               : 'Bid Start Date',
                                           style: const TextStyle(
-                                              color: kWhiteColor,
-                                              fontWeight: FontWeight.w400),
-                                        )),
+                                            color: kWhiteColor,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                    GestureDetector(
-                                      onTap: () => _selectDate(context, false),
+                                    ElevatedButton(
+                                      onPressed: () =>
+                                          _selectDate(context, false),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: kPrimaryColor,
+                                        maximumSize:
+                                            Size(width * .35, height * .04),
+                                        minimumSize:
+                                            Size(width * .2, height * 0.01),
+                                        shadowColor: kPrimaryColor,
+                                        elevation: 10,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          side: bidEndDate == null &&
+                                                  _checkValidation
+                                              ? const BorderSide(
+                                                  color: Colors.red)
+                                              : BorderSide.none,
+                                        ),
+                                      ),
                                       child: Container(
                                         height: height * 0.045,
                                         width: width * 0.36,
-                                        decoration: BoxDecoration(
-                                            color: kGreyColor,
-                                            borderRadius:
-                                                BorderRadius.circular(25)),
-                                        child: Center(
-                                            child: Text(
-                                          // 'Bid End Date',
+                                        alignment: Alignment.center,
+                                        child: Text(
                                           bidEndDate != null
                                               ? _formatDate(bidEndDate)
                                               : 'Bid End Date',
                                           style: const TextStyle(
-                                              color: kWhiteColor,
-                                              fontWeight: FontWeight.w400),
-                                        )),
+                                            color: kWhiteColor,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    )
                                   ],
                                 ),
                                 kHeight15
@@ -787,14 +817,15 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
 
   Scaffold _loadingScaffoldWidget(AdCreateOrUpdateState state) {
     return Scaffold(
-      body: state is FaildToFetchExceptionState ? Center(
-        child:  Text(state.errorMessagge),
-      )
-      : LottieWidget.loading(),
+      body: state is FaildToFetchExceptionState
+          ? Center(
+              child: Text(state.errorMessagge),
+            )
+          : LottieWidget.loading(),
     );
   }
 
-  void _initializeUpdatingAdData(AdCreateOrUpdateModel adUpdateModel) {
+   void _initializeUpdatingAdData(AdCreateOrUpdateModel adUpdateModel) {
     log(adUpdateModel.toString());
 
     final primaryData = adUpdateModel.primaryData;
@@ -805,9 +836,9 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
     _branchNameController.text = primaryData['Branch Name'] ?? "";
 
     _propertyAreaController.text = primaryData['Property Area']['value'];
-    propertyArea = primaryData['Property Area']['dropname'];
+    propertyArea = primaryData['Property Area']['unit'];
     _buildupAreaController.text = primaryData['Buildup Area']['value'];
-    buildupArea = primaryData['Buildup Area']['dropname'];
+    buildupArea = primaryData['Buildup Area']['unit'];
     _startEndDateController.text = primaryData['Date Range'];
 
     //-----------------------------------------------------------------
@@ -815,10 +846,10 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
     _startPriceController.text = adUpdateModel.adPrice['Start Price'];
     _preBidPriceController.text = adUpdateModel.adPrice['Prebid'];
     _roadWidthController.text = moreInfoData['Road Width']['value'];
-    roadWidth = moreInfoData['Road Width']['dropname'];
+    roadWidth = moreInfoData['Road Width']['unit'];
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
     carpetArea =
-        'sq.feet'; //moreInfoData['Carpet Area']['dropname'];//    ERROR
+        'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
     _totalFloorController.text = moreInfoData['Total Floor'];
     _floorNoController.text = moreInfoData['Floor No'];
     _parkingController.text = moreInfoData['Parking'];
@@ -841,22 +872,22 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
         'Branch Name': _branchNameController.text,
         'Property Area': {
           "value": _propertyAreaController.text,
-          "dropname": propertyArea
+          "unit": propertyArea
         },
         'Buildup Area': {
           "value": _buildupAreaController.text,
-          "dropname": buildupArea
+          "unit": buildupArea
         },
         'Date Range': _startEndDateController.text,
       };
       final Map<String, dynamic> moreInfo = {
         'Road Width': {
           'value': _roadWidthController.text,
-          'dropname': roadWidth,
+          'unit': roadWidth,
         },
         'Carpet Area': {
           'value': _carpetAreaController.text,
-          'dropname': carpetArea,
+          'unit': carpetArea,
         },
         'Floor No': _floorNoController.text,
         'Parking': _parkingController.text,

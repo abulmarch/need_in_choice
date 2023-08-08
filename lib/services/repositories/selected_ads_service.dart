@@ -16,7 +16,6 @@ class SelectedAdsRepo {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         final selectedAds = responseData['result'];
-        log(selectedAds.toString());
         return AdsModel.fromJson(selectedAds);
       } else {
         log('${response.body}fetchSelectedAdsData');

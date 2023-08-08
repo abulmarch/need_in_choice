@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show TextInputFormatter;
+import 'package:need_in_choice/utils/colors.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
@@ -40,6 +41,8 @@ class CustomTextField extends StatelessWidget {
           // contentPadding: kContentPadding,
           fillColor: fillColor,
           hintText: hintText,
+          labelText: hintText,
+          labelStyle: const TextStyle(fontSize: 15,color: kLightGreyColor),
           suffixIconConstraints: suffixIconConstraints ?? const BoxConstraints.tightForFinite(),
           suffixIcon : suffixIcon,
         ),

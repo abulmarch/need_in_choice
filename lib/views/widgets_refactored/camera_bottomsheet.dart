@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
-import 'package:need_in_choice/views/widgets_refactored/dashed_line_generator.dart';
 
 import '../../utils/colors.dart';
 import '../../utils/constants.dart';

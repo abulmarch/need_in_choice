@@ -5,6 +5,7 @@ import 'package:extended_text/extended_text.dart'
     show ExtendedText, TextOverflowWidget;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
+import 'package:need_in_choice/utils/extension_data.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../services/model/ad_create_or_update_model.dart'
     show AdCreateOrUpdateModel;
@@ -30,14 +31,12 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final adData =
-        BlocProvider.of<AdCreateOrUpdateBloc>(context).adCreateOrUpdateModel;
-
+    final adData = BlocProvider.of<AdCreateOrUpdateBloc>(context).adCreateOrUpdateModel;
+    final moreInfoData = adData.moreInfoData.removeEmptyValue();
     Widget adPriceWidget = const SizedBox();
 
     if (adData.adPrice is Map) {
-      if (adData.adPrice.containsKey('Start Price') &&
-          adData.adPrice.containsKey('Prebid')) {
+      if (adData.adPrice.containsKey('Start Price') && adData.adPrice.containsKey('Prebid')) {
         adPriceWidget = Column(
           children: [
             RichText(
@@ -272,7 +271,7 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                                 ],
                               ),
                               DetailsRow(
-                                details: _primaryData(adData.primaryData),
+                                details: adData.primaryData.exclude(['Date Range','Website Link','Landmark',]),
                                 dotColor: kDottedBorder,
                               ),
                               kHeight5,
@@ -296,7 +295,7 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                                 ],
                               ),
                               DetailsRow(
-                                details: _moreInfoData(adData.moreInfoData),
+                                details: moreInfoData.exclude(['Website Link','Landmark','Selected Amenities']),
                                 dotColor: kSecondaryColor,
                               ),
                               kHeight5,
@@ -392,7 +391,7 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                                     Expanded(
                                       child: RichText(
                                         text: TextSpan(
-                                          text: adData.moreInfoData['Landmark'],
+                                          text: _getLandmark(adData),
                                           //"Near PRS Hospital",
                                           style: Theme.of(context)
                                               .textTheme
@@ -402,7 +401,7 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                                                   color: const Color(0XFF878181)),
                                           children: [
                                             TextSpan(
-                                              text: "\n${adData.moreInfoData['Website Link']}",
+                                              text: "\n${ _getWebsiteLink(adData)}",
                                               //"\nwww.calletic.com",
                                               style: Theme.of(context)
                                                   .textTheme
@@ -605,6 +604,24 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
     );
   }
 
+  String _getLandmark(adData) {
+    String? landmark = adData.moreInfoData['Landmark'];
+    if (landmark == null || landmark.isEmpty) {
+      landmark = adData.primaryData['Landmark'];
+    }
+
+    return landmark ?? '';
+  }
+
+  String _getWebsiteLink(adData) {
+    String? websiteLink = adData.moreInfoData['Website Link'];
+    if (websiteLink == null || websiteLink.isEmpty) {
+      websiteLink = adData.primaryData['Website Link'];
+    }
+
+    return websiteLink ?? '';
+  }
+
   Widget _otherAdsImagePreview({
     required String imageName,
     required AdCreateOrUpdateModel adData,
@@ -640,35 +657,6 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
     // );
   }
 
-  Map<String, dynamic> _moreInfoData(Map<String, dynamic> moreInfoData) {
-    Map<String, dynamic> moreInfo = {};
-    moreInfoData.forEach((key, value) {
-      if (value != null &&
-          value != "" &&
-          key != 'Website Link' &&
-          key != 'Landmark' &&
-          key != 'Selected Amenities') {
-        if (value is! String && value['value'] == "") {
-          return;
-        }
-        moreInfo[key] = value;
-      }
-    });
-    return moreInfo;
-  }
-
-  Map<String, dynamic> _primaryData(Map<String, dynamic> primaryData) {
-    Map<String, dynamic> primaryInfo = {};
-    primaryData.forEach((key, value) {
-      if (value != null && value != "" && key != 'Date Range') {
-        if (value is! String && value['value'] == "") {
-          return;
-        }
-        primaryInfo[key] = value;
-      }
-    });
-    return primaryInfo;
-  }
 }
 
 class MySeparator extends StatelessWidget {

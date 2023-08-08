@@ -40,7 +40,8 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
   TimeOfDay? _selectedStartTime;
   TimeOfDay? _selectedEndTime;
 
-  late List<String> selectedDays = [];
+  late List<String> _selectedDays = [];
+  bool _checkValidation = false;
 
   @override
   void initState() {
@@ -73,9 +74,12 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
       if (state is FaildToFetchExceptionState ||
           state is AdCreateOrUpdateLoading) {
         return _loadingScaffoldWidget(state);
-      } else if (state is AdCreateOrUpdateLoaded &&
-          state.adUpdateModel != null) {
-        _initializeUpdatingAdData(state.adUpdateModel!);
+      } else if (state is AdCreateOrUpdateLoaded) {
+        if(state.adUpdateModel != null){
+          _initializeUpdatingAdData(state.adUpdateModel!);
+        }else{
+          _checkValidation = false;
+        }
       }
 
       return Scaffold(
@@ -275,109 +279,115 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
                               ),
                             ),
                             kHeight10,
-                            GestureDetector(
-                              onTap: () {
+                            ElevatedButton(
+                              onPressed: () {
                                 _showTimeRangePicker(context);
                               },
-                              child: Container(
-                                height: height * 0.03,
-                                width: width * 0.43,
-                                decoration: BoxDecoration(
-                                    color: kDarkGreyButtonColor,
-                                    borderRadius: BorderRadius.circular(25)),
-                                child: Center(
-                                    child: Text(
+                              style: ElevatedButton.styleFrom(
+                                maximumSize: Size(width * .45, height * .04),
+                                minimumSize: Size(width * .2, height * 0.01),
+                                shadowColor: kPrimaryColor,
+                                backgroundColor: kPrimaryColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                elevation: 10,
+                                side: _selectedStartTime == null &&
+                                        _selectedEndTime == null &&
+                                        _checkValidation
+                                    ? const BorderSide(color: Colors.red)
+                                    : BorderSide.none,
+                              ),
+                              child: Center(
+                                child: Text(
                                   //'10.00 am to 5.00pm',
                                   _selectedStartTime != null &&
                                           _selectedEndTime != null
                                       ? '${_formatTime(_selectedStartTime!)} - ${_formatTime(_selectedEndTime!)}'
                                       : 'Select Time Range',
-
                                   style: const TextStyle(
                                       color: kWhiteColor,
                                       fontWeight: FontWeight.w300),
-                                )),
+                                ),
                               ),
                             ),
                             kHeight15,
                             Container(
-                              height: height * 0.08,
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: kButtonColor,
-                                borderRadius: BorderRadius.circular(15),
+                                borderRadius: BorderRadius.circular(5),
+                                border: _selectedDays.isEmpty && _checkValidation
+                                  ? Border.all(color: Colors.red)
+                                  : null,
                               ),
-                              child: Column(
+                              child: Wrap(
+                                spacing: 7.0,
+                                runSpacing: 8.0,
                                 children: [
-                                  Wrap(
-                                    spacing: 7.0,
-                                    runSpacing: 8.0,
-                                    children: [
-                                      WorkTimeContainer(
-                                        color: kWhiteColor,
-                                        textcolor: kPrimaryColor,
-                                        text: 'Mon',
-                                        selected: selectedDays.contains('Mon'),
-                                        onSelected: () {
-                                          _toggleDaySelection('Mon');
-                                        },
-                                      ),
-                                      WorkTimeContainer(
-                                        color: kWhiteColor,
-                                        textcolor: kPrimaryColor,
-                                        text: 'Tue',
-                                        selected: selectedDays.contains('Tue'),
-                                        onSelected: () {
-                                          _toggleDaySelection('Tue');
-                                        },
-                                      ),
-                                      WorkTimeContainer(
-                                        color: kWhiteColor,
-                                        textcolor: kPrimaryColor,
-                                        text: 'Wed',
-                                        selected: selectedDays.contains('Wed'),
-                                        onSelected: () {
-                                          _toggleDaySelection('Wed');
-                                        },
-                                      ),
-                                      WorkTimeContainer(
-                                        color: kWhiteColor,
-                                        textcolor: kPrimaryColor,
-                                        text: 'Thu',
-                                        selected: selectedDays.contains('Thu'),
-                                        onSelected: () {
-                                          _toggleDaySelection('Thu');
-                                        },
-                                      ),
-                                      WorkTimeContainer(
-                                        color: kWhiteColor,
-                                        textcolor: kPrimaryColor,
-                                        text: 'Fri',
-                                        selected: selectedDays.contains('Fri'),
-                                        onSelected: () {
-                                          _toggleDaySelection('Fri');
-                                        },
-                                      ),
-                                      WorkTimeContainer(
-                                        text: 'Sun',
-                                        color: kWhiteColor,
-                                        textcolor: kPrimaryColor,
-                                        selected: selectedDays.contains('Sun'),
-                                        onSelected: () {
-                                          _toggleDaySelection('Sun');
-                                        },
-                                      ),
-                                      WorkTimeContainer(
-                                        color: kWhiteColor,
-                                        textcolor: kPrimaryColor,
-                                        text: 'Sat',
-                                        selected: selectedDays.contains('Sat'),
-                                        onSelected: () {
-                                          _toggleDaySelection('Sat');
-                                        },
-                                      ),
-                                    ],
+                                  WorkTimeContainer(
+                                    color: kWhiteColor,
+                                    textcolor: kPrimaryColor,
+                                    text: 'Mon',
+                                    selected: _selectedDays.contains('Mon'),
+                                    onSelected: () {
+                                      _toggleDaySelection('Mon');
+                                    },
                                   ),
-                                  kHeight15,
+                                  WorkTimeContainer(
+                                    color: kWhiteColor,
+                                    textcolor: kPrimaryColor,
+                                    text: 'Tue',
+                                    selected: _selectedDays.contains('Tue'),
+                                    onSelected: () {
+                                      _toggleDaySelection('Tue');
+                                    },
+                                  ),
+                                  WorkTimeContainer(
+                                    color: kWhiteColor,
+                                    textcolor: kPrimaryColor,
+                                    text: 'Wed',
+                                    selected: _selectedDays.contains('Wed'),
+                                    onSelected: () {
+                                      _toggleDaySelection('Wed');
+                                    },
+                                  ),
+                                  WorkTimeContainer(
+                                    color: kWhiteColor,
+                                    textcolor: kPrimaryColor,
+                                    text: 'Thu',
+                                    selected: _selectedDays.contains('Thu'),
+                                    onSelected: () {
+                                      _toggleDaySelection('Thu');
+                                    },
+                                  ),
+                                  WorkTimeContainer(
+                                    color: kWhiteColor,
+                                    textcolor: kPrimaryColor,
+                                    text: 'Fri',
+                                    selected: _selectedDays.contains('Fri'),
+                                    onSelected: () {
+                                      _toggleDaySelection('Fri');
+                                    },
+                                  ),
+                                  WorkTimeContainer(
+                                    text: 'Sun',
+                                    color: kWhiteColor,
+                                    textcolor: kPrimaryColor,
+                                    selected: _selectedDays.contains('Sun'),
+                                    onSelected: () {
+                                      _toggleDaySelection('Sun');
+                                    },
+                                  ),
+                                  WorkTimeContainer(
+                                    color: kWhiteColor,
+                                    textcolor: kPrimaryColor,
+                                    text: 'Sat',
+                                    selected: _selectedDays.contains('Sat'),
+                                    onSelected: () {
+                                      _toggleDaySelection('Sat');
+                                    },
+                                  ),
                                 ],
                               ),
                             ),
@@ -443,10 +453,11 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
     _landMarksController.text = primaryData['Landmark'];
     _websiteLinkController.text = primaryData['Website Link'];
     _timeRangeController.text = primaryData['Time Range'];
-    selectedDays = daysListed;
+    _selectedDays = daysListed;
   }
 
   _saveChangesAndContinue(BuildContext context) {
+    _checkValidation = true;
     context
         .read<AdCreateOrUpdateBloc>()
         .add(AdCreateOrUpdateCheckDropDownValidattionEvent());
@@ -457,7 +468,7 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
         'Landmark': _landMarksController.text,
         'Website Link': _websiteLinkController.text,
         'Time Range': {
-          "value": selectedDays.join(', '),
+          "value": _selectedDays.join(', '),
           // 'value': selectedDays.fold<String>(
           //     '', (previousValue, element) => '$previousValue$element, '),
           'groupValue': _timeRangeController.text,
@@ -495,10 +506,10 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
 
   void _toggleDaySelection(String day) {
     setState(() {
-      if (selectedDays.contains(day)) {
-        selectedDays.remove(day);
+      if (_selectedDays.contains(day)) {
+        _selectedDays.remove(day);
       } else {
-        selectedDays.add(day);
+        _selectedDays.add(day);
       }
     });
   }
@@ -555,7 +566,7 @@ class TimeRangePickerDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _TimeRangePickerDialogState createState() => _TimeRangePickerDialogState();
+  State<TimeRangePickerDialog> createState() => _TimeRangePickerDialogState();
 }
 
 class _TimeRangePickerDialogState extends State<TimeRangePickerDialog> {
