@@ -11,6 +11,23 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
+class AuthNotLoggedIn extends AuthState {}
+
+class NoInternet extends AuthState {}
+
+class AuthLoggedIn extends AuthState {
+  final AccountModels accountModels;
+
+  const AuthLoggedIn(this.accountModels);
+  @override
+  List<Object> get props => [accountModels];
+}
+class UserDataNotFound extends AuthState {
+  final String phoneNo;
+
+  const UserDataNotFound(this.phoneNo);
+}
+//---------------------------------------------------------
 class AuthError extends AuthState {
   final String error;
 
@@ -39,15 +56,7 @@ class AuthCodeSentSuccess extends AuthState {
   List<Object> get props => [verificationId];
 }
 
-class AuthLoggedIn extends AuthState {
-  final AccountModels accountModels;
 
-  const AuthLoggedIn(this.accountModels);
-  @override
-  List<Object> get props => [accountModels];
-}
-
-class AuthNotLoggedIn extends AuthState {}
 
 class AuthCreatedfailed extends AuthState {
   final String error;

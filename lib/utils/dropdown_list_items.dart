@@ -1,7 +1,9 @@
 class RealEstateDropdownList {
   static List<String> propertyArea = [
+    'cents',
     'sq.feet',
-    'sq.yards' 'sq.meter',
+    'sq.yards',
+    'sq.meter',
     'grounds',
     'aankadam',
     'rood',
@@ -16,7 +18,6 @@ class RealEstateDropdownList {
     'hectares',
     'maria',
     'kanal',
-    'cents'
   ];
   static List<String> buildupArea = ['sq.feet', 'sq.meter'];
   static List<String> saleType = ['new', 'resale'];

@@ -12,6 +12,7 @@ class TextIconButton extends StatelessWidget {
   final Color? bordercolor;
   final double? radius;
   final Size size;
+  final MaterialStateProperty<Size?>? maxSize;
   const TextIconButton({
     super.key,
     required this.text,
@@ -24,6 +25,7 @@ class TextIconButton extends StatelessWidget {
     this.radius = 100,
     required this.size,
     this.bordercolor = kPrimaryColor,
+    this.maxSize,
   });
 
   @override
@@ -38,6 +40,7 @@ class TextIconButton extends StatelessWidget {
         side: MaterialStateProperty.all(BorderSide(color: bordercolor!)),
         elevation: MaterialStateProperty.all<double>(0),
         minimumSize: MaterialStateProperty.all<Size>(size),
+        maximumSize: maxSize,
         iconColor: MaterialStateProperty.all(iconcolor),
       ),
       child: Row(

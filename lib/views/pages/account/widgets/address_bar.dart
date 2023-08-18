@@ -1,31 +1,55 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
+import 'dart:developer';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:need_in_choice/config/routes/route_names.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:need_in_choice/services/model/account_model.dart';
 import 'package:need_in_choice/services/repositories/auth_repo.dart';
 import 'package:need_in_choice/views/pages/account/bloc/account_page_bloc.dart';
 import 'package:need_in_choice/views/pages/login/bloc/auth_bloc.dart';
+import 'package:need_in_choice/views/pages/login/splash_screen_new.dart';
 
+import '../../../../services/repositories/repository_urls.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
-import '../update_adress_model.dart';
+import '../update_address.dart';
 
-class AddressBar extends StatelessWidget {
+
+class AddressBar extends StatefulWidget {
   const AddressBar({
     Key? key,
   }) : super(key: key);
 
   @override
+  State<AddressBar> createState() => _AddressBarState();
+}
+
+class _AddressBarState extends State<AddressBar> {
+  XFile? image;
+  final iconPicker = ImagePicker();
+  String title = 'AlertDialog';
+  bool tappedYes = false;
+
+  @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    AccountModels accountData = AccountSingleton.instance.getAccountModels;
+    AccountModels accountData = AccountSingleton().getAccountModels;
+    log(accountData.toString());
     bool isPressed = false;
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSignoutState) {
-          Navigator.pushNamed(context, splashScreen);
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) {
+              return const SplashScreen();
+            }),
+            (Route<dynamic> route) => false,
+          );
         }
       },
       child: BlocBuilder<AccountPageBloc, AccountPageState>(
@@ -61,14 +85,15 @@ class AddressBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     InkWell(
                       onTap: () {
                         Navigator.pop(context);
                       },
                       child: Container(
-                        height: 40,
-                        width: 40,
+                        height: 35,
+                        width: 35,
                         decoration: const BoxDecoration(
                           color: kWhiteColor,
                           shape: BoxShape.circle,
@@ -79,10 +104,45 @@ class AddressBar extends StatelessWidget {
                         ),
                       ),
                     ),
+                    InkWell(
+                      onTap: () {
+                        openUpdate(context, accountData);
+                      },
+                      child: Container(
+                        height: 35,
+                        width: 35,
+                        decoration: const BoxDecoration(
+                          color: kWhiteColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.mode_edit_outline_outlined,
+                          color: kPrimaryColor,
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        showErrorDialog(context);
+                      },
+                      child: Container(
+                        height: 35,
+                        width: 35,
+                        decoration: const BoxDecoration(
+                          color: kWhiteColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.power_settings_new_sharp,
+                          color: kRedColor,
+                        ),
+                      ),
+                    ),
+                    kHeight10,
                   ],
                 ),
                 SizedBox(
-                  width: width*0.55,
+                  width: width * 0.55,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -91,27 +151,63 @@ class AddressBar extends StatelessWidget {
                         style: Theme.of(context).textTheme.labelMedium,
                       ),
                       kHeight5,
-                      GestureDetector(
-                        onTap: () {
-                          openUpdate(context, accountData);
-                        },
-                        child: Text(
-                          accountData.address ?? "",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(fontSize: 12),
-                        ),
+                      Text(
+                        accountData.address ?? "",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(fontSize: 12),
                       ),
                     ],
                   ),
                 ),
                 Column(
                   children: [
-                    const CircleAvatar(
-                      maxRadius: 40,
-                      backgroundImage: AssetImage(
-                          'assets/images/profile/no_profile_img.png'),
+                    InkWell(
+                      onTap: () async {
+                        final pickedImage = await ImagePicker()
+                            .pickImage(source: ImageSource.gallery);
+                        if (pickedImage != null) {
+                          setState(() {
+                            image = pickedImage;
+                          });
+                          await updateProfileImage(image!.path);
+                        }
+                      },
+                      child: CircleAvatar(
+                          maxRadius: 40,
+                          backgroundColor: kLightGreyColor,
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(40)),
+                            child: Container(
+                                width: 150,
+                                height: 150,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(40)),
+                                  border: Border.all(width: 0.3),
+                                  color: Colors.white,
+                                ),
+                                child: image != null
+                                    ? Image.file(
+                                        File(image!.path),
+                                        fit: BoxFit.fill,
+                                      )
+                                    : AccountSingleton().getAccountModels
+                                                    .profileImage !=
+                                                null &&
+                                            AccountSingleton()
+                                                .getAccountModels
+                                                .profileImage!
+                                                .isNotEmpty
+                                        ? Image.network(
+                                            '$imageUrlEndpoint${AccountSingleton().getAccountModels.profileImage!}',
+                                            fit: BoxFit.fill,
+                                          )
+                                        : Image.asset(
+                                            'assets/images/profile/no_profile_img.png')),
+                          )),
                     ),
                     kHeight5,
                     GestureDetector(
@@ -179,11 +275,84 @@ class AddressBar extends StatelessWidget {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: UpdateAdressModel(
-            accountModels: accountData,
-          ),
+          child: const UpdateAdress(),
         ),
       ),
     );
+  }
+
+  Future<void> showErrorDialog(
+    BuildContext context,
+  ) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          title: const Text(
+            'Logout Confirmation',
+            style: TextStyle(color: kPrimaryColor),
+          ),
+          content: const Text('Are you sure, you want to logout?',
+              style: TextStyle(color: kBlackColor)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Cancel',
+                style: TextStyle(
+                    color: kGreyColor,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                BlocProvider.of<AuthBloc>(context).add(const SignOutEvent());
+              },
+              child: const Text(
+                'Ok',
+                style: TextStyle(
+                    color: kPrimaryColor,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15),
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> updateProfileImage(String imagePath) async {
+    final apiUrl = Uri.parse('https://nic.calletic.com/api/account/update');
+
+    var request = http.MultipartRequest('POST', apiUrl);
+
+    String? userId = AccountSingleton().getAccountModels.userId;
+    if (userId != null) {
+      request.fields["user_id"] = userId;
+    } else {
+      debugPrint("User ID not available");
+      return;
+    }
+
+    request.files
+        .add(await http.MultipartFile.fromPath('profile_image', imagePath));
+
+    try {
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        Authrepo().fetchAccountsData(userId);      
+        log('Image uploaded successfully');
+      } else {
+        log('Failed to upload image. Status code: ${response.request}');
+      }
+    } catch (e) {
+      debugPrint('Error uploading image: $e');
+    }
   }
 }

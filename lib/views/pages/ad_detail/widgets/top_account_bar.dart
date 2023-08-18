@@ -79,7 +79,7 @@ class TopAccountBar extends StatelessWidget {
                     ),
                     child: InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, accountScreen);
+                        //Navigator.pushNamed(context, accountScreen);
                       },
                       child: CircleAvatar(
                         backgroundColor: kWhiteColor,
@@ -90,6 +90,7 @@ class TopAccountBar extends StatelessWidget {
                             "https://nic.calletic.com/storage/app/${adsModel.profileImage}",
                             fit: BoxFit.fill,
                             width: 35,
+                            height: 35,
                             loadingBuilder: (BuildContext context, Widget child,
                                 ImageChunkEvent? loadingProgress) {
                               if (loadingProgress == null) {

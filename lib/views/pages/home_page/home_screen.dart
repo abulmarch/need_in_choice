@@ -1,10 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/blocs/main_category_bloc/main_category_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
+import 'package:need_in_choice/services/model/account_model.dart';
 import 'package:need_in_choice/services/model/ads_models.dart';
+import 'package:need_in_choice/services/repositories/key_information.dart';
 import 'package:need_in_choice/utils/constants.dart';
+import 'package:need_in_choice/views/pages/home_page/network_util.dart';
 import '../../../blocs/all_ads_bloc/all_ads_bloc.dart';
 import '../../../services/repositories/repository_urls.dart';
 import '../../../utils/category_data.dart';
@@ -324,12 +329,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     adPrice.isNotEmpty ? RichText(
                       text: TextSpan(
                           text: '₹',
-                          style: const TextStyle(fontSize: 12, color: kFadedBlack),
+                          style: const TextStyle(fontSize: 13, color: kFadedBlack),
                           children: <TextSpan>[
                             TextSpan(
-                                text: adPrice,//'19950123/-',
+                                text: '$adPrice/-',//'19950123/-',
                                 style: const TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 17,
                                     fontWeight: FontWeight.w700,
                                     color: kFadedBlack))
                           ]),
@@ -339,13 +344,14 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       onTap: () {
                         Navigator.pushNamed(context, accountScreen);
                       },
-                      // child: const SizedBox()
                       child: CircleAvatar(
                         maxRadius: 13,
+                      
                         child: ClipRRect(
                           borderRadius: const BorderRadius.all(Radius.circular(10)),
                           child: Image.network(
-                            '$imageUrlEndpoint${adsModel.profileImage}',
+                            
+                            '$imageUrlEndpoint${adsModel.profileImage }',  height: 26, width: 26,
                             loadingBuilder: (context, child, loadingProgress) {
                               if (loadingProgress == null) return child;
                               return Image.asset('assets/images/profile/no_profile_img.png');
@@ -353,7 +359,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                             errorBuilder: (context, error, stackTrace) =>
                                 Image.asset('assets/images/profile/no_profile_img.png'),
                             fit: BoxFit.cover,
-                          ),
+                          )//(adsModel.profileImage ?? '').isNotEmpty ? : Image.asset('assets/images/profile/no_profile_img.png',fit: BoxFit.cover),
                         ),
                       ),
                     ),
@@ -508,10 +514,23 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     onTap: () {
                       Navigator.pushNamed(context, accountScreen);
                     },
-                    child: const CircleAvatar(
+                    child: CircleAvatar(
                       maxRadius: 30,
-                      backgroundImage: AssetImage(
-                          'assets/images/profile/no_profile_img.png'),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.all(Radius.circular(30)),
+                        child: Image.network(
+                          '$imageUrlEndpoint${AccountSingleton().getAccountModels.profileImage ?? ""}',
+                          fit: BoxFit.cover,
+                          width: 60,
+                          height: 60,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Image.asset('assets/images/profile/no_profile_img.png');
+                          },
+                          errorBuilder: (context, error, stackTrace) => Image.asset('assets/images/profile/no_profile_img.png'),
+                        )
+                      ),
+                      
                     ),
                   ),
                   RichText(
@@ -671,6 +690,29 @@ class _HomePageScreenState extends State<HomePageScreen> {
       _scrollController.positions.first.maxScrollExtent,
       duration: const Duration(milliseconds: 250),
       curve: Curves.bounceIn);
+  } 
+}
+Future<void> placeAutocomplet(String query) async {
+
+
+  // https://maps.googleapis.com/maps/api/place/details/json
+  // ?place_id=ChIJrTLr-GyuEmsRBfy61i59si0
+  // &fields=address_components
+  // &key=YOUR_API_KEY
+
+//maps.googleapis.com/maps/api/place/autocomplete/json
+  Uri uri = Uri.https(
+    'maps.googleapis.com',
+    'maps/api/place/autocomplete/json',
+    {
+      "input": query,
+      "key": kGooglePlaceSearchKey
+    }
+  ); 
+  String? response = await NetworkUtility.fetchUrl(uri);
+  if (response != null) {
+    log(response.toString());
+    // placeAutocompletR
   }
 }
 
@@ -703,6 +745,10 @@ class LocationSheet extends StatelessWidget {
                 SizedBox(
                   width: screenWidth * .9,
                   child: TextFormField(
+                    onFieldSubmitted: (value) {
+                      log(value);
+                      placeAutocomplet(value);
+                    },
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
                         Icons.search,

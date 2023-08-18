@@ -31,6 +31,8 @@ dependencies:
   lottie: ^2.3.2
   flutter_svg: ^2.0.5
   google_maps_flutter: ^2.3.0
+  cloud_firestore: ^4.8.4
+  firebase_messaging: ^14.6.5
 
 dev_dependencies:
   flutter_test:

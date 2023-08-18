@@ -7,6 +7,7 @@ import 'package:need_in_choice/views/pages/home_page/widgets.dart/advertisement_
 import '../../../../services/repositories/repository_urls.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
+import '../../../widgets_refactored/dashed_line_generator.dart';
 import 'edit_button.dart';
 
 class Adtiles extends StatelessWidget {
@@ -18,6 +19,7 @@ class Adtiles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+        final width = MediaQuery.of(context).size.width;
     List imageList = adsData.images;
     return Card(
       color: kadBox,
@@ -110,10 +112,11 @@ class Adtiles extends StatelessWidget {
                         ),
                   ),
                   kHeight5,
-                  const Text(
-                    '-------------------------',
-                    style: TextStyle(height: 0.7, color: kDottedBorder),
-                  ),
+                 
+                  SizedBox(
+                                width:  width*.5,
+                                child: const MySeparator(color: kDottedBorder),
+                              ),
                   kHeight10,
                   Row(
                     children: [
@@ -123,7 +126,16 @@ class Adtiles extends StatelessWidget {
                         text: 'Views',
                         count: 15,
                       ),
-                      kWidth10,
+                      kWidth5,
+              const SizedBox(
+                            height: 15,
+                            child: VerticalDivider(
+                              color: kLightGreyColor,
+                              thickness: 1,
+                              width: 1,
+                            ),
+                          ),
+                      kWidth5,
                       viewItem(
                         context,
                         icon: Icons.favorite,
@@ -141,7 +153,7 @@ class Adtiles extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           EditButton(
                             boxcolor: kadBox,
@@ -153,12 +165,13 @@ class Adtiles extends StatelessWidget {
                               Navigator.pushNamed(context, adsData.routeName,arguments: adsData.id);
                             },
                           ),
-                          const VerticalDivider(
-                            color: kDarkGreyColor,
-                            thickness: 5,
-                            width: 10,
-                            indent: 20,
-                            endIndent: 0,
+                          const SizedBox(
+                            height: 20,
+                            child: VerticalDivider(
+                              color: kLightGreyColor,
+                              thickness: 1,
+                              width: 1,
+                            ),
                           ),
                           EditButton(
                             boxcolor: kPrimaryColor,

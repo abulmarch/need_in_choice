@@ -1,22 +1,26 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:need_in_choice/services/model/account_model.dart';
 import 'package:need_in_choice/services/model/ads_models.dart';
 import 'package:need_in_choice/views/pages/account/bloc/account_page_bloc.dart';
 import 'package:need_in_choice/views/pages/account/widgets/ad_tiles.dart';
-import 'package:need_in_choice/views/pages/account/widgets/address_bar.dart';
 import 'package:need_in_choice/views/pages/login/bloc/auth_bloc.dart';
 import 'package:need_in_choice/views/widgets_refactored/lottie_widget.dart';
 
 import '../../../config/routes/route_names.dart';
 import '../../../utils/constants.dart';
 import '../../widgets_refactored/search_form_field.dart';
+import 'widgets/address_bar.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    
     List<AdsModel> adsData = [];
     bool isPressed = false;
     return BlocListener<AuthBloc, AuthState>(

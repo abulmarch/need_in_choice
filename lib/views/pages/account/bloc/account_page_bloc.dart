@@ -34,7 +34,7 @@ class AccountPageBloc extends Bloc<AccountPageEvent, AccountPageState> {
       AccountLoadingEvent event, Emitter<AccountPageState> emit) async {
     emit(AccountPageLoading());
     try {
-      final accountdata = AccountSingleton.instance.getAccountModels;
+      final accountdata = AccountSingleton().getAccountModels;
       final adData = await _adsRepo.getUserAds(accountdata.userId!);
       emit(AccountDataLoaded(accountdata, adData));
     } catch (e) {
@@ -49,7 +49,7 @@ class AccountPageBloc extends Bloc<AccountPageEvent, AccountPageState> {
       bool accountUpdated =
           await authrepo.updateAccount(postData: event.accountModal);
       if (accountUpdated) {
-        AccountSingleton.instance.setAccountModels = event.accountModal;
+        AccountSingleton().setAccountModels = event.accountModal;
         emit(AccountEditedState(event.accountModal));
       } else {
         AccountEditErrorState(e.toString());

@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
@@ -11,9 +10,9 @@ import '../pages/ad_detail/widgets/full_image.dart';
 
 class ImageUploadDotedCircle extends StatelessWidget {
   const ImageUploadDotedCircle({
-    super.key, 
-    required this.color, 
-    required this.documentTypeName, 
+    super.key,
+    required this.color,
+    required this.documentTypeName,
     this.imageFile,
     this.networkImageUrl,
     this.onTap,
@@ -36,28 +35,32 @@ class ImageUploadDotedCircle extends StatelessWidget {
           height: 70,
           child: Container(
             decoration: BoxDecoration(
-              image: imageFile != null ? DecorationImage(
-                image: FileImage(
-                  File(imageFile!.path)
-                ),
-                fit: BoxFit.cover,
-              )
-              : networkImageUrl != null ? DecorationImage(
-                image: NetworkImage(
-                  '$imageUrlEndpoint$networkImageUrl',
-                ),
-                fit: BoxFit.cover,
-              )
-              : null,
-              color: color.withOpacity(0.31),
-              shape: BoxShape.circle
-            ),
+                image: imageFile != null
+                    ? DecorationImage(
+                        image: FileImage(File(imageFile!.path)),
+                        fit: BoxFit.cover,
+                      )
+                    : networkImageUrl != null
+                        ? DecorationImage(
+                            image: NetworkImage(
+                              '$imageUrlEndpoint$networkImageUrl',
+                            ),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                color: color.withOpacity(0.31),
+                shape: BoxShape.circle),
             child: Column(
               children: [
-                const Icon(Icons.keyboard_arrow_up,color: kWhiteColor,),
+                const Icon(
+                  Icons.keyboard_arrow_up,
+                  color: kWhiteColor,
+                ),
                 Text(
-                  documentTypeName,style: TextStyle(
-                    color: color,fontSize: 13,
+                  documentTypeName,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 13,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -69,8 +72,6 @@ class ImageUploadDotedCircle extends StatelessWidget {
     );
   }
 }
-
-
 
 class ImageUploadDotedSquare extends StatelessWidget {
   const ImageUploadDotedSquare({
@@ -132,34 +133,36 @@ class OtherAdsImagePreviewBox extends StatelessWidget {
     final dividedNameList = documentTypeName.split(' ');
     return InkWell(
       onTap: () {
-        Navigator.push(context,MaterialPageRoute(
-          builder: (context) => FullImageView(
-           imageUrl: networkImageUrl ?? defaultImage,
-          )
-        ));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => FullImageScreen(
+                      imageUrl: networkImageUrl ?? defaultImage,
+                    )));
       },
       child: Container(
         height: 50,
         width: 50,
         decoration: BoxDecoration(
-          image: imageFile != null ? DecorationImage(
-            opacity: 0.3,
-            image: FileImage(
-              File(imageFile!.path)
-            ),
-            fit: BoxFit.cover,
-          )
-          : networkImageUrl != null ? DecorationImage(
-            opacity: 0.3,
-            image: NetworkImage(
-              '$imageUrlEndpoint$networkImageUrl',
-            ),
-            fit: BoxFit.cover,
-          )
-          : DecorationImage(
-            opacity: 0.3,
-            image: AssetImage(defaultImage),fit: BoxFit.cover,
-          ),
+          image: imageFile != null
+              ? DecorationImage(
+                  opacity: 0.3,
+                  image: FileImage(File(imageFile!.path)),
+                  fit: BoxFit.cover,
+                )
+              : networkImageUrl != null
+                  ? DecorationImage(
+                      opacity: 0.3,
+                      image: NetworkImage(
+                        '$imageUrlEndpoint$networkImageUrl',
+                      ),
+                      fit: BoxFit.cover,
+                    )
+                  : DecorationImage(
+                      opacity: 0.3,
+                      image: AssetImage(defaultImage),
+                      fit: BoxFit.cover,
+                    ),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
@@ -171,15 +174,13 @@ class OtherAdsImagePreviewBox extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge!
-                    .copyWith(
-                        fontSize: 10, color: kWhiteColor),
+                    .copyWith(fontSize: 10, color: kWhiteColor),
                 children: [
                   TextSpan(
-                    text: dividedNameList.length > 1 ? "\n${dividedNameList.last}" : '',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineSmall!
-                        .copyWith(
+                    text: dividedNameList.length > 1
+                        ? "\n${dividedNameList.last}"
+                        : '',
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                           fontSize: 10,
                         ),
                   ),

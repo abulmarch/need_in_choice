@@ -49,3 +49,6 @@ const vericalDivider = VerticalDivider(
   thickness: 2,
   color: Color(0XFFB9B9B9),
 );
+
+
+

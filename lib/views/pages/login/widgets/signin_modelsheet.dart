@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/views/pages/ad_detail/widgets/realestate_details_bottomsheet.dart';
@@ -61,8 +62,18 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
             Navigator.pushReplacementNamed(context, mainNavigationScreen);
           } else if (state is AuthNotVerified || state is AuthNotLoggedIn) {
             Navigator.pop(context);
-            _openAddressBottomModalSheet();
+            openAddressBottomModalSheet(
+              context: context,
+              phoneNo: phoneController.text,
+            );
           } else if (state is AuthError) {
+            if (state.error == "Instance of 'UserDataNotFoundException'") {
+              Navigator.pop(context);
+              openAddressBottomModalSheet(
+                context: context,
+                phoneNo: phoneController.text,
+              );
+            }
             Future.delayed(Duration.zero, () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -85,18 +96,23 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  kHeight5,
-                  Text(
-                    'Sign up | Sign in',
-                    style: Theme.of(context).textTheme.displayLarge,
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      kHeight5,
+                      Text(
+                        'Sign up | Sign in',
+                        style: Theme.of(context).textTheme.displayLarge,
+                      ),
+                      kHeight10,
+                      const MySeparator(
+                        color: kWhiteColor,
+                      ),
+                    ],
                   ),
-                  kHeight10,
-                  const MySeparator(
-                    color: kWhiteColor,
-                  ),
-                  kHeight20,
-                  kHeight10,
                   SizedBox(
                     width: screenWidth * .9,
                     child: TextFormField(
@@ -122,6 +138,9 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
                           });
                         }
                       },
+                      inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'^\d{0,10}')),
+                      ],
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: kWhiteColor.withOpacity(.24),
@@ -130,8 +149,7 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
                           borderSide: BorderSide.none,
                         ),
                         prefixText: '+91 | ',
-                        prefixStyle:
-                            const TextStyle(color: kWhiteColor, fontSize: 18),
+                        prefixStyle: const TextStyle(color: kWhiteColor, fontSize: 18),
                         suffixIcon: mobileverified
                             ? GestureDetector(
                                 onTap: () async {
@@ -180,8 +198,6 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
                       ),
                     ),
                   ),
-                  kHeight20,
-                  kHeight10,
                   Container(
                     color: kPrimaryColor,
                     height: screenHeight * .075,
@@ -217,8 +233,6 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
                       ),
                     ),
                   ),
-                  kHeight20,
-                  kHeight10,
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0),
                     child: BlocBuilder<AuthBloc, AuthState>(
@@ -270,23 +284,6 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
     );
   }
 
-  void _openAddressBottomModalSheet() {
-    showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      context: context,
-      isScrollControlled: true,
-      isDismissible: false,
-      builder: (context) => SingleChildScrollView(
-        reverse: false,
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: AddressModalSheet(phoneNumber: int.parse(phoneController.text)),
-      ),
-    );
-  }
 
   Future login(BuildContext context, uid) async {
     context.read<AuthBloc>().add(AuthSigninCheckEvent(uid));
@@ -306,3 +303,24 @@ void _sendOtp({required String phoneNumber, required BuildContext context}) {
         ),
       );
 }
+
+  void openAddressBottomModalSheet({
+    required BuildContext context,
+    required String phoneNo,
+  }) {
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      builder: (context) => SingleChildScrollView(
+        reverse: false,
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: AddressModalSheet(phoneNumber: int.parse(phoneNo)),
+      ),
+    );
+  }

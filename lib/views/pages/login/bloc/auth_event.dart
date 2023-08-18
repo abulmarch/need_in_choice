@@ -7,6 +7,11 @@ abstract class AuthEvent extends Equatable {
   List<Object> get props => [];
 }
 
+
+class AuthLoginEvent extends AuthEvent {}
+
+
+//----------------------------------------------------------------------------
 class SignOutEvent extends AuthEvent {
   const SignOutEvent();
 
@@ -61,7 +66,6 @@ class OnPhoneAuthVerificationCompleteEvent extends AuthEvent {
   });
 }
 
-class AuthLoginEvent extends AuthEvent {}
 
 class AuthSigninCheckEvent extends AuthEvent {
   final String uid;

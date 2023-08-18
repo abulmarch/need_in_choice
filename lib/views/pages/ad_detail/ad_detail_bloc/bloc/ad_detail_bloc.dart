@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +15,6 @@ class AdDetailBloc extends Bloc<AdDetailBlocEvent, AdDetailState> {
       int id = event.adId;
       emit(AdDetailInitial());
       final adsModel = await repo.fetchSelectedAdsData(id);
-      log('adsModel.moreInfoData: ${adsModel?.moreInfoData}');
       emit(AdDetailsLoaded(adsModel: adsModel));
     });
   }

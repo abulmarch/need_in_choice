@@ -24,7 +24,7 @@ class _AdDetailScreenState extends State<AdDetailScreen> {
   @override
   Widget build(BuildContext context) {
     int adId = ModalRoute.of(context)!.settings.arguments as int;
-    log(adId.toString());
+   
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
 

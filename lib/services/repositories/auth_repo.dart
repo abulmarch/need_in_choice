@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
@@ -87,12 +88,20 @@ class Authrepo {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         final accounts = responseData['results'];
-        return AccountModels.fromJson(accounts);
+        final accountModel = AccountModels.fromJson(accounts);
+        AccountSingleton().setAccountModels = accountModel;
+        return accountModel;
+      } else if(response.statusCode == 404){
+        throw 'user-not-found';
       } else {
         return null;
       }
     } catch (e) {
-      return null;
+      if (e == 'user-not-found') {
+        throw UserDataNotFoundException();
+      } else {
+        throw Exception(e);
+      }
     }
   }
 
@@ -110,3 +119,5 @@ class Authrepo {
     return false;
   }
 }
+
+class UserDataNotFoundException implements Exception{}

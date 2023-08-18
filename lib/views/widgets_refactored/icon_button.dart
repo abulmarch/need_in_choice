@@ -3,7 +3,7 @@ import '../../utils/colors.dart';
 import '../../utils/constants.dart';
 
 class IconWithButton extends StatelessWidget {
-  final Function() onpressed;
+  final Function()? onpressed;
   final String text;
   final IconData iconData;
   final double radius;

@@ -18,6 +18,7 @@ import '../../../widgets_refactored/dashed_line_generator.dart';
 import '../../../widgets_refactored/dotted_border_textfield.dart';
 import '../../../widgets_refactored/image_upload_doted_circle.dart';
 import '../../../widgets_refactored/lottie_widget.dart';
+import '../blocs/amenties_bloc/amenties_bloc.dart';
 
 class ApartmentSaleScreen extends StatefulWidget {
   const ApartmentSaleScreen({super.key});
@@ -47,7 +48,7 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
   late TextEditingController _landMarksController;
   late TextEditingController _websiteLinkController;
 
-  late List selectedAmenities = [];
+  late List<String> selectedAmenities = [];
 
   String buildupArea = RealEstateDropdownList.buildupArea.first;
   String? saleType;
@@ -101,11 +102,11 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
           state is AdCreateOrUpdateLoading) {
         return _loadingScaffoldWidget(state);
       } else if (state is AdCreateOrUpdateLoaded) {
-          if(state.adUpdateModel != null){
-            _initializeUpdatingAdData(state.adUpdateModel!);
-          }else{
-            _checkValidation = false;
-          }
+        if (state.adUpdateModel != null) {
+          _initializeUpdatingAdData(state.adUpdateModel!);
+        } else {
+          _checkValidation = false;
+        }
       } else if (state is AdCreateOrUpdateValidateState) {
         _checkValidation = true;
       }
@@ -538,16 +539,8 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
                                                   FocusScope.of(context)
                                                       .unfocus();
                                                 },
-                                                suffixIcon:
-                                                    CustomDropDownButton(
-                                                  initialValue: roadWidth,
-                                                  itemList:
-                                                      RealEstateDropdownList
-                                                          .carpetArea,
-                                                  onChanged: (String? value) {
-                                                    carpetArea = value!;
-                                                  },
-                                                ),
+                                                suffixIcon: const DarkTextChip(
+                                                    text: 'meter'),
                                               ),
                                             ),
                                             SizedBox(
@@ -638,7 +631,7 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
                                             SizedBox(
                                               width: cons.maxWidth * 0.435,
                                               child: CustomTextField(
-                                                hintText: 'Eg 3',
+                                                hintText: 'Age of Building',
                                                 controller:
                                                     _ageOfBuildingController,
                                                 fillColor: kWhiteColor,
@@ -654,7 +647,7 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
                                                       .unfocus();
                                                 },
                                                 suffixIcon: const DarkTextChip(
-                                                    text: 'Age of Building'),
+                                                    text: 'year'),
                                               ),
                                             ),
                                             SizedBox(
@@ -733,26 +726,25 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
                                           ),
                                         ),
                                         kHeight15,
-                                        SizedBox(
-                                          height: height * .4,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.stretch,
-                                            children: [
-                                              RichText(
-                                                text: TextSpan(
-                                                  text: 'Amenities ',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headlineSmall
-                                                      ?.copyWith(
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          fontSize: 18,
-                                                          color: kPrimaryColor),
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Below',
+                                        BlocProvider(
+                                          create: (context) => AmentiesBloc(),
+                                          child: BlocBuilder<AmentiesBloc,
+                                                  AmentiesState>(
+                                              builder: (context, state) {
+                                            if (state is AmentiesLoadedState) {
+                                              selectedAmenities =
+                                                  state.selectedAmenties;
+                                            }
+
+                                            return SizedBox(
+                                              height: height * .4,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.stretch,
+                                                children: [
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      text: 'Amenities ',
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .headlineSmall
@@ -762,274 +754,343 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
                                                                       .w400,
                                                               fontSize: 18,
                                                               color:
-                                                                  kGreyColor),
+                                                                  kPrimaryColor),
+                                                      children: [
+                                                        TextSpan(
+                                                          text: 'Below',
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .headlineSmall
+                                                              ?.copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  fontSize: 18,
+                                                                  color:
+                                                                      kGreyColor),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                height: height * 0.33,
-                                                decoration: BoxDecoration(
-                                                  color: kLightGreyColor
-                                                      .withOpacity(0.3),
-                                                  borderRadius:
-                                                      BorderRadius.circular(15),
-                                                ),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    children: [
-                                                      Wrap(
-                                                        spacing: 7.0,
-                                                        runSpacing: 8.0,
+                                                  ),
+                                                  Container(
+                                                    height: height * 0.33,
+                                                    decoration: BoxDecoration(
+                                                      color: kLightGreyColor
+                                                          .withOpacity(0.3),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15),
+                                                    ),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Column(
                                                         children: [
-                                                          AmenitiesContainer(
-                                                            text: 'Wifi',
-                                                            color: kWhiteColor,
-                                                            width: width * 0.15,
-                                                            textcolor:
-                                                                kSecondaryColor,
-                                                            selected:
-                                                                selectedAmenities
+                                                          Wrap(
+                                                            spacing: 7.0,
+                                                            runSpacing: 8.0,
+                                                            children: [
+                                                              AmenitiesContainer(
+                                                                text: 'Wifi',
+                                                                color:
+                                                                    kWhiteColor,
+                                                                width: width *
+                                                                    0.15,
+                                                                textcolor:
+                                                                    kSecondaryColor,
+                                                                selected: selectedAmenities
                                                                     .contains(
                                                                         'Wifi'),
-                                                            onSelected: () {
-                                                              _toggleDaySelection(
-                                                                  'Wifi');
-                                                            },
-                                                          ),
-                                                          AmenitiesContainer(
-                                                            text:
-                                                                'basement car parking',
-                                                            color: kWhiteColor,
-                                                            width: width * 0.5,
-                                                            textcolor:
-                                                                kSecondaryColor,
-                                                            selected:
-                                                                selectedAmenities
+                                                                onSelected: () {
+                                                                  BlocProvider.of<
+                                                                              AmentiesBloc>(
+                                                                          context)
+                                                                      .add(ToggleAmentiesSelectionEvent(
+                                                                          'Wifi',
+                                                                          selectedAmenities));
+                                                                },
+                                                              ),
+                                                              AmenitiesContainer(
+                                                                text:
+                                                                    'basement car parking',
+                                                                color:
+                                                                    kWhiteColor,
+                                                                width:
+                                                                    width * 0.5,
+                                                                textcolor:
+                                                                    kSecondaryColor,
+                                                                selected: selectedAmenities
                                                                     .contains(
                                                                         'basement car parking'),
-                                                            onSelected: () {
-                                                              _toggleDaySelection(
-                                                                  'basement car parking');
-                                                            },
-                                                          ),
-                                                          AmenitiesContainer(
-                                                            text: 'Lift',
-                                                            color: kWhiteColor,
-                                                            width: width * 0.15,
-                                                            textcolor:
-                                                                kSecondaryColor,
-                                                            selected:
-                                                                selectedAmenities
+                                                                onSelected: () {
+                                                                  BlocProvider.of<
+                                                                              AmentiesBloc>(
+                                                                          context)
+                                                                      .add(ToggleAmentiesSelectionEvent(
+                                                                          'basement car parking',
+                                                                          selectedAmenities));
+                                                                },
+                                                              ),
+                                                              AmenitiesContainer(
+                                                                text: 'Lift',
+                                                                color:
+                                                                    kWhiteColor,
+                                                                width: width *
+                                                                    0.15,
+                                                                textcolor:
+                                                                    kSecondaryColor,
+                                                                selected: selectedAmenities
                                                                     .contains(
                                                                         'Lift'),
-                                                            onSelected: () {
-                                                              _toggleDaySelection(
-                                                                  'Lift');
-                                                            },
-                                                          ),
-                                                          AmenitiesContainer(
-                                                            text: 'GYM',
-                                                            color: kWhiteColor,
-                                                            width: width * 0.15,
-                                                            textcolor:
-                                                                kSecondaryColor,
-                                                            selected:
-                                                                selectedAmenities
-                                                                    .contains(
-                                                                        'GYM'),
-                                                            onSelected: () {
-                                                              _toggleDaySelection(
-                                                                  'GYM');
-                                                            },
-                                                          ),
-                                                          AmenitiesContainer(
-                                                            text:
-                                                                'Gas Pipeline',
-                                                            color: kWhiteColor,
-                                                            width: width * .35,
-                                                            textcolor:
-                                                                kSecondaryColor,
-                                                            selected:
-                                                                selectedAmenities
+                                                                onSelected: () {
+                                                                  BlocProvider.of<
+                                                                              AmentiesBloc>(
+                                                                          context)
+                                                                      .add(ToggleAmentiesSelectionEvent(
+                                                                          'Lift',
+                                                                          selectedAmenities));
+                                                                },
+                                                              ),
+                                                              AmenitiesContainer(
+                                                                text: 'GYM',
+                                                                color:
+                                                                    kWhiteColor,
+                                                                width: width *
+                                                                    0.15,
+                                                                textcolor:
+                                                                    kSecondaryColor,
+                                                                selected:
+                                                                    selectedAmenities
+                                                                        .contains(
+                                                                            'GYM'),
+                                                                onSelected: () {
+                                                                  BlocProvider.of<
+                                                                              AmentiesBloc>(
+                                                                          context)
+                                                                      .add(ToggleAmentiesSelectionEvent(
+                                                                          'GYM',
+                                                                          selectedAmenities));
+                                                                },
+                                                              ),
+                                                              AmenitiesContainer(
+                                                                text:
+                                                                    'Gas Pipeline',
+                                                                color:
+                                                                    kWhiteColor,
+                                                                width:
+                                                                    width * .35,
+                                                                textcolor:
+                                                                    kSecondaryColor,
+                                                                selected: selectedAmenities
                                                                     .contains(
                                                                         'Gas Pipeline'),
-                                                            onSelected: () {
-                                                              _toggleDaySelection(
-                                                                  'Gas Pipeline');
-                                                            },
-                                                          ),
-                                                          AmenitiesContainer(
-                                                            text:
-                                                                'Jogging Track',
-                                                            color: kWhiteColor,
-                                                            width: width * .33,
-                                                            textcolor:
-                                                                kSecondaryColor,
-                                                            selected:
-                                                                selectedAmenities
+                                                                onSelected: () {
+                                                                  BlocProvider.of<
+                                                                              AmentiesBloc>(
+                                                                          context)
+                                                                      .add(ToggleAmentiesSelectionEvent(
+                                                                          'Gas Pipeline',
+                                                                          selectedAmenities));
+                                                                },
+                                                              ),
+                                                              AmenitiesContainer(
+                                                                text:
+                                                                    'Jogging Track',
+                                                                color:
+                                                                    kWhiteColor,
+                                                                width:
+                                                                    width * .33,
+                                                                textcolor:
+                                                                    kSecondaryColor,
+                                                                selected: selectedAmenities
                                                                     .contains(
                                                                         'Jogging Track'),
-                                                            onSelected: () {
-                                                              _toggleDaySelection(
-                                                                  'Jogging Track');
-                                                            },
-                                                          ),
-                                                          AmenitiesContainer(
-                                                            text: 'intercom',
-                                                            color: kWhiteColor,
-                                                            width: width * .33,
-                                                            textcolor:
-                                                                kSecondaryColor,
-                                                            selected:
-                                                                selectedAmenities
+                                                                onSelected: () {
+                                                                  BlocProvider.of<
+                                                                              AmentiesBloc>(
+                                                                          context)
+                                                                      .add(ToggleAmentiesSelectionEvent(
+                                                                          'Jogging Track',
+                                                                          selectedAmenities));
+                                                                },
+                                                              ),
+                                                              AmenitiesContainer(
+                                                                text:
+                                                                    'intercom',
+                                                                color:
+                                                                    kWhiteColor,
+                                                                width:
+                                                                    width * .33,
+                                                                textcolor:
+                                                                    kSecondaryColor,
+                                                                selected: selectedAmenities
                                                                     .contains(
                                                                         'intercom'),
-                                                            onSelected: () {
-                                                              _toggleDaySelection(
-                                                                  'intercom');
-                                                            },
-                                                          ),
-                                                          AmenitiesContainer(
-                                                            text: 'fire safety',
-                                                            color: kWhiteColor,
-                                                            width: width * .33,
-                                                            textcolor:
-                                                                kSecondaryColor,
-                                                            selected:
-                                                                selectedAmenities
+                                                                onSelected: () {
+                                                                  BlocProvider.of<
+                                                                              AmentiesBloc>(
+                                                                          context)
+                                                                      .add(ToggleAmentiesSelectionEvent(
+                                                                          'intercom',
+                                                                          selectedAmenities));
+                                                                },
+                                                              ),
+                                                              AmenitiesContainer(
+                                                                text:
+                                                                    'fire safety',
+                                                                color:
+                                                                    kWhiteColor,
+                                                                width:
+                                                                    width * .33,
+                                                                textcolor:
+                                                                    kSecondaryColor,
+                                                                selected: selectedAmenities
                                                                     .contains(
                                                                         'fire safety'),
-                                                            onSelected: () {
-                                                              _toggleDaySelection(
-                                                                  'fire safety');
-                                                            },
-                                                          ),
-                                                          AmenitiesContainer(
-                                                            text:
-                                                                'rain water harvest',
-                                                            color: kWhiteColor,
-                                                            width: width * .39,
-                                                            textcolor:
-                                                                kSecondaryColor,
-                                                            selected:
-                                                                selectedAmenities
+                                                                onSelected: () {
+                                                                  BlocProvider.of<
+                                                                              AmentiesBloc>(
+                                                                          context)
+                                                                      .add(ToggleAmentiesSelectionEvent(
+                                                                          'fire safety',
+                                                                          selectedAmenities));
+                                                                },
+                                                              ),
+                                                              AmenitiesContainer(
+                                                                text:
+                                                                    'rain water harvest',
+                                                                color:
+                                                                    kWhiteColor,
+                                                                width:
+                                                                    width * .39,
+                                                                textcolor:
+                                                                    kSecondaryColor,
+                                                                selected: selectedAmenities
                                                                     .contains(
                                                                         'rain water harvest'),
-                                                            onSelected: () {
-                                                              _toggleDaySelection(
-                                                                  'rain water harvest');
-                                                            },
-                                                          ),
-                                                          AmenitiesContainer(
-                                                            text:
-                                                                'covered parking',
-                                                            color: kWhiteColor,
-                                                            width: width * .35,
-                                                            textcolor:
-                                                                kSecondaryColor,
-                                                            selected:
-                                                                selectedAmenities
+                                                                onSelected: () {
+                                                                  BlocProvider.of<
+                                                                              AmentiesBloc>(
+                                                                          context)
+                                                                      .add(ToggleAmentiesSelectionEvent(
+                                                                          'rain water harvest',
+                                                                          selectedAmenities));
+                                                                },
+                                                              ),
+                                                              AmenitiesContainer(
+                                                                text:
+                                                                    'covered parking',
+                                                                color:
+                                                                    kWhiteColor,
+                                                                width:
+                                                                    width * .35,
+                                                                textcolor:
+                                                                    kSecondaryColor,
+                                                                selected: selectedAmenities
                                                                     .contains(
                                                                         'covered parking'),
-                                                            onSelected: () {
-                                                              _toggleDaySelection(
-                                                                  'covered parking');
-                                                            },
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      kHeight20,
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Column(
-                                                            children: [
-                                                              RichText(
-                                                                text: TextSpan(
-                                                                  text: 'View ',
-                                                                  style: Theme.of(
+                                                                onSelected: () {
+                                                                  BlocProvider.of<
+                                                                              AmentiesBloc>(
                                                                           context)
-                                                                      .textTheme
-                                                                      .headlineSmall
-                                                                      ?.copyWith(
-                                                                          fontWeight: FontWeight
-                                                                              .w400,
-                                                                          fontSize:
-                                                                              16,
-                                                                          color:
-                                                                              kGreyColor),
-                                                                  children: [
-                                                                    TextSpan(
+                                                                      .add(ToggleAmentiesSelectionEvent(
+                                                                          'covered parking',
+                                                                          selectedAmenities));
+                                                                },
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          kHeight20,
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Column(
+                                                                children: [
+                                                                  RichText(
+                                                                    text:
+                                                                        TextSpan(
                                                                       text:
-                                                                          'More',
+                                                                          'View ',
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
                                                                           .headlineSmall
                                                                           ?.copyWith(
-                                                                            fontWeight:
-                                                                                FontWeight.w400,
-                                                                            fontSize:
-                                                                                16,
-                                                                            color:
-                                                                                kPrimaryColor,
-                                                                          ),
+                                                                              fontWeight: FontWeight.w400,
+                                                                              fontSize: 16,
+                                                                              color: kGreyColor),
+                                                                      children: [
+                                                                        TextSpan(
+                                                                          text:
+                                                                              'More',
+                                                                          style: Theme.of(context)
+                                                                              .textTheme
+                                                                              .headlineSmall
+                                                                              ?.copyWith(
+                                                                                fontWeight: FontWeight.w400,
+                                                                                fontSize: 16,
+                                                                                color: kPrimaryColor,
+                                                                              ),
+                                                                        ),
+                                                                      ],
                                                                     ),
-                                                                  ],
+                                                                  ),
+                                                                  Center(
+                                                                    child:
+                                                                        SizedBox(
+                                                                      width: width *
+                                                                          0.21,
+                                                                      child:
+                                                                          const Divider(
+                                                                        thickness:
+                                                                            2,
+                                                                        color:
+                                                                            kWhiteColor,
+                                                                      ),
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              kWidth10,
+                                                              Container(
+                                                                width: width *
+                                                                    0.07,
+                                                                height: height *
+                                                                    0.07,
+                                                                decoration:
+                                                                    const BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  color:
+                                                                      kWhiteColor,
+                                                                ),
+                                                                child:
+                                                                    const Icon(
+                                                                  Icons
+                                                                      .keyboard_arrow_down_outlined,
+                                                                  color:
+                                                                      kPrimaryColor,
                                                                 ),
                                                               ),
-                                                              Center(
-                                                                child: SizedBox(
-                                                                  width: width *
-                                                                      0.21,
-                                                                  child:
-                                                                      const Divider(
-                                                                    thickness:
-                                                                        2,
-                                                                    color:
-                                                                        kWhiteColor,
-                                                                  ),
-                                                                ),
-                                                              )
                                                             ],
-                                                          ),
-                                                          kWidth10,
-                                                          Container(
-                                                            width: width * 0.07,
-                                                            height:
-                                                                height * 0.07,
-                                                            decoration:
-                                                                const BoxDecoration(
-                                                              shape: BoxShape
-                                                                  .circle,
-                                                              color:
-                                                                  kWhiteColor,
-                                                            ),
-                                                            child: const Icon(
-                                                              Icons
-                                                                  .keyboard_arrow_down_outlined,
-                                                              color:
-                                                                  kPrimaryColor,
-                                                            ),
                                                           ),
                                                         ],
                                                       ),
-                                                    ],
+                                                    ),
                                                   ),
-                                                ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
+                                            );
+                                          }),
                                         ),
                                         kHeight5,
                                         CustomTextField(
                                           hintText:
-                                              'Land marks near your Restaurant',
+                                              'Land marks near your Apartment & Flat',
                                           fillColor: kWhiteColor,
                                           controller: _landMarksController,
                                         ),
@@ -1038,7 +1099,7 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
                                           fillColor: kWhiteColor,
                                           controller: _websiteLinkController,
                                           hintText:
-                                              'Website link of your Restaurant',
+                                              'Website link of your Apartment & Flat',
                                         ),
                                         kHeight20
                                       ],
@@ -1072,10 +1133,11 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
 
   Scaffold _loadingScaffoldWidget(AdCreateOrUpdateState state) {
     return Scaffold(
-      body: state is FaildToFetchExceptionState ? Center(
-        child:  Text(state.errorMessagge),
-      )
-      : LottieWidget.loading(),
+      body: state is FaildToFetchExceptionState
+          ? Center(
+              child: Text(state.errorMessagge),
+            )
+          : LottieWidget.loading(),
     );
   }
 
@@ -1103,8 +1165,7 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
     _roadWidthController.text = moreInfoData['Road Width']['value'];
     roadWidth = moreInfoData['Road Width']['unit'];
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
-    carpetArea =
-        'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
+    carpetArea = 'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
     _totalFloorController.text = moreInfoData['Total Floor'];
     _parkingController.text = moreInfoData['Parking'];
     _ageOfBuildingController.text = moreInfoData['Age Of Building'];
@@ -1112,8 +1173,8 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
     furnishing = moreInfoData['Furnishing'];
     _landMarksController.text = moreInfoData['Landmark'];
     _websiteLinkController.text = moreInfoData['Website Link'];
-  
-    selectedAmenities =  moreInfoData['Selected Amenities'];
+
+    selectedAmenities = moreInfoData['Selected Amenities'];
   }
 
   _saveChangesAndContinue(BuildContext context) {
@@ -1142,7 +1203,7 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
       final Map<String, dynamic> moreInfo = {
         'Road Width': {
           'value': _roadWidthController.text,
-          'unit': roadWidth,
+          'unit': 'm',
         },
         'Carpet Area': {
           'value': _carpetAreaController.text,
@@ -1150,12 +1211,15 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
         },
         'Total Floor': _totalFloorController.text,
         'Parking': _parkingController.text,
-        'Age Of Building': _ageOfBuildingController.text,
+        'Age Of Building': {
+          'value': _ageOfBuildingController.text,
+          'unit': 'yrs',
+        },
         'Construction Status': constructionStatus,
         'Furnishing': furnishing,
         'Landmark': _landMarksController.text,
         'Website Link': _websiteLinkController.text,
-        'Selected Amenities':selectedAmenities ,
+        'Selected Amenities': selectedAmenities,
       };
 
       context.read<AdCreateOrUpdateBloc>().savePrimaryMoreInfoDetails(
@@ -1197,16 +1261,6 @@ class _ApartmentSaleScreenState extends State<ApartmentSaleScreen> {
     _websiteLinkController.dispose();
 
     super.dispose();
-  }
-
-  void _toggleDaySelection(String day) {
-    setState(() {
-      if (selectedAmenities.contains(day)) {
-        selectedAmenities.remove(day);
-      } else {
-        selectedAmenities.add(day);
-      }
-    });
   }
 }
 

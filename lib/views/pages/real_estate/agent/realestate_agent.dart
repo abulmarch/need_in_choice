@@ -17,6 +17,7 @@ import '../../../widgets_refactored/dashed_line_generator.dart';
 import '../../../widgets_refactored/dotted_border_textfield.dart';
 import '../../../widgets_refactored/brand_name_button.dart';
 import '../../../widgets_refactored/lottie_widget.dart';
+import '../blocs/work_time_bloc/work_time_bloc.dart';
 
 class RealEstateAgentScreen extends StatefulWidget {
   const RealEstateAgentScreen({super.key});
@@ -37,11 +38,22 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
   late TextEditingController _websiteLinkController;
   late TextEditingController _timeRangeController;
 
-  TimeOfDay? _selectedStartTime;
-  TimeOfDay? _selectedEndTime;
+  String? _selectedStartTime;
+  String? _selectedEndTime;
 
   late List<String> _selectedDays = [];
   bool _checkValidation = false;
+
+  final workTimeBloc = WorkTimeBloc();
+  final List<String> daysList = [
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+    'Sun'
+  ];
 
   @override
   void initState() {
@@ -75,9 +87,9 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
           state is AdCreateOrUpdateLoading) {
         return _loadingScaffoldWidget(state);
       } else if (state is AdCreateOrUpdateLoaded) {
-        if(state.adUpdateModel != null){
+        if (state.adUpdateModel != null) {
           _initializeUpdatingAdData(state.adUpdateModel!);
-        }else{
+        } else {
           _checkValidation = false;
         }
       }
@@ -190,7 +202,7 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
                               SizedBox(
                                 width: cons.maxWidth * 0.435,
                                 child: CustomTextField(
-                                  hintText: 'Eg 3 Yrs',
+                                  hintText: 'Work Experience',
                                   controller: _workExperienceController,
                                   keyboardType: TextInputType.number,
                                   onTapOutside: (event) {
@@ -208,14 +220,13 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
 
                                     return null;
                                   },
-                                  suffixIcon: const DarkTextChip(
-                                      text: 'Work Experience'),
+                                  suffixIcon: const DarkTextChip(text: 'year'),
                                 ),
                               ),
                               SizedBox(
                                 width: cons.maxWidth * 0.435,
                                 child: CustomTextField(
-                                  hintText: 'Eg 5 Km',
+                                  hintText: 'Area Covered',
                                   controller: _areaCoveredController,
                                   keyboardType: TextInputType.number,
                                   validator: (value) {
@@ -231,8 +242,7 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
                                   onTapOutside: (event) {
                                     FocusScope.of(context).unfocus();
                                   },
-                                  suffixIcon:
-                                      const DarkTextChip(text: 'Area Covered'),
+                                  suffixIcon: const DarkTextChip(text: 'km'),
                                 ),
                               ),
                             ],
@@ -250,162 +260,149 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
                         minHeight: cons.maxHeight * 0.5,
                         maxHeight: double.infinity,
                       ),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            kHeight20,
-                            RichText(
-                              text: TextSpan(
-                                text: 'Work ',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall
-                                    ?.copyWith(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 20,
-                                        color: kDarkGreyColor),
-                                children: [
-                                  TextSpan(
-                                    text: 'Time',
+                      child: BlocProvider(
+                        create: (context) => workTimeBloc,
+                        child: BlocBuilder<WorkTimeBloc, WorkTimeState>(
+                            builder: (context, state) {
+                          if (state is WorkTimeLoadedState) {
+                            _selectedDays = state.selectedDays;
+                          } else if (state is WorkTimeSelectedState) {
+                            _selectedStartTime = state.startTime;
+                            _selectedEndTime = state.endTime;
+                            _timeRangeController.text =
+                                '$_selectedStartTime - $_selectedEndTime';
+                          }
+
+                          return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                kHeight20,
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'Work ',
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall
                                         ?.copyWith(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 20,
-                                            color: kPrimaryColor),
+                                            color: kDarkGreyColor),
+                                    children: [
+                                      TextSpan(
+                                        text: 'Time',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 20,
+                                                color: kPrimaryColor),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                            kHeight10,
-                            ElevatedButton(
-                              onPressed: () {
-                                _showTimeRangePicker(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                maximumSize: Size(width * .45, height * .04),
-                                minimumSize: Size(width * .2, height * 0.01),
-                                shadowColor: kPrimaryColor,
-                                backgroundColor: kPrimaryColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25),
                                 ),
-                                elevation: 10,
-                                side: _selectedStartTime == null &&
-                                        _selectedEndTime == null &&
-                                        _checkValidation
-                                    ? const BorderSide(color: Colors.red)
-                                    : BorderSide.none,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  //'10.00 am to 5.00pm',
-                                  _selectedStartTime != null &&
-                                          _selectedEndTime != null
-                                      ? '${_formatTime(_selectedStartTime!)} - ${_formatTime(_selectedEndTime!)}'
-                                      : 'Select Time Range',
-                                  style: const TextStyle(
-                                      color: kWhiteColor,
-                                      fontWeight: FontWeight.w300),
+                                kHeight10,
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    _showTimeRangePicker(context)
+                                        .then((selectedRange) {
+                                      if (selectedRange != null) {
+                                        context.read<WorkTimeBloc>().add(
+                                            SetTimeRangeEvent(selectedRange));
+                                      }
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    maximumSize:
+                                        Size(width * .45, height * .04),
+                                    minimumSize:
+                                        Size(width * .2, height * 0.01),
+                                    shadowColor: kPrimaryColor,
+                                    backgroundColor: kPrimaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    elevation: 10,
+                                    side: _selectedStartTime == null &&
+                                            _selectedEndTime == null &&
+                                            _checkValidation
+                                        ? const BorderSide(color: Colors.red)
+                                        : BorderSide.none,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      //'10.00 am to 5.00pm',
+                                      _selectedStartTime != null &&
+                                              _selectedEndTime != null
+                                          ? '$_selectedStartTime to $_selectedEndTime'
+                                          : 'Select Time Range',
+                                      style: const TextStyle(
+                                          color: kWhiteColor,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            kHeight15,
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                border: _selectedDays.isEmpty && _checkValidation
-                                  ? Border.all(color: Colors.red)
-                                  : null,
-                              ),
-                              child: Wrap(
-                                spacing: 7.0,
-                                runSpacing: 8.0,
-                                children: [
-                                  WorkTimeContainer(
-                                    color: kWhiteColor,
-                                    textcolor: kPrimaryColor,
-                                    text: 'Mon',
-                                    selected: _selectedDays.contains('Mon'),
-                                    onSelected: () {
-                                      _toggleDaySelection('Mon');
-                                    },
+                                kHeight15,
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: _selectedDays.isEmpty &&
+                                            _checkValidation
+                                        ? Border.all(color: Colors.red)
+                                        : null,
                                   ),
-                                  WorkTimeContainer(
-                                    color: kWhiteColor,
-                                    textcolor: kPrimaryColor,
-                                    text: 'Tue',
-                                    selected: _selectedDays.contains('Tue'),
-                                    onSelected: () {
-                                      _toggleDaySelection('Tue');
-                                    },
+                                  child: Wrap(
+                                    spacing: 7.0,
+                                    runSpacing: 8.0,
+                                    children: List<Widget>.generate(
+                                      daysList.length,
+                                      (index) => WorkTimeContainer(
+                                        color: kWhiteColor,
+                                        textcolor: kPrimaryColor,
+                                        text: daysList[index], // 'Mon'
+                                        selected: _selectedDays
+                                            .contains(daysList[index]),
+                                        onSelected: () {
+                                          BlocProvider.of<WorkTimeBloc>(context)
+                                              .add(ToggleDaySelectionEvent(
+                                                  daysList[index],
+                                                  _selectedDays));
+                                        },
+                                      ),
+                                    ),
                                   ),
-                                  WorkTimeContainer(
-                                    color: kWhiteColor,
-                                    textcolor: kPrimaryColor,
-                                    text: 'Wed',
-                                    selected: _selectedDays.contains('Wed'),
-                                    onSelected: () {
-                                      _toggleDaySelection('Wed');
-                                    },
-                                  ),
-                                  WorkTimeContainer(
-                                    color: kWhiteColor,
-                                    textcolor: kPrimaryColor,
-                                    text: 'Thu',
-                                    selected: _selectedDays.contains('Thu'),
-                                    onSelected: () {
-                                      _toggleDaySelection('Thu');
-                                    },
-                                  ),
-                                  WorkTimeContainer(
-                                    color: kWhiteColor,
-                                    textcolor: kPrimaryColor,
-                                    text: 'Fri',
-                                    selected: _selectedDays.contains('Fri'),
-                                    onSelected: () {
-                                      _toggleDaySelection('Fri');
-                                    },
-                                  ),
-                                  WorkTimeContainer(
-                                    text: 'Sun',
-                                    color: kWhiteColor,
-                                    textcolor: kPrimaryColor,
-                                    selected: _selectedDays.contains('Sun'),
-                                    onSelected: () {
-                                      _toggleDaySelection('Sun');
-                                    },
-                                  ),
-                                  WorkTimeContainer(
-                                    color: kWhiteColor,
-                                    textcolor: kPrimaryColor,
-                                    text: 'Sat',
-                                    selected: _selectedDays.contains('Sat'),
-                                    onSelected: () {
-                                      _toggleDaySelection('Sat');
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            DashedLineGenerator(width: width * .9),
-                            kHeight15,
-                            CustomTextField(
-                              hintText: 'Landmarks near your Agent',
-                              fillColor: kWhiteColor,
-                              controller: _landMarksController,
-                            ),
-                            kHeight10,
-                            CustomTextField(
-                              fillColor: kWhiteColor,
-                              hintText: 'Website link of your Agent',
-                              controller: _websiteLinkController,
-                            ),
-                            kHeight20
-                          ]),
+                                ),
+                                DashedLineGenerator(width: width * .9),
+                                kHeight15,
+                                CustomTextField(
+                                  hintText: 'Landmarks near your Agent',
+                                  fillColor: kWhiteColor,
+                                  controller: _landMarksController,
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return 'Please enter Landmarks near your Agent';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                kHeight10,
+                                CustomTextField(
+                                  fillColor: kWhiteColor,
+                                  hintText: 'Website link of your Agent',
+                                  controller: _websiteLinkController,
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return 'Please enter Website link of your Agent';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                kHeight20
+                              ]);
+                        }),
+                      ),
                     ),
                   ],
                 ),
@@ -432,10 +429,11 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
 
   Scaffold _loadingScaffoldWidget(AdCreateOrUpdateState state) {
     return Scaffold(
-      body: state is FaildToFetchExceptionState ? Center(
-        child:  Text(state.errorMessagge),
-      )
-      : LottieWidget.loading(),
+      body: state is FaildToFetchExceptionState
+          ? Center(
+              child: Text(state.errorMessagge),
+            )
+          : LottieWidget.loading(),
     );
   }
 
@@ -463,14 +461,19 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
         .add(AdCreateOrUpdateCheckDropDownValidattionEvent());
     if (_formKey.currentState!.validate()) {
       final Map<String, dynamic> primaryInfo = {
-        'Work Experience': _workExperienceController.text,
-        'Area Covered': _areaCoveredController.text,
+        'Work Experience': {
+          'value': _workExperienceController.text,
+          'unit': 'yrs',
+        },
+        'Area Covered': {
+          'value': _areaCoveredController.text,
+          'unit': 'km',
+        },
         'Landmark': _landMarksController.text,
         'Website Link': _websiteLinkController.text,
         'Time Range': {
           "value": _selectedDays.join(', '),
-          // 'value': selectedDays.fold<String>(
-          //     '', (previousValue, element) => '$previousValue$element, '),
+         
           'groupValue': _timeRangeController.text,
         },
       };
@@ -504,55 +507,16 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
     super.dispose();
   }
 
-  void _toggleDaySelection(String day) {
-    setState(() {
-      if (_selectedDays.contains(day)) {
-        _selectedDays.remove(day);
-      } else {
-        _selectedDays.add(day);
-      }
-    });
-  }
-
-  void _showTimeRangePicker(BuildContext context) async {
-    final TimeRange? selectedRange = await showDialog(
+  Future<TimeRange?> _showTimeRangePicker(BuildContext context) async {
+    return await showDialog<TimeRange?>(
       context: context,
-      builder: (context) => TimeRangePickerDialog(
-        initialStartTime: _selectedStartTime,
-        initialEndTime: _selectedEndTime,
-      ),
+      builder: (context) => const TimeRangePickerDialog(),
     );
-
-    if (selectedRange != null) {
-      setState(() {
-        _selectedStartTime = selectedRange.startTime;
-        _selectedEndTime = selectedRange.endTime;
-      });
-      final formattedStartTime = _formatTime(_selectedStartTime!);
-      final formattedEndTime = _formatTime(_selectedEndTime!);
-
-      setState(() {
-        _timeRangeController.text = '$formattedStartTime - $formattedEndTime';
-      });
-    }
   }
 
-  String _formatTime(TimeOfDay time) {
-    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
-    final minute = time.minute.toString().padLeft(2, '0');
-    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
-    return '$hour:$minute $period';
+  String timeFormat(TimeOfDay selectedStartTime, TimeOfDay selectedEndTime) {
+    return '${context.read<WorkTimeBloc>().formatTime(selectedStartTime)} - ${context.read<WorkTimeBloc>().formatTime(selectedEndTime)}';
   }
-}
-
-class TimeRange {
-  final TimeOfDay startTime;
-  final TimeOfDay endTime;
-
-  TimeRange({
-    required this.startTime,
-    required this.endTime,
-  });
 }
 
 class TimeRangePickerDialog extends StatefulWidget {

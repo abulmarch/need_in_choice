@@ -104,12 +104,12 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
             state is AdCreateOrUpdateLoading) {
           return _loadingScaffoldWidget(state);
         } else if (state is AdCreateOrUpdateLoaded) {
-          if(state.adUpdateModel != null){
+          if (state.adUpdateModel != null) {
             _initializeUpdatingAdData(state.adUpdateModel!);
-          }else{
+          } else {
             _checkValidation = false;
           }
-        }else if (state is AdCreateOrUpdateValidateState) {
+        } else if (state is AdCreateOrUpdateValidateState) {
           _checkValidation = true;
         }
 
@@ -581,7 +581,7 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
                                             SizedBox(
                                               width: cons.maxWidth * 0.435,
                                               child: CustomTextField(
-                                                hintText: 'Eg 3',
+                                                hintText: 'Age Of Building',
                                                 controller:
                                                     _ageOfBuildingController,
                                                 fillColor: kWhiteColor,
@@ -597,7 +597,7 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
                                                       .unfocus();
                                                 },
                                                 suffixIcon: const DarkTextChip(
-                                                    text: 'Age Of Building'),
+                                                    text: 'year'),
                                                 // focusNode: ,
                                               ),
                                             ),
@@ -779,7 +779,8 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
     final moreInfoData = adUpdateModel.moreInfoData;
     _titleController.text = adUpdateModel.adsTitle;
     _descriptionController.text = adUpdateModel.description;
-    _brandNameController.text = primaryData['Brand Name'] ?? "Dummy Brand Name is Null";
+    _brandNameController.text =
+        primaryData['Brand Name'] ?? "Dummy Brand Name is Null";
     _propertyAreaController.text = primaryData['Property Area']['value'];
     _propertyArea = primaryData['Property Area']['unit'];
     _buildupAreaController.text = primaryData['Buildup Area']['value'];
@@ -788,12 +789,12 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
     _listedBy = primaryData['Listed By'];
     _facing = primaryData['Facing'];
 
-  //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
 
     _totalFloorController.text = moreInfoData['Total Floors'];
-    _adsPriceController.text = '10000';//---------------------------------
+    _adsPriceController.text = '10000'; //---------------------------------
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
-    _carpetArea = 'sq.feet';//moreInfoData['Carpet Area']['unit'];//    ERROR
+    _carpetArea = 'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
     _floorNoController.text = moreInfoData['Floor No'];
     _parkingController.text = moreInfoData['Parking'];
     _ageOfBuildingController.text = moreInfoData['Age Of Building'];
@@ -801,59 +802,72 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
     _furnishing = moreInfoData['Furnishing'];
     _landMarksController.text = moreInfoData['Landmark'];
     _websiteLinkController.text = moreInfoData['Website Link'];
-    final index = building4saleCommercial.indexWhere((element) => element['cat_name']?.toLowerCase() == adUpdateModel.level4Sub);
+    final index = building4saleCommercial.indexWhere((element) =>
+        element['cat_name']?.toLowerCase() == adUpdateModel.level4Sub);
     _level4Cat.value = index >= 0 ? index : 0;
   }
 
-  _saveChangesAndContinue(BuildContext context){
+  _saveChangesAndContinue(BuildContext context) {
     _checkValidation = true;
-    context.read<AdCreateOrUpdateBloc>().add(AdCreateOrUpdateCheckDropDownValidattionEvent());
-    if (_formKey.currentState!.validate() && _saleType != null && _listedBy != null && _facing != null && _adsPriceController.text.trim().isNotEmpty) {
+    context
+        .read<AdCreateOrUpdateBloc>()
+        .add(AdCreateOrUpdateCheckDropDownValidattionEvent());
+    if (_formKey.currentState!.validate() &&
+        _saleType != null &&
+        _listedBy != null &&
+        _facing != null &&
+        _adsPriceController.text.trim().isNotEmpty) {
       final Map<String, dynamic> primaryInfo = {
-          'Brand Name' : _brandNameController.text,
-          'Property Area': {
-                "value": _propertyAreaController.text,
-                "unit": _propertyArea
-            },
-          'Buildup Area': {
-                "value": _buildupAreaController.text,
-                "unit": _buildupArea
-            },
-          'Sale Type': _saleType!,
-          'Listed By': _listedBy!,
-          'Facing': _facing!,
-        };
-      final Map<String, dynamic> moreInfo = {
-          'Total Floors': _totalFloorController.text,
-          'Carpet Area': {
-              'value': _carpetAreaController.text,
-              'unit': _carpetArea,
-            },
-          'Floor No': _floorNoController.text,
-          'Parking': _parkingController.text,
-          'Age Of Building': _ageOfBuildingController.text,
-          'Construction Status': _constructionStatus,
-          'Furnishing': _furnishing,
-          'Landmark': _landMarksController.text,
-          'Website Link': _websiteLinkController.text,
-        };
-      
-      context.read<AdCreateOrUpdateBloc>().savePrimaryMoreInfoDetails(
-        adsTitle: _titleController.text,
-        description: _descriptionController.text,
-        prymaryInfo: primaryInfo,
-        moreInfo: moreInfo,
-        level4Sub: building4saleCommercial[_level4Cat.value]['cat_name'],
-        adsLevels: {
-          "route": commercialBuildingForSaleRoot,
-          "sub category": building4saleCommercial[_level4Cat.value]['cat']?.toLowerCase(),
+        'Brand Name': _brandNameController.text,
+        'Property Area': {
+          "value": _propertyAreaController.text,
+          "unit": _propertyArea
         },
-        adPrice: _adsPriceController.text
-      );
-      Navigator.pushNamed(context, adConfirmScreen,);//
+        'Buildup Area': {
+          "value": _buildupAreaController.text,
+          "unit": _buildupArea
+        },
+        'Sale Type': _saleType!,
+        'Listed By': _listedBy!,
+        'Facing': _facing!,
+      };
+      final Map<String, dynamic> moreInfo = {
+        'Total Floors': _totalFloorController.text,
+        'Carpet Area': {
+          'value': _carpetAreaController.text,
+          'unit': _carpetArea,
+        },
+        'Floor No': _floorNoController.text,
+        'Parking': _parkingController.text,
+        'Age Of Building': {
+          'value': _ageOfBuildingController.text,
+          'unit': 'yrs',
+        },
+        'Construction Status': _constructionStatus,
+        'Furnishing': _furnishing,
+        'Landmark': _landMarksController.text,
+        'Website Link': _websiteLinkController.text,
+      };
+
+      context.read<AdCreateOrUpdateBloc>().savePrimaryMoreInfoDetails(
+          adsTitle: _titleController.text,
+          description: _descriptionController.text,
+          prymaryInfo: primaryInfo,
+          moreInfo: moreInfo,
+          level4Sub: building4saleCommercial[_level4Cat.value]['cat_name'],
+          adsLevels: {
+            "route": commercialBuildingForSaleRoot,
+            "sub category":
+                building4saleCommercial[_level4Cat.value]['cat']?.toLowerCase(),
+          },
+          adPrice: _adsPriceController.text);
+      Navigator.pushNamed(
+        context,
+        adConfirmScreen,
+      ); //
     }
   }
-  
+
   @override
   void dispose() {
     _scrollController.dispose();

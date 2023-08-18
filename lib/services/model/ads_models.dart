@@ -112,6 +112,9 @@ class AdsModel {
     
     categoryInfo : $categoryInfo
 
+    userName : $userName
+    
+
     ''';
   }
   

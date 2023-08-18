@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:need_in_choice/views/pages/chat_page/widgets/elevated_button.dart';
 import '../../../../utils/colors.dart';
 import '../../../widgets_refactored/dashed_line_generator.dart';
-import '../chat_view.dart';
+import '../chating_view.dart';
 
 bool isYes = true;
 
@@ -70,8 +70,7 @@ class ChatListViewBuilder extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ChatView()));
+                            // Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatView()));
                           },
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

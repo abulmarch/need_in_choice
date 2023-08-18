@@ -15,7 +15,6 @@ import '../../../widgets_refactored/icon_button.dart';
 import '../../../widgets_refactored/image_upload_doted_circle.dart'
     show OtherAdsImagePreviewBox;
 import '../../ad_detail/widgets/details_row.dart';
-import '../../ad_detail/widgets/full_image.dart';
 
 class AdPreviewBottomSheetRealEstate extends StatelessWidget {
   const AdPreviewBottomSheetRealEstate({
@@ -31,12 +30,14 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final adData = BlocProvider.of<AdCreateOrUpdateBloc>(context).adCreateOrUpdateModel;
+    final adData =
+        BlocProvider.of<AdCreateOrUpdateBloc>(context).adCreateOrUpdateModel;
     final moreInfoData = adData.moreInfoData.removeEmptyValue();
     Widget adPriceWidget = const SizedBox();
 
     if (adData.adPrice is Map) {
-      if (adData.adPrice.containsKey('Start Price') && adData.adPrice.containsKey('Prebid')) {
+      if (adData.adPrice.containsKey('Start Price') &&
+          adData.adPrice.containsKey('Prebid')) {
         adPriceWidget = Column(
           children: [
             RichText(
@@ -45,35 +46,38 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge!
-                    .copyWith(fontSize: 19),
+                    .copyWith(fontSize: 16),
                 children: [
                   TextSpan(
                     text: adData.adPrice['Start Price'].toString(),
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontSize: 28),
+                        .copyWith(fontSize: 22),
                   ),
                   TextSpan(
                     text: "/",
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontSize: 18),
+                        .copyWith(fontSize: 15),
                   ),
                   TextSpan(
                     text: "prebid",
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontSize: 14, color: kPrimaryColor),
+                        .copyWith(fontSize: 10, color: kPrimaryColor),
                   ),
                 ],
               ),
             ),
             Container(
               height: 25,
-              width: 160,
+              constraints: const BoxConstraints(
+                minWidth: 50,
+                maxWidth: 170,
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: kBlackColor,
@@ -94,7 +98,7 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                         style: Theme.of(context)
                             .textTheme
                             .headlineSmall!
-                            .copyWith(fontSize: 11),
+                            .copyWith(fontSize: 10),
                       ),
                     ],
                   ),
@@ -113,35 +117,38 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge!
-                    .copyWith(fontSize: 19),
+                    .copyWith(fontSize: 16),
                 children: [
                   TextSpan(
                     text: adData.adPrice['Monthly'].toString(),
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontSize: 28),
+                        .copyWith(fontSize: 22),
                   ),
                   TextSpan(
                     text: "/",
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontSize: 18),
+                        .copyWith(fontSize: 15),
                   ),
                   TextSpan(
                     text: "m",
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontSize: 14, color: kPrimaryColor),
+                        .copyWith(fontSize: 10, color: kPrimaryColor),
                   ),
                 ],
               ),
             ),
             Container(
               height: 25,
-              width: 160,
+              constraints: const BoxConstraints(
+                minWidth: 50,
+                maxWidth: 170,
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: kBlackColor,
@@ -175,21 +182,21 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
       adPriceWidget = RichText(
         text: TextSpan(
           text: "₹",
-          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 19),
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 16),
           children: [
             TextSpan(
               text: adData.adPrice,
               style: Theme.of(context)
                   .textTheme
                   .titleLarge!
-                  .copyWith(fontSize: 28),
+                  .copyWith(fontSize: 22),
             ),
             TextSpan(
-              text: "/",
+              text: "/-",
               style: Theme.of(context)
                   .textTheme
                   .titleLarge!
-                  .copyWith(fontSize: 18),
+                  .copyWith(fontSize: 15),
             ),
           ],
         ),
@@ -204,7 +211,9 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
         return Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            SizedBox(height: availableHeight,),
+            SizedBox(
+              height: availableHeight,
+            ),
             Padding(
               padding: const EdgeInsets.only(top: 15),
               child: ListView.builder(
@@ -218,22 +227,24 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: bottomSheetcolor.withOpacity(.96),
                       borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: kpadding15),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: kpadding15),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              kHeight10,
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   kWidth5,
@@ -241,8 +252,9 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                                       // "Modern Restaurant aluva",
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style:
-                                          Theme.of(context).textTheme.titleLarge),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge),
                                   const Spacer(),
                                   const Icon(
                                     Icons.favorite_border_outlined,
@@ -271,7 +283,11 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                                 ],
                               ),
                               DetailsRow(
-                                details: adData.primaryData.exclude(['Date Range','Website Link','Landmark',]),
+                                details: adData.primaryData.exclude([
+                                  'Date Range',
+                                  'Website Link',
+                                  'Landmark',
+                                ]),
                                 dotColor: kDottedBorder,
                               ),
                               kHeight5,
@@ -281,7 +297,8 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                               ),
                               kHeight5,
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   adPriceWidget,
                                   IconWithButton(
@@ -291,17 +308,22 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                                       radius: 10,
                                       size: adData.adPrice == null
                                           ? Size(screenWidth - 30, 50)
-                                          : const Size(150, 50))
+                                          : const Size(140, 50))
                                 ],
                               ),
                               DetailsRow(
-                                details: moreInfoData.exclude(['Website Link','Landmark','Selected Amenities']),
+                                details: moreInfoData.exclude([
+                                  'Website Link',
+                                  'Landmark',
+                                  'Selected Amenities'
+                                ]),
                                 dotColor: kSecondaryColor,
                               ),
                               kHeight5,
                               SizedBox(
                                 width: screenWidth * .9,
-                                child: const MySeparator(color: kSecondaryColor),
+                                child:
+                                    const MySeparator(color: kSecondaryColor),
                               ),
                               kHeight5,
                               Column(
@@ -384,9 +406,11 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                               ),
                               kHeight10,
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
                                       child: RichText(
@@ -398,10 +422,12 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                                               .headlineSmall!
                                               .copyWith(
                                                   fontSize: 13,
-                                                  color: const Color(0XFF878181)),
+                                                  color:
+                                                      const Color(0XFF878181)),
                                           children: [
                                             TextSpan(
-                                              text: "\n${ _getWebsiteLink(adData)}",
+                                              text:
+                                                  "\n${_getWebsiteLink(adData)}",
                                               //"\nwww.calletic.com",
                                               style: Theme.of(context)
                                                   .textTheme
@@ -414,19 +440,19 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                                     ),
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         _otherAdsImagePreview(
                                             imageName: 'Floor Plan',
                                             adData: adData,
                                             defaultImage:
                                                 'assets/images/dummy/Room.jpg'),
-                                                kWidth15,
+                                        kWidth15,
                                         _otherAdsImagePreview(
                                             imageName: 'Land Sketch',
                                             adData: adData,
-                                            defaultImage: 'assets/images/dummy/lands.jpg'),
+                                            defaultImage:
+                                                'assets/images/dummy/lands.jpg'),
                                       ],
                                     ),
                                   ],
@@ -438,8 +464,8 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                         ),
                         (adData.moreInfoData['Selected Amenities'] != null)
                             ? Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: kpadding10),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: kpadding10),
                                 height: 40,
                                 color: kPrimaryColor.withOpacity(0.5),
                                 child: Row(
@@ -548,11 +574,12 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                                               ),
                                               title: const Text(
                                                 'Phone Messenger',
-                                                style:
-                                                    TextStyle(color: kWhiteColor),
+                                                style: TextStyle(
+                                                    color: kWhiteColor),
                                               ),
                                               onTap: () {
-                                                const phoneNumber = '9876543210';
+                                                const phoneNumber =
+                                                    '9876543210';
                                                 const message =
                                                     'Your message goes here';
 
@@ -567,11 +594,12 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                                                   'assets/images/icons/whatsapp.png'),
                                               title: const Text(
                                                 'WhatsApp Messenger',
-                                                style:
-                                                    TextStyle(color: kWhiteColor),
+                                                style: TextStyle(
+                                                    color: kWhiteColor),
                                               ),
                                               onTap: () {
-                                                const phoneNumber = '9876543210';
+                                                const phoneNumber =
+                                                    '9876543210';
                                                 const message =
                                                     'Your message goes here';
 
@@ -656,7 +684,6 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
     //   defaultImage: 'assets/images/dummy/Room.jpg',
     // );
   }
-
 }
 
 class MySeparator extends StatelessWidget {

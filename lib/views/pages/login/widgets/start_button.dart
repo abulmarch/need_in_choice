@@ -12,16 +12,19 @@ class StartButton extends StatelessWidget {
     required this.circle,
     required this.arrow,
     this.textcolor = kWhiteColor,
+    this.isLoading = false,
   });
 
   final double screenWidth;
-  final Function() ontap;
+  final Function()? ontap;
   final String boldText;
   final String lightText;
   final Color button;
   final Color circle;
   final Color arrow;
   final Color? textcolor;
+
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +74,9 @@ class StartButton extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: Icon(
+                  child: isLoading 
+                  ? const CircularProgressIndicator(color: kWhiteColor,)
+                  : Icon(
                     Icons.arrow_forward_ios_sharp,
                     color: arrow,
                     size: 20,

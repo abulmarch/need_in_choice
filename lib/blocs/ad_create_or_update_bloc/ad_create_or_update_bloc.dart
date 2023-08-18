@@ -13,14 +13,19 @@ import '../../services/repositories/get_location.dart';
 part 'ad_create_or_update_event.dart';
 part 'ad_create_or_update_state.dart';
 
-class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateState> {
+const kNumberOfImageCount = 10;
+
+class AdCreateOrUpdateBloc
+    extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateState> {
   final CreateOrUpdateAdsRepo createOrUpdateAdsRepo;
 
   AdCreateOrUpdateModel? _adCreateOrUpdateModel;
-  StreamController<List<dynamic>>? _imageListController;        // = StreamController<List<dynamic>>.broadcast();
+  StreamController<List<dynamic>>?
+      _imageListController; // = StreamController<List<dynamic>>.broadcast();
   StreamController<String>? _addressStreamController;
 
-  AdCreateOrUpdateBloc(this.createOrUpdateAdsRepo) : super(AdCreateOrUpdateInitial()) {
+  AdCreateOrUpdateBloc(this.createOrUpdateAdsRepo)
+      : super(AdCreateOrUpdateInitial()) {
     on<AdCreateOrUpdateInitialEvent>(_adCreateOrUpdateInitialEvent);
     on<AdCreateOrUpdateCheckDropDownValidattionEvent>((event, emit) {
       emit(AdCreateOrUpdateValidateState());
@@ -35,83 +40,97 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
 
   Stream<List<dynamic>> get imageListStream => _imageListController!.stream;
   Stream<String> get addressStream => _addressStreamController!.stream;
-  
 
-
-  FutureOr<void> _adCreateOrUpdateInitialEvent(AdCreateOrUpdateInitialEvent event, Emitter<AdCreateOrUpdateState> emit) async{
+  FutureOr<void> _adCreateOrUpdateInitialEvent(
+      AdCreateOrUpdateInitialEvent event,
+      Emitter<AdCreateOrUpdateState> emit) async {
     _adCreateOrUpdateModel = null;
-    
-    if(event.id == null){// new ad
-        log('----------New Ad-----------${event.id}------');
+
+    if (event.id == null) {
+      // new ad
+      log('----------New Ad-----------${event.id}------');
       emit(AdCreateOrUpdateInitial());
       _adCreateOrUpdateModel = AdCreateOrUpdateModel(
         userId: FirebaseAuth.instance.currentUser!.uid,
         mainCategory: event.mainCategory,
-        adPrice: null,//
-        adsAddress: AccountSingleton.instance.getAccountModels.address ?? "",//"Calletic Technologies Pvt Ltd 4th Floor, Nila, Technopark Campus, Technopark Campus, Kazhakkoottam, Thiruvananthapuram, Kerala 123356",
+        adPrice: null, //
+        adsAddress: AccountSingleton().getAccountModels.address ??
+            "", //"Calletic Technologies Pvt Ltd 4th Floor, Nila, Technopark Campus, Technopark Campus, Kazhakkoottam, Thiruvananthapuram, Kerala 123356",
       );
       emit(const AdCreateOrUpdateLoaded());
-    }else{// ad updateion
+    } else {
+      // ad updateion
       emit(AdCreateOrUpdateLoading());
       try {
         log('----------event.id-----------${event.id}------');
-        final result = await createOrUpdateAdsRepo.fetchAdDataToUpdate(event.id!);
+        final result =
+            await createOrUpdateAdsRepo.fetchAdDataToUpdate(event.id!);
         _adCreateOrUpdateModel = result;
-        emit(AdCreateOrUpdateLoaded(adUpdateModel: result)); 
-      } catch (e){
+        emit(AdCreateOrUpdateLoaded(adUpdateModel: result));
+      } catch (e) {
         emit(FaildToFetchExceptionState(e.toString()));
       }
     }
   }
 
-  FutureOr<void> _pickImageEvent(PickImageFromCameraOrGallery event, Emitter<AdCreateOrUpdateState> emit) async {
+  FutureOr<void> _pickImageEvent(PickImageFromCameraOrGallery event,
+      Emitter<AdCreateOrUpdateState> emit) async {
     emit(ImageFileUploadingState());
-    int noOfImagesPossibleToAdd = 7 - (adCreateOrUpdateModel.imageUrls.length + adCreateOrUpdateModel.imageFiles.length);
+    int noOfImagesPossibleToAdd = kNumberOfImageCount -
+        (adCreateOrUpdateModel.imageUrls.length +
+            adCreateOrUpdateModel.imageFiles.length);
     final ImagePicker picker = ImagePicker();
     List<XFile> xFileList = [];
     if (event.source == ImageSource.camera) {
       final XFile? image = await picker.pickImage(source: event.source);
-      if(image != null){
+      if (image != null) {
         xFileList.add(image);
       }
     } else {
       List<XFile> imagFiles = await picker.pickMultiImage();
       xFileList.addAll(imagFiles);
     }
-    if(noOfImagesPossibleToAdd > 0){
+    if (noOfImagesPossibleToAdd > 0) {
       final newFiles = xFileList.take(noOfImagesPossibleToAdd).toList();
       _adCreateOrUpdateModel = adCreateOrUpdateModel.copyWith(
-        imageFiles: [...newFiles,...adCreateOrUpdateModel.imageFiles]
-      );
+          imageFiles: [...newFiles, ...adCreateOrUpdateModel.imageFiles]);
       _notifyImageStreamController();
       emit(const ImageFileUploadedState());
-    }else{
+    } else {
       emit(ImageFileUploadedState(exception: ImageCountExceedException()));
     }
   }
-  
-  FutureOr<void> _pickOtherImageEvent(PickOtherImageEvent event, Emitter<AdCreateOrUpdateState> emit) async {
+
+  FutureOr<void> _pickOtherImageEvent(
+      PickOtherImageEvent event, Emitter<AdCreateOrUpdateState> emit) async {
     final ImagePicker picker = ImagePicker();
     emit(OtherImageFileUploadingState());
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      List<String> otherImgUrlToDelete = [...adCreateOrUpdateModel.otherImgUrlsToDelete];
+      List<String> otherImgUrlToDelete = [
+        ...adCreateOrUpdateModel.otherImgUrlsToDelete
+      ];
       List otherImageUrls = adCreateOrUpdateModel.otherImageUrls;
-      List<Map<dynamic, dynamic>> otherImageFiles = [...adCreateOrUpdateModel.otherImageFiles];
+      List<Map<dynamic, dynamic>> otherImageFiles = [
+        ...adCreateOrUpdateModel.otherImageFiles
+      ];
 
-      final fileIndex = otherImageFiles.indexWhere((map) => map['image_type'] == event.imageType);
-      if (fileIndex == -1) { //  if it is not exist we need to remove it from otherImageUrls List and added to otherImageUrlToDelete List
-        final urlIndex = otherImageUrls.indexWhere((map) => map['image_type'] == event.imageType);
+      final fileIndex = otherImageFiles
+          .indexWhere((map) => map['image_type'] == event.imageType);
+      if (fileIndex == -1) {
+        //  if it is not exist we need to remove it from otherImageUrls List and added to otherImageUrlToDelete List
+        final urlIndex = otherImageUrls
+            .indexWhere((map) => map['image_type'] == event.imageType);
 
-        if(urlIndex >= 0){
+        if (urlIndex >= 0) {
           otherImgUrlToDelete.add(otherImageUrls[urlIndex]['url']);
           otherImageUrls.removeAt(urlIndex);
         }
         otherImageFiles.add({
-          'image_type' : event.imageType,
-          'file' : image,
+          'image_type': event.imageType,
+          'file': image,
         });
-      }else{
+      } else {
         otherImageFiles[fileIndex]['file'] = image;
       }
       _adCreateOrUpdateModel = adCreateOrUpdateModel.copyWith(
@@ -122,28 +141,28 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
     }
     emit(OtherImageFileUploadedState());
   }
-  
-  
-  Future<FutureOr<void>> _uploadAdEvent(UploadAdEvent event, Emitter<AdCreateOrUpdateState> emit) async {
+
+  Future<FutureOr<void>> _uploadAdEvent(
+      UploadAdEvent event, Emitter<AdCreateOrUpdateState> emit) async {
     emit(AdUploadingProgress());
     try {
       verifyPincode();
       await createOrUpdateAdsRepo.updateOrCreateAd(adCreateOrUpdateModel);
       emit(AdUploadingCompletedState());
-
-    } on FaildToUploadDataException{
+    } on FaildToUploadDataException {
       emit(AdUploadingExceptionState(exception: FaildToUploadDataException()));
-    } on InvalidAddressException{
+    } on InvalidAddressException {
       emit(AdUploadingExceptionState(exception: InvalidAddressException()));
-    } on InvalidPincodeException{
+    } on InvalidPincodeException {
       emit(AdUploadingExceptionState(exception: InvalidPincodeException()));
-    } on PincodeGeneralException{
+    } on PincodeGeneralException {
       emit(AdUploadingExceptionState(exception: PincodeGeneralException()));
-    } catch(e){
+    } catch (e) {
       log('------------$e----------------');
     }
   }
-  void verifyPincode(){
+
+  void verifyPincode() {
     final pincode = findPinCode(adCreateOrUpdateModel.adsAddress);
     _adCreateOrUpdateModel = adCreateOrUpdateModel.copyWith(pinCode: pincode);
   }
@@ -151,12 +170,12 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
   void savePrimaryMoreInfoDetails({
     required String adsTitle,
     required String description,
-    required Map<String, dynamic> prymaryInfo, 
+    required Map<String, dynamic> prymaryInfo,
     required Map<String, dynamic> moreInfo,
     required Map<String, dynamic> adsLevels,
-    dynamic adPrice,//  price may be either String or map
+    dynamic adPrice, //  price may be either String or map
     String? level4Sub,
-    }) {
+  }) {
     _adCreateOrUpdateModel = adCreateOrUpdateModel.copyWith(
       adsTitle: adsTitle,
       description: description,
@@ -167,21 +186,21 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
       adPrice: adPrice,
     );
   }
-  
 
-  void deleteImage({required int index, required dynamic data}){
+  void deleteImage({required int index, required dynamic data}) {
     if (data.runtimeType == String) {
       adCreateOrUpdateModel.imageUrls.remove(data);
       List<String> urlsToDelete = [...adCreateOrUpdateModel.urlsToDelete];
       urlsToDelete.add(data);
-      _adCreateOrUpdateModel = adCreateOrUpdateModel.copyWith(urlsToDelete: urlsToDelete);
+      _adCreateOrUpdateModel =
+          adCreateOrUpdateModel.copyWith(urlsToDelete: urlsToDelete);
     } else {
-      adCreateOrUpdateModel.imageFiles.removeAt(index);     
+      adCreateOrUpdateModel.imageFiles.removeAt(index);
     }
     _notifyImageStreamController();
   }
 
-  Future<String> getCurrentLocation() async{
+  Future<String> getCurrentLocation() async {
     try {
       final position = await determinePosition();
       return await getAddressFromLatLon(position);
@@ -191,7 +210,7 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
     }
   }
 
-  void saveAdsAddress(String address){
+  void saveAdsAddress(String address) {
     final pinCode = findPinCode(address);
     _adCreateOrUpdateModel = adCreateOrUpdateModel.copyWith(
       adsAddress: address,
@@ -200,15 +219,20 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
     _notifyAddressStreamController();
     _notifyImageStreamController();
   }
-  void _notifyImageStreamController(){
-    final newList = [...adCreateOrUpdateModel.imageFiles,...adCreateOrUpdateModel.imageUrls];
+
+  void _notifyImageStreamController() {
+    final newList = [
+      ...adCreateOrUpdateModel.imageFiles,
+      ...adCreateOrUpdateModel.imageUrls
+    ];
     _imageListController!.add(newList);
   }
-  _notifyAddressStreamController(){
+
+  _notifyAddressStreamController() {
     _addressStreamController!.add(adCreateOrUpdateModel.adsAddress);
   }
 
-  void initializeStreamController(){
+  void initializeStreamController() {
     _imageListController = StreamController<List<dynamic>>.broadcast();
     _addressStreamController = StreamController<String>.broadcast();
     Future.delayed(const Duration(milliseconds: 250)).then((value) {
@@ -217,9 +241,8 @@ class AdCreateOrUpdateBloc extends Bloc<AdCreateOrUpdateEvent, AdCreateOrUpdateS
     });
   }
 
-  void dispose(){
+  void dispose() {
     _imageListController?.close();
     _addressStreamController?.close();
   }
 }
-

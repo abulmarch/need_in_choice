@@ -24,6 +24,7 @@ class ImageCard extends StatelessWidget {
 
     return Stack(children: [
       CustomScrollView(
+        controller: controller,
         slivers: [
           SliverList(
             delegate: SliverChildBuilderDelegate(
@@ -37,7 +38,8 @@ class ImageCard extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => FullImageView(
-                            imageUrl: imageUrls[index],
+                            imageUrls: imageUrls,
+                            initialIndex: index,
                           ),
                         ),
                       );
@@ -126,28 +128,29 @@ class ImageCard extends StatelessWidget {
         ),
       ),
       Positioned(
-          top: 150,
-          right: 1,
-          child: Container(
-              width: 50,
-              height: 25,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              alignment: Alignment.center,
-              child: SmoothPageIndicator(
-                  axisDirection: Axis.vertical,
-                  controller: controller,
-                  count: imageUrls.length,
-                  effect: const ScrollingDotsEffect(
-                    activeDotColor: kWhiteColor,
-                    dotColor: kWhiteColor,
-                    activeStrokeWidth: 1,
-                    activeDotScale: 1.5,
-                    maxVisibleDots: 5,
-                    radius: 8,
-                    spacing: 5,
-                    dotHeight: 8,
-                    dotWidth: 8,
-                  ))))
+        top: 150,
+        right: 1,
+        child: Container(
+            width: 50,
+            height: 25,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            alignment: Alignment.center,
+            child: SmoothPageIndicator(
+                axisDirection: Axis.vertical,
+                controller: controller,
+                count: imageUrls.length,
+                effect: const ScrollingDotsEffect(
+                  activeDotColor: kWhiteColor,
+                  dotColor: kWhiteColor,
+                  activeStrokeWidth: 1,
+                  activeDotScale: 1.5,
+                  maxVisibleDots: 5,
+                  radius: 8,
+                  spacing: 5,
+                  dotHeight: 8,
+                  dotWidth: 8,
+                ))),
+      ),
     ]);
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
@@ -32,11 +34,17 @@ class _DetailsRowState extends State<DetailsRow> {
   }
 
   void activateListner() {
-    if(_scrollController.hasClients){
+    if (_scrollController.hasClients) {
       _scrollController.addListener(() {
-        if (_scrollController.position.maxScrollExtent - _scrollController.position.pixels < 40 && _scrollEnd.value == false) {
+        if (_scrollController.position.maxScrollExtent -
+                    _scrollController.position.pixels <
+                40 &&
+            _scrollEnd.value == false) {
           _scrollEnd.value = true;
-        } else if (_scrollController.position.maxScrollExtent - _scrollController.position.pixels > 40 && _scrollEnd.value == true) {
+        } else if (_scrollController.position.maxScrollExtent -
+                    _scrollController.position.pixels >
+                40 &&
+            _scrollEnd.value == true) {
           _scrollEnd.value = false;
         }
       });
@@ -51,8 +59,7 @@ class _DetailsRowState extends State<DetailsRow> {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final keyList = widget.details.keys.toList();
-    final valueList = widget.details.values.toList();
+ 
     return (widget.details.isNotEmpty)
         ? Column(
             children: [
@@ -66,30 +73,16 @@ class _DetailsRowState extends State<DetailsRow> {
                 height: 50,
                 child: Row(
                   children: [
-                    Container(
-                      height: 45,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: kWhiteColor.withOpacity(.4),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.bolt,
-                        color: kWhiteColor,
-                      ),
-                    ),
-                    kWidth10,
                     Expanded(
                       child: ListView.separated(
                         controller: _scrollController,
                         scrollDirection: Axis.horizontal,
                         itemCount: widget.details.length,
                         itemBuilder: (BuildContext context, int index) {
+            
                           return LandWidget(
-                            value: valueList[index] is String
-                                ? valueList[index]
-                                : valueList[index]['value'],
-                            name: keyList[index],
+                           
+                            mapEntry: widget.details.entries.elementAt(index),
                           );
                         },
                         separatorBuilder: (BuildContext context, int index) {
@@ -104,6 +97,7 @@ class _DetailsRowState extends State<DetailsRow> {
                       child: ValueListenableBuilder(
                           valueListenable: _scrollEnd,
                           builder: (context, isEndOfScroll, _) {
+                            print('${widget.details}');
                             return !isEndOfScroll
                                 ? const Icon(
                                     Icons.arrow_forward_ios,
@@ -130,9 +124,7 @@ class _DetailsRowState extends State<DetailsRow> {
   }
 }
 
-
-
-extension ExcludedMap on Map<String, dynamic>{
+extension ExcludedMap on Map<String, dynamic> {
   /// it removes list of items from the map
   Map<String, dynamic> exclude(List<String> keyList) {
     Map<String, dynamic> newList = Map.from(this);

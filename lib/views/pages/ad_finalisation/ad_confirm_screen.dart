@@ -225,15 +225,18 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                                         top: 5,
                                         right: 5,
                                         child: InkWell(
-                                          onTap: () {
-                                            context.read<AdCreateOrUpdateBloc>().deleteImage(index: index, data: adImages[index]);
-                                          },
-                                          child: SvgPicture.asset(
-                                            'assets/images/icons/close_icon.svg',
-                                            width: 20,
-                                            height: 20,
-                                          )
-                                        ),
+                                            onTap: () {
+                                              context
+                                                  .read<AdCreateOrUpdateBloc>()
+                                                  .deleteImage(
+                                                      index: index,
+                                                      data: adImages[index]);
+                                            },
+                                            child: SvgPicture.asset(
+                                              'assets/images/icons/close_icon.svg',
+                                              width: 20,
+                                              height: 20,
+                                            )),
                                       )
                                     ],
                                   );
@@ -268,10 +271,10 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SvgPicture.asset(
-                                            'assets/images/icons/address.svg',
-                                            width: 20,
-                                            height: 20,
-                                          ),
+                        'assets/images/icons/address.svg',
+                        width: 20,
+                        height: 20,
+                      ),
                       kWidth10,
                       ConstrainedBox(
                         constraints: BoxConstraints(
@@ -310,53 +313,70 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                     ],
                   ),
                   kHeight10,
-                  TextIconButton(
-                    text: '+ Update Ad Location',
-                    txtcolor: const Color(0XFF6F6F6F),
-                    fontsize: 15,
-                    onpressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const UpdateAdressBottomSheet(),));
-                    },
-                    size: const Size(222, 38),
+                  Center(
+                    child: TextIconButton(
+                      text: '+ Update Ad Location',
+                      txtcolor: const Color(0XFF6F6F6F),
+                      fontsize: 15,
+                      onpressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const UpdateAdressBottomSheet(),
+                            ));
+                      },
+                      size: const Size(146, 38),
+                      maxSize: MaterialStateProperty.all(
+                          Size(screnSize.width * 0.6, 38)),
+                    ),
                   ),
                   const Spacer(),
-                  TextIconButton(
-                    text: 'Preview Ad',
-                    txtcolor: kPrimaryColor,
-                    fontsize: 15,
-                    onpressed: () {
-                      //.;
-                      // Navigator.pushNamed(context, adPreviwScreen);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AdPreviewScreen(),
-                          ));
-                    },
-                    size: const Size(246, 50),
+                  Center(
+                    child: TextIconButton(
+                      text: 'Preview Ad',
+                      txtcolor: kPrimaryColor,
+                      fontsize: 15,
+                      onpressed: () {
+                        //.;
+                        // Navigator.pushNamed(context, adPreviwScreen);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AdPreviewScreen(),
+                            ));
+                      },
+                      size: const Size(146, 38),
+                      maxSize: MaterialStateProperty.all(
+                          Size(screnSize.width * 0.6, 38)),
+                    ),
                   ),
                   kHeight15,
                   StreamBuilder<List<dynamic>>(
-                    stream: adCreateOrUpdateBloc.imageListStream,
-                    builder: (context, snapshot) {
-                      return (snapshot.data ?? []).isEmpty 
-                      ?  const TextIconButtonDisabled.black(width: double.infinity, height: 61,text: 'Confirm Ad',)
-                      :TextIconButton(
-                        text: 'Confirm Ad',
-                        txtcolor: kWhiteColor,
-                        fontsize: 15,
-                        onpressed: !isAdUloading
-                            ? () {
-                                context
-                                    .read<AdCreateOrUpdateBloc>()
-                                    .add(UploadAdEvent());
-                              }
-                            : null,
-                        size: const Size(321, 61),
-                        background: const Color(0XFF303030),
-                        bordercolor: kWhiteColor,
-                      );                      
-                    }),
+                      stream: adCreateOrUpdateBloc.imageListStream,
+                      builder: (context, snapshot) {
+                        return (snapshot.data ?? []).isEmpty
+                            ? const TextIconButtonDisabled.black(
+                                width: double.infinity,
+                                height: 61,
+                                text: 'Confirm Ad',
+                              )
+                            : TextIconButton(
+                                text: 'Confirm Ad',
+                                txtcolor: kWhiteColor,
+                                fontsize: 15,
+                                onpressed: !isAdUloading
+                                    ? () {
+                                        context
+                                            .read<AdCreateOrUpdateBloc>()
+                                            .add(UploadAdEvent());
+                                      }
+                                    : null,
+                                size: const Size(321, 61),
+                                background: const Color(0XFF303030),
+                                bordercolor: kWhiteColor,
+                              );
+                      }),
                   kHeight20,
                 ],
               ),
@@ -380,7 +400,8 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               if (state.exception != null) {
                 SnackBar snackBar = const SnackBar(
-                  content: Text('You can not add morethan 7 images.'),
+                  content: Text(
+                      'You can not add morethan $kNumberOfImageCount images.'),
                   margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   behavior: SnackBarBehavior.floating,
                   backgroundColor: Color(0xFF00000e),
@@ -389,16 +410,19 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
               }
             } else if (state is AdUploadingCompletedState) {
               Navigator.pushNamed(context, confirmLottieScreen);
-            }else if (state is AdUploadingExceptionState) {
-              if(state.exception is FaildToUploadDataException){
-                showErrorDialog(context, 'Something went wrong. Try again.').then((value) {
-                  Navigator.popUntil(context, ModalRoute.withName(mainNavigationScreen));
+            } else if (state is AdUploadingExceptionState) {
+              if (state.exception is FaildToUploadDataException) {
+                showErrorDialog(context, 'Something went wrong. Try again.')
+                    .then((value) {
+                  Navigator.popUntil(
+                      context, ModalRoute.withName(mainNavigationScreen));
                 });
-              }else if(state.exception is InvalidPincodeException){
+              } else if (state.exception is InvalidPincodeException) {
                 showErrorDialog(context, 'Invalid Pincod');
-              }else if(state.exception is InvalidAddressException){
-                showErrorDialog(context, 'Invalid address, Include pincod in the address');
-              }else{
+              } else if (state.exception is InvalidAddressException) {
+                showErrorDialog(
+                    context, 'Invalid address, Include pincod in the address');
+              } else {
                 showErrorDialog(context, 'Verify your address');
               }
             }

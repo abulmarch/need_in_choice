@@ -96,11 +96,11 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
           state is AdCreateOrUpdateLoading) {
         return _loadingScaffoldWidget(state);
       } else if (state is AdCreateOrUpdateLoaded) {
-          if(state.adUpdateModel != null){
-            _initializeUpdatingAdData(state.adUpdateModel!);
-          }else{
-            _checkValidation = false;
-          }
+        if (state.adUpdateModel != null) {
+          _initializeUpdatingAdData(state.adUpdateModel!);
+        } else {
+          _checkValidation = false;
+        }
       } else if (state is AdCreateOrUpdateValidateState) {
         _checkValidation = true;
       }
@@ -471,16 +471,8 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
                                                         .unfocus();
                                                   },
                                                   suffixIcon:
-                                                      CustomDropDownButton(
-                                                    initialValue: roadWidth,
-                                                    itemList:
-                                                        RealEstateDropdownList
-                                                            .carpetArea,
-                                                    onChanged: (String? value) {
-                                                      carpetArea = value!;
-                                                    },
-                                                  ),
-                                                  // focusNode: ,
+                                                      const DarkTextChip(
+                                                          text: 'meter'),
                                                 ),
                                               ),
                                               SizedBox(
@@ -560,19 +552,30 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
                                             ],
                                           ),
                                           kHeight20,
-                                          CustomTextField(
-                                            hintText:
-                                                'Landmarks near your Shop',
-                                            fillColor: kWhiteColor,
-                                            controller: _landMarksController,
-                                          ),
-                                          kHeight15,
-                                          CustomTextField(
-                                            fillColor: kWhiteColor,
-                                            hintText:
-                                                'Website link of your Shop',
-                                            controller: _websiteLinkController,
-                                          ),
+                                          ValueListenableBuilder<int>(
+                                              valueListenable: _level4Cat,
+                                              builder:
+                                                  (context, selectedIndex, _) {
+                                                return Column(
+                                                  children: [
+                                                    CustomTextField(
+                                                      hintText:
+                                                          'Land marks near your ${building4saleCommercial[selectedIndex]['cat_name']!}',
+                                                      controller:
+                                                          _landMarksController,
+                                                      fillColor: kWhiteColor,
+                                                    ),
+                                                    kHeight15,
+                                                    CustomTextField(
+                                                      fillColor: kWhiteColor,
+                                                      hintText:
+                                                          'Website link of your ${building4saleCommercial[selectedIndex]['cat_name']!}',
+                                                      controller:
+                                                          _websiteLinkController,
+                                                    ),
+                                                  ],
+                                                );
+                                              }),
                                         ],
                                       ),
                                     )
@@ -617,8 +620,7 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
     final moreInfoData = adUpdateModel.moreInfoData;
     _titleController.text = adUpdateModel.adsTitle;
     _descriptionController.text = adUpdateModel.description;
-    _brandNameController.text =
-        primaryData['Brand Name'] ?? "";
+    _brandNameController.text = primaryData['Brand Name'] ?? "";
     _propertyAreaController.text = primaryData['Property Area']['value'];
     propertyArea = primaryData['Property Area']['unit'];
     _buildupAreaController.text = primaryData['Buildup Area']['value'];
@@ -635,8 +637,7 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
     _roadWidthController.text = moreInfoData['Road Width']['value'];
     roadWidth = moreInfoData['Road Width']['unit'];
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
-    carpetArea =
-        'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
+    carpetArea = 'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
     _parkingController.text = moreInfoData['Parking'];
     furnishing = moreInfoData['Furnishing'];
     _landMarksController.text = moreInfoData['Landmark'];
@@ -669,7 +670,7 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
       final Map<String, dynamic> moreInfo = {
         'Road Width': {
           'value': _roadWidthController.text,
-          'unit': roadWidth,
+          'unit': 'm',
         },
         'Carpet Area': {
           'value': _carpetAreaController.text,
@@ -687,7 +688,7 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
         prymaryInfo: primaryInfo,
         moreInfo: moreInfo,
         level4Sub: building4saleCommercial[_level4Cat.value]['cat_name'],
-         adPrice: {
+        adPrice: {
           'Monthly': _monthlyRentController.text,
           'Security Deposit': _securityDepositController.text
         },

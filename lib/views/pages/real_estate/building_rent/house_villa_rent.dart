@@ -84,7 +84,7 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-      final id = ModalRoute.of(context)!.settings.arguments as int?;
+    final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
@@ -99,11 +99,11 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
           state is AdCreateOrUpdateLoading) {
         return _loadingScaffoldWidget(state);
       } else if (state is AdCreateOrUpdateLoaded) {
-          if(state.adUpdateModel != null){
-            _initializeUpdatingAdData(state.adUpdateModel!);
-          }else{
-            _checkValidation = false;
-          }
+        if (state.adUpdateModel != null) {
+          _initializeUpdatingAdData(state.adUpdateModel!);
+        } else {
+          _checkValidation = false;
+        }
       } else if (state is AdCreateOrUpdateValidateState) {
         _checkValidation = true;
       }
@@ -520,15 +520,8 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
                                                 FocusScope.of(context)
                                                     .unfocus();
                                               },
-                                              suffixIcon: CustomDropDownButton(
-                                                initialValue: roadWidth,
-                                                itemList: RealEstateDropdownList
-                                                    .carpetArea,
-                                                onChanged: (String? value) {
-                                                  carpetArea = value!;
-                                                },
-                                              ),
-                                              // focusNode: ,
+                                              suffixIcon: const DarkTextChip(
+                                                  text: 'meter'),
                                             ),
                                           ),
                                           SizedBox(
@@ -619,14 +612,16 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
                                       ),
                                       kHeight15,
                                       CustomTextField(
-                                        hintText: 'Landmarks near your Villa',
+                                        hintText:
+                                            'Landmarks near your House | Villa',
                                         fillColor: kWhiteColor,
                                         controller: _landMarksController,
                                       ),
                                       kHeight10,
                                       CustomTextField(
                                         fillColor: kWhiteColor,
-                                        hintText: 'Website link of your Villa',
+                                        hintText:
+                                            'Website link of your House | Villa',
                                         controller: _websiteLinkController,
                                       ),
                                     ],
@@ -659,10 +654,11 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
 
   Scaffold _loadingScaffoldWidget(AdCreateOrUpdateState state) {
     return Scaffold(
-      body: state is FaildToFetchExceptionState ? Center(
-        child:  Text(state.errorMessagge),
-      )
-      : LottieWidget.loading(),
+      body: state is FaildToFetchExceptionState
+          ? Center(
+              child: Text(state.errorMessagge),
+            )
+          : LottieWidget.loading(),
     );
   }
 
@@ -672,8 +668,7 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
     final moreInfoData = adUpdateModel.moreInfoData;
     _titleController.text = adUpdateModel.adsTitle;
     _descriptionController.text = adUpdateModel.description;
-    _brandNameController.text =
-        primaryData['Brand Name'] ?? "";
+    _brandNameController.text = primaryData['Brand Name'] ?? "";
     _bedroomController.text = primaryData['Bedroom'];
     _bathroomController.text = primaryData['Bathroom'];
     _propertyAreaController.text = primaryData['Property Area']['value'];
@@ -688,12 +683,10 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
     _monthlyRentController.text = adUpdateModel.adPrice['Monthly'];
     _securityDepositController.text = adUpdateModel.adPrice['Security Deposit'];
 
-
     _roadWidthController.text = moreInfoData['Road Width']['value'];
     roadWidth = moreInfoData['Road Width']['unit'];
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
-    carpetArea =
-        'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
+    carpetArea = 'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
     _parkingController.text = moreInfoData['Parking'];
     constructionStatus = moreInfoData['Construction Status'];
     furnishing = moreInfoData['Furnishing'];
@@ -729,7 +722,7 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
       final Map<String, dynamic> moreInfo = {
         'Road Width': {
           'value': _roadWidthController.text,
-          'unit': roadWidth,
+          'unit': 'm',
         },
         'Carpet Area': {
           'value': _carpetAreaController.text,

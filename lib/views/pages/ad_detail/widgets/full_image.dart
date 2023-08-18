@@ -1,9 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../services/repositories/repository_urls.dart';
 import '../../../../utils/colors.dart';
 
 class FullImageView extends StatelessWidget {
-  const FullImageView({super.key, required this.imageUrl});
+  const FullImageView({super.key, required this.imageUrls, this.initialIndex});
+   final List<String> imageUrls;
+  final int? initialIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+          elevation: 0,
+          backgroundColor: kBlackColor,
+          leading: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(Icons.arrow_back_ios_new),
+          ),
+        ),
+      backgroundColor: kBlackColor, 
+      body: PageView.builder(
+        controller: PageController(initialPage: initialIndex!),
+        itemCount: imageUrls.length,
+        itemBuilder: (context, index) {
+          return Center(
+            child: InteractiveViewer(
+              child: Image.network(
+                '$imageUrlEndpoint${imageUrls[index]}',
+                fit: BoxFit.contain,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+
+
+class FullImageScreen extends StatelessWidget {
+  const FullImageScreen({super.key, required this.imageUrl});
   final String imageUrl;
 
   @override

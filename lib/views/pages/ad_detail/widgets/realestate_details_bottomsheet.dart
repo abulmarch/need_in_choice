@@ -1,14 +1,18 @@
 import 'dart:developer';
 import 'package:extended_text/extended_text.dart'
     show ExtendedText, TextOverflowWidget;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../services/model/ads_models.dart';
+import '../../../../services/repositories/firestore_chat.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 import '../../../widgets_refactored/dashed_line_generator.dart';
+import '../../../widgets_refactored/error_popup.dart';
 import '../../../widgets_refactored/icon_button.dart';
 import '../../../widgets_refactored/image_upload_doted_circle.dart';
+import '../../chat_page/chating_view.dart';
 import 'details_row.dart';
 
 class RealEstateDetailsBottomSheet extends StatelessWidget {
@@ -199,7 +203,9 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
         return Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            SizedBox(height: availableHeight,),
+            SizedBox(
+              height: availableHeight,
+            ),
             Padding(
               padding: const EdgeInsets.only(top: 15),
               child: ListView.builder(
@@ -213,8 +219,8 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: bottomSheetcolor.withOpacity(.96),
                       borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
                     ),
                     // height: screenHeight * .76,
                     child: Column(
@@ -228,13 +234,14 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              kHeight10,
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   kWidth5,
                                   SizedBox(
-                                    width: screenWidth*0.8,
+                                    width: screenWidth * 0.8,
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
                                       child: Text(adsModel.adsTitle,
@@ -275,7 +282,9 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                 ],
                               ),
                               DetailsRow(
-                                details: adsModel.primaryData.exclude(['Date Range','Website Link','Landmark']),
+                                
+                                details: adsModel.primaryData.exclude(
+                                    ['Date Range', 'Website Link', 'Landmark']),
                                 dotColor: kDottedBorder,
                               ),
                               kHeight5,
@@ -285,11 +294,37 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                               ),
                               kHeight5,
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   adPriceWidget,
                                   IconWithButton(
-                                      onpressed: () {},
+                                      onpressed: FirebaseAuth.instance.currentUser!.uid != adsModel.userId 
+                                      ? () async {
+                                        log('******---------------****');                                        
+                                        await FireStoreChat.checkChatAllreadyGenerated(
+                                          creatorId: adsModel.userId,
+                                          selectedAdId: adsModel.id
+                                        ).then((chatConn) async {
+                                          if (chatConn == null) {
+                                            FireStoreChat.generateNewChat(
+                                              adCreatorUid: adsModel.userId, 
+                                              selectedAdId: adsModel.id, 
+                                              adImgUrl: adsModel.images.isNotEmpty ? adsModel.images.first : '',
+                                              adTitle: adsModel.adsTitle,
+                                            ).then((chatConnectionModel) {
+                                              if(chatConnectionModel != null){
+                                                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatingView(chatConn: chatConnectionModel,isFirstMessage: true),));
+                                              }else{
+                                                showErrorDialog(context, 'Something went wrong');
+                                              }
+                                            });
+                                          }else{
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => ChatingView(chatConn: chatConn,),));
+                                          }
+                                        });                                        
+                                      }
+                                      : null,
                                       iconData: Icons.rocket_launch_outlined,
                                       text: "Chat Now",
                                       radius: 10,
@@ -299,7 +334,11 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                 ],
                               ),
                               DetailsRow(
-                                details: adsModel.moreInfoData.exclude(['Website Link','Landmark','Selected Amenities']),
+                                details: adsModel.moreInfoData.exclude([
+                                  'Website Link',
+                                  'Landmark',
+                                  'Selected Amenities'
+                                ]),
                                 dotColor: kSecondaryColor,
                               ),
                               kHeight5,
@@ -405,7 +444,8 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                               .headlineSmall!
                                               .copyWith(
                                                   fontSize: 13,
-                                                  color: const Color(0XFF878181)),
+                                                  color:
+                                                      const Color(0XFF878181)),
                                           children: [
                                             TextSpan(
                                               text:
@@ -424,18 +464,17 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
 
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         _otherAdsImagePreview(
-                                          imageName: 'Floor Plan',
-                                          defaultImage: 'assets/images/dummy/Room.jpg'
-                                        ),
+                                            imageName: 'Floor Plan',
+                                            defaultImage:
+                                                'assets/images/dummy/Room.jpg'),
                                         kWidth15,
                                         _otherAdsImagePreview(
-                                          imageName: 'Land Sketch',
-                                          defaultImage: 'assets/images/dummy/lands.jpg'
-                                        ),
+                                            imageName: 'Land Sketch',
+                                            defaultImage:
+                                                'assets/images/dummy/lands.jpg'),
                                       ],
                                     ),
                                   ],
@@ -447,7 +486,8 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                         ),
                         (adsModel.moreInfoData['Selected Amenities'] != null)
                             ? Container(
-                              padding: const EdgeInsets.symmetric(horizontal: kpadding10),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: kpadding10),
                                 height: 40,
                                 color: kPrimaryColor.withOpacity(0.5),
                                 child: Row(
@@ -486,10 +526,11 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                     Expanded(
                                       child: ListView.separated(
                                         scrollDirection: Axis.horizontal,
-                                        itemCount:  adsModel.moreInfoData[
-                                                  'Selected Amenities'].length ,
-                                        itemBuilder: (BuildContext context,
-                                            int index) {
+                                        itemCount: adsModel
+                                            .moreInfoData['Selected Amenities']
+                                            .length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
                                           return Center(
                                             child: Text(
                                               adsModel.moreInfoData[
@@ -501,8 +542,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                           );
                                         },
                                         separatorBuilder:
-                                            (BuildContext context,
-                                                int index) {
+                                            (BuildContext context, int index) {
                                           return vericalDivider;
                                         },
                                       ),
@@ -612,8 +652,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
     );
   }
 
-
- String _getLandmark(AdsModel) {
+  String _getLandmark(AdsModel) {
     String? landmark = adsModel.moreInfoData['Landmark'];
     if (landmark == null || landmark.isEmpty) {
       landmark = adsModel.primaryData['Landmark'];
@@ -631,14 +670,18 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
     return websiteLink ?? '';
   }
 
-  Widget _otherAdsImagePreview({required String imageName, required String defaultImage}) {
-    String? imageUrl = adsModel.otherimages.firstWhere((element) => element['image_type'] == imageName, orElse: () => {},)['url'];
-    return imageUrl != null ? OtherAdsImagePreviewBox(
-      documentTypeName: imageName,
-      networkImageUrl: imageUrl,
-      defaultImage: 'assets/images/dummy/Room.jpg',
-    )
-    : const SizedBox();
+  Widget _otherAdsImagePreview(
+      {required String imageName, required String defaultImage}) {
+    String? imageUrl = adsModel.otherimages.firstWhere(
+      (element) => element['image_type'] == imageName,
+      orElse: () => {},
+    )['url'];
+    return imageUrl != null
+        ? OtherAdsImagePreviewBox(
+            documentTypeName: imageName,
+            networkImageUrl: imageUrl,
+            defaultImage: 'assets/images/dummy/Room.jpg',
+          )
+        : const SizedBox();
   }
-
 }

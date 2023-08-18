@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:io' show InternetAddress;
+import 'dart:isolate' show Isolate, ReceivePort, SendPort;
 import 'dart:math';
+import 'dart:developer' as log show log;
 
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/services/model/account_model.dart';
+import 'package:need_in_choice/services/repositories/firestore_chat.dart';
 
 import '../../../../services/repositories/auth_repo.dart';
 
@@ -127,18 +131,43 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final uid = authrepo.firebaseAuth.currentUser!.uid;
-      final accountData = await authrepo.fetchAccountsData(uid);
-      if (accountData != null) {
-        AccountSingleton.instance.setAccountModels = accountData;
-        emit(AuthLoggedIn(accountData));
-      } else {
-        emit(AuthNotLoggedIn());
-      }
+      await _checkInternetAvailable().then((isInternetAvailable) async{
+        if (isInternetAvailable) {
+          final accountData = await authrepo.fetchAccountsData(uid);
+          if (accountData != null) {
+            log.log(accountData.toString());
+            emit(AuthLoggedIn(accountData));
+          } else {
+            emit(AuthNotLoggedIn());
+          }  
+        } else {
+          emit(NoInternet());
+        }      
+      });
+    } on UserDataNotFoundException{
+      String ph = authrepo.firebaseAuth.currentUser!.phoneNumber!;
+      emit(UserDataNotFound(ph.replaceFirst('+91', '')));
     } catch (e) {
+      log.log('AuthLoginEvent $e');
       emit(AuthNotLoggedIn());
     }
   }
-
+  // FutureOr<void> _login(AuthLoginEvent event, Emitter<AuthState> emit) async {
+  //   emit(AuthLoading());
+  //   try {
+  //     final uid = authrepo.firebaseAuth.currentUser!.uid;
+  //     final accountData = await authrepo.fetchAccountsData(uid);
+  //     if (accountData != null) {
+  //       AccountSingleton().setAccountModels = accountData;
+  //       emit(AuthLoggedIn(accountData));
+  //     } else {
+  //       emit(AuthNotLoggedIn());
+  //     }
+  //   } catch (e) {
+  //     emit(AuthNotLoggedIn());
+  //   }
+  // }
+//-------------------------------------------------------------------------------------------------------
   FutureOr<void> _onCreate(
       AuthCraetionEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
@@ -146,10 +175,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       bool accountCreated =
           await authrepo.createAccount(postData: event.accountModels);
       if (accountCreated) {
-        AccountSingleton.instance.setAccountModels = event.accountModels;
-
-        await Future.delayed(const Duration(seconds: 2));
+        AccountSingleton().setAccountModels = event.accountModels;
+        //create user data in firebase for chating feature
+        await Future.delayed(const Duration(seconds: 1));
         emit(AuthAccountCreated(event.accountModels));
+        FireStoreChat.createUser();
       } else {
         emit(AuthCreatedfailed(e.toString()));
       }
@@ -157,4 +187,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthCreatedfailed(e.toString()));
     }
   }
+  Future<bool> _checkInternetAvailable() async{
+    try {
+      await InternetAddress.lookup('google.com');
+      return true;
+    }catch (e){
+      log.log('checkInternetAvailable  error: $e');
+      return false;
+    }
+  }
 }
+

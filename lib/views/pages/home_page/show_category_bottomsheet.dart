@@ -29,7 +29,6 @@ class _ShowCatogoryBottomSheetState extends State<ShowCatogoryBottomSheet> {
   List<Map<String, dynamic>> _levelTwoSubCatList = [];
   List<Map<String, dynamic>> _levelThreeSubCatList = [];
 
-  // late final CategoryBottomSheetPurpose purpose;
 
   String? _selectedL2SubCatName;// for highlighting selected level 2 category
   String? _selectedL3SubCatName;// for highlighting selected level 3 category
@@ -267,9 +266,11 @@ class _ShowCatogoryBottomSheetState extends State<ShowCatogoryBottomSheet> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       // width: cons.maxWidth*0.45,
+      alignment: Alignment.center,
       constraints: BoxConstraints(
-        minWidth: cons.maxWidth * 0.3,
-        maxWidth: cons.maxWidth,
+        minWidth: cons.maxWidth * 0.45,
+        // maxWidth: cons.maxWidth,
+        maxWidth: cons.maxWidth * 0.49,
         minHeight: 35,
       ),
       decoration: BoxDecoration(
@@ -281,6 +282,7 @@ class _ShowCatogoryBottomSheetState extends State<ShowCatogoryBottomSheet> {
         subCate,
         style: TextStyle(
           color: (_selectedL2SubCatName ?? '') == subCate ? kPrimaryColor : kDisabledText,
+          fontSize: 13,
           fontWeight: FontWeight.w600,
         ), //------------------------------
       ),

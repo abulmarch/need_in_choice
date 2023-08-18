@@ -6,12 +6,12 @@ import '../../utils/colors.dart';
 
 class DottedBorderTextField extends StatelessWidget {
   const DottedBorderTextField({
-    super.key, 
-    this.color = kSecondaryColor, 
+    super.key,
+    this.color = kSecondaryColor,
     this.hintText,
     this.controller,
-    this.keyboardType, 
-    this.inputFormatters, 
+    this.keyboardType,
+    this.inputFormatters,
     this.hideValidationError,
   });
   final Color color;
@@ -24,7 +24,9 @@ class DottedBorderTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return DottedBorder(
       dashPattern: const [3, 2],
-      color: hideValidationError == null || hideValidationError == true ? color : Colors.red,//color,
+      color: hideValidationError == null || hideValidationError == true
+          ? color
+          : Colors.red, //color,
       borderType: BorderType.RRect,
       strokeWidth: 1.5,
       radius: const Radius.circular(10),
@@ -38,7 +40,9 @@ class DottedBorderTextField extends StatelessWidget {
             fillColor: kWhiteColor,
             hintText: hintText,
             hintStyle: TextStyle(
-              color: hideValidationError == null || hideValidationError == true ? color : Colors.red.shade300,//color,
+              color: hideValidationError == null || hideValidationError == true
+                  ? color
+                  : Colors.red.shade300, //color,
             ),
             enabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
@@ -49,9 +53,6 @@ class DottedBorderTextField extends StatelessWidget {
     );
   }
 }
-
-
-
 
 class AddMoreInfoButton extends StatelessWidget {
   const AddMoreInfoButton({
@@ -75,12 +76,12 @@ class AddMoreInfoButton extends StatelessWidget {
           style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
         ),
         style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(backgroundColor ?? kDarkGreyButtonColor)),
+            backgroundColor: MaterialStateProperty.all<Color>(
+                backgroundColor ?? kDarkGreyButtonColor)),
       ),
     );
   }
 }
-
 
 class DarkTextChip extends StatelessWidget {
   const DarkTextChip({
@@ -93,22 +94,18 @@ class DarkTextChip extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(right: 7),
       // alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(
-          horizontal: 10, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: const BoxDecoration(
         color: kDarkGreyButtonColor,
-        borderRadius: BorderRadius.all(
-            Radius.circular(30)),
+        borderRadius: BorderRadius.all(Radius.circular(30)),
       ),
       constraints: const BoxConstraints(
-        minWidth: 60,
-        maxWidth: 120,
+        minWidth: 50,
+        maxWidth: 100,
       ),
       child: Text(
         text,
-        style: const TextStyle(
-            color: kWhiteColor,
-            fontSize: 11),
+        style: const TextStyle(color: kWhiteColor, fontSize: 11),
       ),
     );
   }

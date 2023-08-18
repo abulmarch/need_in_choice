@@ -9,7 +9,7 @@ import 'package:need_in_choice/views/pages/ad_finalisation/ad_confirm_screen.dar
 import '../../views/pages/ad_detail/ad_detail_screen.dart';
 import '../../views/pages/ad_finalisation/ad_preview_screen.dart';
 import '../../views/pages/ad_finalisation/confirm_lottie.dart';
-import '../../views/pages/login/splash_screen.dart';
+import '../../views/pages/login/splash_screen_new.dart';
 import '../../views/pages/real_estate/agency/realestate_agency.dart';
 import '../../views/pages/real_estate/agent/realestate_agent.dart';
 import '../../views/pages/real_estate/building_rent/apartment_rent.dart';
