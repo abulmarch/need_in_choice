@@ -11,11 +11,13 @@ class AdCreateOrUpdateInitialEvent extends AdCreateOrUpdateEvent{
   final int? id;
   final String currentPageRoute;
   final String mainCategory;
+  
 
   const AdCreateOrUpdateInitialEvent({
     this.id,
     required this.currentPageRoute, 
     required this.mainCategory,
+
   });
 }
 class AdCreateOrUpdateCheckDropDownValidattionEvent extends AdCreateOrUpdateEvent {}
@@ -36,3 +38,4 @@ class PickOtherImageEvent extends AdCreateOrUpdateEvent{
 class UploadAdEvent extends AdCreateOrUpdateEvent{}
 
 
+class SwitchToInitialStateEvent extends AdCreateOrUpdateEvent{}

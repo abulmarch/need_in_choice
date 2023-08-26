@@ -36,37 +36,10 @@ class MyApp extends StatelessWidget {
         theme: ThemeDataPrimary.primaryTheme,
         onGenerateRoute: PageRoutes.generateRoute,
         home: const SplashScreen(),
-        // home: const MainNavigationScreen(),
       ),
     );
   }
 }
-//-------------OLD
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-//   @override
-//   Widget build(BuildContext context) {
-//     return MultiBlocProvider(
-//       providers: [
-//         BlocProvider(
-//           create: (context) =>
-//               AuthBloc(authrepo: Authrepo())..add(AuthLoginEvent()),
-//         ),
-//         BlocProvider(
-//           create: (context) => AdCreateOrUpdateBloc(CreateOrUpdateAdsRepo()),
-//         )
-//       ],
-//       child: MaterialApp(
-//         debugShowCheckedModeBanner: false,
-//         title: 'Need In Choice',
-//         theme: ThemeDataPrimary.primaryTheme,
-//         onGenerateRoute: PageRoutes.generateRoute,
-//         home: const SplashScreen(),
-//       ),
-//     );
-//   }
-// }
-
 
 
 

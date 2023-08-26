@@ -46,11 +46,11 @@ class AdsModel {
     required this.moreInfoData,
     required this.otherimages,
     this.adPrice,
-
     required this.routeName,
   });
   factory AdsModel.fromJson(Map map) {
-    try{
+    log(map.toString());
+    try {
       final mainCategory = map['main_category'];
       return AdsModel(
         id: map['id'],
@@ -62,20 +62,22 @@ class AdsModel {
         mainCategory: map['main_category'],
         createdDate: map['created_at'],
         profileImage: map['profile_image'],
-        images: (map['images'] as List).map((img) => img['url'] as String).toList(), // images : [{'url':'imagepath1.png'},{'url':'imagepath2.png'}]
+        images: (map['images'] as List)
+            .map((img) => img['url'] as String)
+            .toList(), // images : [{'url':'imagepath1.png'},{'url':'imagepath2.png'}]
         otherimages: map['otherimage'],
         categoryInfo: map[mainCategory],
-        timeAgo: ConvertToTimeAgo.calculateTimeAgo(map['created_at']), 
+        timeAgo: ConvertToTimeAgo.calculateTimeAgo(map['created_at']),
         phoneNo: map['phone'] ?? '',
         userName: map['name'] ?? '',
         whatsappNo: map['whatsapp'],
         primaryData: map[mainCategory]['primary_details'],
-        moreInfoData: (map[mainCategory]['more_info'] as Map<String, dynamic>).removeEmptyValue(),//map[mainCategory]['more_info'],//
+        moreInfoData: (map[mainCategory]['more_info'] as Map<String, dynamic>)
+            .removeEmptyValue(), //map[mainCategory]['more_info'],//
         adPrice: map['ad_price'],
         routeName: map['route_name'],
       );
-    }
-    catch (e){
+    } catch (e) {
       log(e.toString());
       throw '$e --->>';
     }
@@ -117,10 +119,7 @@ class AdsModel {
 
     ''';
   }
-  
 }
-
-
 
 class ConvertToTimeAgo {
   static String calculateTimeAgo(String date) {
@@ -128,19 +127,19 @@ class ConvertToTimeAgo {
     final difference = now.difference(DateTime.parse(date));
     if (difference.inDays >= 365) {
       final years = (difference.inDays / 365).floor();
-      return '$years year${years > 1 ? 's' : ''} ago';
+      return '$years year${years > 1 ? 's' : ''} ';
     } else if (difference.inDays >= 30) {
       final months = (difference.inDays / 30).floor();
-      return '$months month${months > 1 ? 's' : ''} ago';
+      return '$months month${months > 1 ? 's' : ''} ';
     } else if (difference.inDays >= 7) {
       final weeks = (difference.inDays / 7).floor();
-      return '$weeks week${weeks > 1 ? 's' : ''} ago';
+      return '$weeks week${weeks > 1 ? 's' : ''} ';
     } else if (difference.inDays > 0) {
-      return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
+      return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ';
     } else if (difference.inHours > 0) {
-      return '${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago';
+      return '${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ';
     } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes} minute${difference.inMinutes > 1 ? 's' : ''} ago';
+      return '${difference.inMinutes} minute${difference.inMinutes > 1 ? 's' : ''} ';
     } else {
       return 'Just now';
     }

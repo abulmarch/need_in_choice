@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../services/repositories/repository_urls.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
@@ -20,7 +21,7 @@ class ImageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
+    final screenSize = ScreenSize.size;
 
     return Stack(children: [
       CustomScrollView(
@@ -111,21 +112,29 @@ class ImageCard extends StatelessWidget {
         top: kpadding15,
         left: kpadding20,
         child: Container(
-          width: 80,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-          alignment: Alignment.center,
-          decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(kpadding20))),
-          child: Text(
-            timeAgo ?? "",
-            //   '10 years ago',
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(fontSize: 10, color: kPrimaryColor),
-          ),
-        ),
+            width: 100,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(kpadding20))),
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: timeAgo == 'Just now' ? 'Just' : timeAgo ?? "",
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: kPrimaryColor,
+                    ),
+                  ),
+                  TextSpan(
+                    text: timeAgo == 'Just now' ? ' now' : " ago",
+                    style: const TextStyle(fontSize: 10, color: kGreyColor),
+                  ),
+                ],
+              ),
+            )),
       ),
       Positioned(
         top: 150,

@@ -11,8 +11,9 @@ class InitialLoading extends AllAdsState{}
 
 class AllAdsLoaded extends AllAdsState {
   final List<AdsModel> adsList;
+  final bool backToFetchAllAdsEvent;
 
-  const AllAdsLoaded({required this.adsList});
+  const AllAdsLoaded({required this.adsList, this.backToFetchAllAdsEvent = false});
   @override
   List<Object> get props => [adsList];
 }

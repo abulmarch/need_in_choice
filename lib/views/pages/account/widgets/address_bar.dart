@@ -1,11 +1,9 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'dart:developer';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
+import 'package:need_in_choice/config/theme/screen_size.dart';
 
 import 'package:need_in_choice/services/model/account_model.dart';
 import 'package:need_in_choice/services/repositories/auth_repo.dart';
@@ -18,7 +16,6 @@ import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 import '../update_address.dart';
 
-
 class AddressBar extends StatefulWidget {
   const AddressBar({
     Key? key,
@@ -29,14 +26,14 @@ class AddressBar extends StatefulWidget {
 }
 
 class _AddressBarState extends State<AddressBar> {
-  XFile? image;
   final iconPicker = ImagePicker();
   String title = 'AlertDialog';
   bool tappedYes = false;
+  bool imageIsUploading = false;
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = ScreenSize.size.width;
     AccountModels accountData = AccountSingleton().getAccountModels;
     log(accountData.toString());
     bool isPressed = false;
@@ -49,6 +46,12 @@ class _AddressBarState extends State<AddressBar> {
               return const SplashScreen();
             }),
             (Route<dynamic> route) => false,
+          );
+        }else if(state is AuthLoggedIn){
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Account Updated'),
+            ),
           );
         }
       },
@@ -64,196 +67,205 @@ class _AddressBarState extends State<AddressBar> {
           } else if (state is ViewNotPressedState) {
             isPressed = false;
           }
-          return Container(
-            width: double.infinity,
-            height: 170,
-            margin: const EdgeInsets.only(
-              top: 5,
-              bottom: kpadding10 * 3,
-              left: 5,
-              right: 5,
-            ),
-            padding: const EdgeInsets.all(kpadding10),
-            decoration: BoxDecoration(
-              color: kLightBlueWhite,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(kpadding10),
-              ),
-              border: Border.all(color: kLightBlueWhiteBorder, width: 1.5),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        height: 35,
-                        width: 35,
-                        decoration: const BoxDecoration(
-                          color: kWhiteColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          color: kPrimaryColor,
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        openUpdate(context, accountData);
-                      },
-                      child: Container(
-                        height: 35,
-                        width: 35,
-                        decoration: const BoxDecoration(
-                          color: kWhiteColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.mode_edit_outline_outlined,
-                          color: kPrimaryColor,
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () async {
-                        showErrorDialog(context);
-                      },
-                      child: Container(
-                        height: 35,
-                        width: 35,
-                        decoration: const BoxDecoration(
-                          color: kWhiteColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.power_settings_new_sharp,
-                          color: kRedColor,
-                        ),
-                      ),
-                    ),
-                    kHeight10,
-                  ],
+          return BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              if (state is AuthLoggedIn) {
+                accountData = state.accountModels;
+                imageIsUploading = false;
+              }
+              return Container(
+                width: double.infinity,
+                height: 170,
+                margin: const EdgeInsets.only(
+                  top: 5,
+                  bottom: kpadding10 * 3,
+                  left: 5,
+                  right: 5,
                 ),
-                SizedBox(
-                  width: width * 0.55,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        accountData.name ?? "",
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                      kHeight5,
-                      Text(
-                        accountData.address ?? "",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(fontSize: 12),
-                      ),
-                    ],
+                padding: const EdgeInsets.all(kpadding10),
+                decoration: BoxDecoration(
+                  color: kLightBlueWhite,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(kpadding10),
                   ),
+                  border: Border.all(color: kLightBlueWhiteBorder, width: 1.5),
                 ),
-                Column(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    InkWell(
-                      onTap: () async {
-                        final pickedImage = await ImagePicker()
-                            .pickImage(source: ImageSource.gallery);
-                        if (pickedImage != null) {
-                          setState(() {
-                            image = pickedImage;
-                          });
-                          await updateProfileImage(image!.path);
-                        }
-                      },
-                      child: CircleAvatar(
-                          maxRadius: 40,
-                          backgroundColor: kLightGreyColor,
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(40)),
-                            child: Container(
-                                width: 150,
-                                height: 150,
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(40)),
-                                  border: Border.all(width: 0.3),
-                                  color: Colors.white,
-                                ),
-                                child: image != null
-                                    ? Image.file(
-                                        File(image!.path),
-                                        fit: BoxFit.fill,
-                                      )
-                                    : AccountSingleton().getAccountModels
-                                                    .profileImage !=
-                                                null &&
-                                            AccountSingleton()
-                                                .getAccountModels
-                                                .profileImage!
-                                                .isNotEmpty
-                                        ? Image.network(
-                                            '$imageUrlEndpoint${AccountSingleton().getAccountModels.profileImage!}',
-                                            fit: BoxFit.fill,
-                                          )
-                                        : Image.asset(
-                                            'assets/images/profile/no_profile_img.png')),
-                          )),
-                    ),
-                    kHeight5,
-                    GestureDetector(
-                      onTap: () {
-                        if (isPressed) {
-                          context
-                              .read<AccountPageBloc>()
-                              .add(ViewNotPressedEvent());
-                        } else {
-                          context
-                              .read<AccountPageBloc>()
-                              .add(ViewPressedEvent());
-                        }
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: isPressed
-                              ? kPrimaryColor
-                              : kPrimaryColor.withOpacity(.42),
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              const Icon(
-                                Icons.favorite_outline,
-                                color: kWhiteColor,
-                              ),
-                              Text(
-                                isPressed ? "viewing" : "view",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelSmall!
-                                    .copyWith(color: kWhiteColor),
-                              )
-                            ],
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            height: 35,
+                            width: 35,
+                            decoration: const BoxDecoration(
+                              color: kWhiteColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              color: kPrimaryColor,
+                            ),
                           ),
                         ),
+                        InkWell(
+                          onTap: () {
+                            openUpdate(context, accountData);
+                          },
+                          child: Container(
+                            height: 35,
+                            width: 35,
+                            decoration: const BoxDecoration(
+                              color: kWhiteColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.mode_edit_outline_outlined,
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            showErrorDialog(context);
+                          },
+                          child: Container(
+                            height: 35,
+                            width: 35,
+                            decoration: const BoxDecoration(
+                              color: kWhiteColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.power_settings_new_sharp,
+                              color: kRedColor,
+                            ),
+                          ),
+                        ),
+                        kHeight10,
+                      ],
+                    ),
+                    SizedBox(
+                      width: width * 0.55,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            accountData.name ?? "",
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                          kHeight5,
+                          Text(
+                            accountData.address ?? "",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(fontSize: 12),
+                          ),
+                        ],
                       ),
+                    ),
+                    Column(
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            ImagePicker()
+                                .pickImage(source: ImageSource.gallery)
+                                .then((pickedImage) {
+                              if (pickedImage != null) {
+                                imageIsUploading = true;
+                                BlocProvider.of<AuthBloc>(context).add(UpdateAccountDataEvent(accountData: accountData,profileImage: pickedImage));
+                              }
+                            });
+                          },
+                          child: CircleAvatar(
+                              maxRadius: 40,
+                              backgroundColor: kLightGreyColor,
+                              child: ClipRRect(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(40)),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                        width: 150,
+                                        height: 150,
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(40)),
+                                          border: Border.all(width: 0.3),
+                                          color: Colors.white,
+                                        ),
+                                        child: accountData.profileImage !=
+                                                    null &&
+                                                accountData
+                                                    .profileImage!.isNotEmpty
+                                            ? Image.network(
+                                                '$imageUrlEndpoint${accountData.profileImage!}',
+                                                fit: BoxFit.fill,
+                                              )
+                                            : Image.asset(
+                                                'assets/images/profile/no_profile_img.png')),
+                                    imageIsUploading
+                                        ? const CircularProgressIndicator()
+                                        : const SizedBox()
+                                  ],
+                                ),
+                              )),
+                        ),
+                        kHeight5,
+                        GestureDetector(
+                          onTap: () {
+                            if (isPressed) {
+                              context
+                                  .read<AccountPageBloc>()
+                                  .add(ViewNotPressedEvent());
+                            } else {
+                              context
+                                  .read<AccountPageBloc>()
+                                  .add(ViewPressedEvent());
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: isPressed
+                                  ? kPrimaryColor
+                                  : kPrimaryColor.withOpacity(.42),
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  const Icon(
+                                    Icons.favorite_outline,
+                                    color: kWhiteColor,
+                                  ),
+                                  Text(
+                                    isPressed ? "viewing" : "view",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall!
+                                        .copyWith(color: kWhiteColor),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              );
+            },
           );
         },
       ),
@@ -325,34 +337,5 @@ class _AddressBarState extends State<AddressBar> {
         );
       },
     );
-  }
-
-  Future<void> updateProfileImage(String imagePath) async {
-    final apiUrl = Uri.parse('https://nic.calletic.com/api/account/update');
-
-    var request = http.MultipartRequest('POST', apiUrl);
-
-    String? userId = AccountSingleton().getAccountModels.userId;
-    if (userId != null) {
-      request.fields["user_id"] = userId;
-    } else {
-      debugPrint("User ID not available");
-      return;
-    }
-
-    request.files
-        .add(await http.MultipartFile.fromPath('profile_image', imagePath));
-
-    try {
-      var response = await request.send();
-      if (response.statusCode == 200) {
-        Authrepo().fetchAccountsData(userId);      
-        log('Image uploaded successfully');
-      } else {
-        log('Failed to upload image. Status code: ${response.request}');
-      }
-    } catch (e) {
-      debugPrint('Error uploading image: $e');
-    }
   }
 }

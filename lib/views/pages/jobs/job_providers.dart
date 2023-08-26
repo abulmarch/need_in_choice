@@ -4,6 +4,7 @@ import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/level4_category_data.dart';
 import 'package:flutter/material.dart';
+import '../../../config/theme/screen_size.dart';
 import '../../../utils/dropdown_list_items.dart';
 import '../../widgets_refactored/circular_back_button.dart';
 import '../../widgets_refactored/condinue_button.dart';
@@ -17,8 +18,8 @@ class JobProviders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScrollController scrollController = ScrollController();
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.size.height;
+    final width = ScreenSize.size.width;
 
     String? employment;
     String? work;

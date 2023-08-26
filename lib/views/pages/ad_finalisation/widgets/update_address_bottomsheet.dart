@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
 import '../../../../blocs/ad_create_or_update_bloc/exception_file.dart';
 import '../../../../blocs/find_address/find_address_bloc.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 import '../../../widgets_refactored/error_popup.dart';
@@ -43,7 +44,8 @@ class _UpdateAdressBottomSheetState extends State<UpdateAdressBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+    final height = ScreenSize.height;
+
     return BlocProvider(
       create: (context) => FindAddressBloc(),
       child: BlocBuilder<FindAddressBloc, FindAddressState>(
@@ -178,8 +180,7 @@ class _UpdateAdressBottomSheetState extends State<UpdateAdressBottomSheet> {
                                       .textTheme
                                       .labelLarge!
                                       .copyWith(
-                                          color: kLightGreyColor,
-                                          fontSize: 23),
+                                          color: kLightGreyColor, fontSize: 23),
                                 ),
                               ]),
                         ),
@@ -196,54 +197,50 @@ class _UpdateAdressBottomSheetState extends State<UpdateAdressBottomSheet> {
 
   ElevatedButton _elevatedSaveButton(BuildContext context) {
     return ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor:
-                  MaterialStateProperty.all(const Color(0XFF303030)),
-              shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100)),
-              ),
-              elevation: MaterialStateProperty.all<double>(0),
-              minimumSize:
-                  MaterialStateProperty.all<Size>(const Size(321, 61)),
-            ),
-            onPressed: () async {
-              try {
-                adCreateOrUpdateBloc
-                    .saveAdsAddress(_currentAddress.toString());
-                log("Address saved successfully.");
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(const Color(0XFF303030)),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+        ),
+        elevation: MaterialStateProperty.all<double>(0),
+        minimumSize: MaterialStateProperty.all<Size>(const Size(321, 61)),
+      ),
+      onPressed: () async {
+        try {
+          adCreateOrUpdateBloc.saveAdsAddress(_currentAddress.toString());
+          log("Address saved successfully.");
 
-                Navigator.pop(context);
-              } on InvalidPincodeException {
-                showErrorDialog(context, 'Invalid Pincode');
-              } on InvalidAddressException {
-                showErrorDialog(
-                  context,
-                  'Invalid address, Include pincode in the address',
-                );
-              } catch (e) {
-                showErrorDialog(context, 'Something went wrong');
-                log('Error saving address: $e');
-              }
-            },
-            child: RichText(
-              text: TextSpan(
-                  text: 'Save ',
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelLarge!
-                      .copyWith(color: kWhiteColor, fontSize: 23),
-                  children: [
-                    TextSpan(
-                      text: 'Location',
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelLarge!
-                          .copyWith(color: kPrimaryColor, fontSize: 23),
-                    ),
-                  ]),
-            ),
+          Navigator.pop(context);
+        } on InvalidPincodeException {
+          showErrorDialog(context, 'Invalid Pincode');
+        } on InvalidAddressException {
+          showErrorDialog(
+            context,
+            'Invalid address, Include pincode in the address',
           );
+        } catch (e) {
+          showErrorDialog(context, 'Something went wrong');
+          log('Error saving address: $e');
+        }
+      },
+      child: RichText(
+        text: TextSpan(
+            text: 'Save ',
+            style: Theme.of(context)
+                .textTheme
+                .labelLarge!
+                .copyWith(color: kWhiteColor, fontSize: 23),
+            children: [
+              TextSpan(
+                text: 'Location',
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge!
+                    .copyWith(color: kPrimaryColor, fontSize: 23),
+              ),
+            ]),
+      ),
+    );
   }
 
   void _showSnackBar() {

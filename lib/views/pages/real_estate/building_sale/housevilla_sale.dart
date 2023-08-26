@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
 import '../../../../config/routes/route_names.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../services/model/ad_create_or_update_model.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/dropdown_list_items.dart';
@@ -83,8 +84,8 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final width = ScreenSize.width;
+    final height = ScreenSize.height;
     final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
@@ -405,7 +406,7 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
                                               saleType != null ||
                                                   _checkValidation == false,
                                           hint: Text(
-                                            'sale type',
+                                            'Sale type',
                                             style: TextStyle(
                                                 color: kWhiteColor
                                                     .withOpacity(0.7)),
@@ -423,7 +424,7 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
                                               listedBy != null ||
                                                   _checkValidation == false,
                                           hint: Text(
-                                            'listed by',
+                                            'Listed by',
                                             style: TextStyle(
                                                 color: kWhiteColor
                                                     .withOpacity(0.7)),
@@ -440,7 +441,7 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
                                           hideValidationError: facing != null ||
                                               _checkValidation == false,
                                           hint: Text(
-                                            'facing',
+                                            'Facing',
                                             style: TextStyle(
                                                 color: kWhiteColor
                                                     .withOpacity(0.7)),
@@ -845,7 +846,7 @@ class _HouseVillaSaleScreenState extends State<HouseVillaSaleScreen> {
     carpetArea = 'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
     _floorNoController.text = moreInfoData['Floor No'];
     _parkingController.text = moreInfoData['Parking'];
-    _ageOfBuildingController.text = moreInfoData['Age Of Building'];
+    _ageOfBuildingController.text = moreInfoData['Age Of Building']['value'];
     constructionStatus = moreInfoData['Construction Status'];
     furnishing = moreInfoData['Furnishing'];
     _landMarksController.text = moreInfoData['Landmark'];

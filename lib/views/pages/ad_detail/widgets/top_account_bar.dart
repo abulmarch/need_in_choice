@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/views/widgets_refactored/dashed_line_generator.dart';
 import '../../../../services/model/ads_models.dart';
 import '../../../../utils/colors.dart';
@@ -7,11 +6,8 @@ import '../../../../utils/constants.dart';
 import '../../../widgets_refactored/circular_back_button.dart';
 import '../../../widgets_refactored/icon_button.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/services.dart' show PlatformException;
 // import 'package:share/share.dart';
 // import 'package:uni_links/uni_links.dart';
-
-
 
 class TopAccountBar extends StatelessWidget {
   const TopAccountBar({
@@ -29,15 +25,6 @@ class TopAccountBar extends StatelessWidget {
     DateTime dateTime = DateTime.parse(dateStr);
     return DateFormat('dd MMMM yyyy').format(dateTime);
   }
-
-  String getProfileImage() {
-    if (adsModel.profileImage != null && adsModel.profileImage!.isNotEmpty) {
-      return "https://nic.calletic.com/storage/app/${adsModel.profileImage!}";
-    } else {
-      return 'assets/images/profile/profile_head.png';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -52,7 +39,7 @@ class TopAccountBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           SizedBox(
-            width: screenWidth*0.7,
+            width: screenWidth * 0.7,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -62,11 +49,12 @@ class TopAccountBar extends StatelessWidget {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    size: const Size(40, 40),
+                    size: const Size(45, 45),
                   ),
+                  kWidth15,
                   Container(
-                    height: 35,
-                    width: 35,
+                    height: 30,
+                    width: 30,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: kWhiteColor,
@@ -120,8 +108,12 @@ class TopAccountBar extends StatelessWidget {
                         children: [
                           TextSpan(
                               text: "\nPosted on ",
-                              style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                                  color: const Color(0XFF8B8B8B), fontSize: 9)),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelSmall!
+                                  .copyWith(
+                                      color: const Color(0XFF8B8B8B),
+                                      fontSize: 9)),
                           TextSpan(
                               text: formatDate(adsModel.createdDate),
                               style: Theme.of(context)
@@ -146,7 +138,6 @@ class TopAccountBar extends StatelessWidget {
             fontWeight: FontWeight.w500,
             fontsize: 12,
           ),
-          
         ],
       ),
     );
@@ -163,5 +154,4 @@ class TopAccountBar extends StatelessWidget {
 //   // Use the share plugin to share the message
 //   Share.share(shareMessage);
 // }
-
 }

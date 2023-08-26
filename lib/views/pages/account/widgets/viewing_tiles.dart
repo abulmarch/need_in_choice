@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:need_in_choice/services/model/ads_models.dart';
-
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 

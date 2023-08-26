@@ -72,7 +72,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
             ),
             Container(
               height: 25,
-              width: 160,
+              width: 180,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: kBlackColor,
@@ -184,7 +184,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                   .copyWith(fontSize: 28),
             ),
             TextSpan(
-              text: "/",
+              text: "/-",
               style: Theme.of(context)
                   .textTheme
                   .titleLarge!
@@ -282,7 +282,6 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                 ],
                               ),
                               DetailsRow(
-                                
                                 details: adsModel.primaryData.exclude(
                                     ['Date Range', 'Website Link', 'Landmark']),
                                 dotColor: kDottedBorder,
@@ -299,32 +298,59 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                 children: [
                                   adPriceWidget,
                                   IconWithButton(
-                                      onpressed: FirebaseAuth.instance.currentUser!.uid != adsModel.userId 
-                                      ? () async {
-                                        log('******---------------****');                                        
-                                        await FireStoreChat.checkChatAllreadyGenerated(
-                                          creatorId: adsModel.userId,
-                                          selectedAdId: adsModel.id
-                                        ).then((chatConn) async {
-                                          if (chatConn == null) {
-                                            FireStoreChat.generateNewChat(
-                                              adCreatorUid: adsModel.userId, 
-                                              selectedAdId: adsModel.id, 
-                                              adImgUrl: adsModel.images.isNotEmpty ? adsModel.images.first : '',
-                                              adTitle: adsModel.adsTitle,
-                                            ).then((chatConnectionModel) {
-                                              if(chatConnectionModel != null){
-                                                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatingView(chatConn: chatConnectionModel,isFirstMessage: true),));
-                                              }else{
-                                                showErrorDialog(context, 'Something went wrong');
-                                              }
-                                            });
-                                          }else{
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => ChatingView(chatConn: chatConn,),));
-                                          }
-                                        });                                        
-                                      }
-                                      : null,
+                                      onpressed: FirebaseAuth
+                                                  .instance.currentUser!.uid !=
+                                              adsModel.userId
+                                          ? () async {
+                                              log('******---------------****');
+                                              await FireStoreChat
+                                                      .checkChatAllreadyGenerated(
+                                                          creatorId:
+                                                              adsModel.userId,
+                                                          selectedAdId:
+                                                              adsModel.id)
+                                                  .then((chatConn) async {
+                                                if (chatConn == null) {
+                                                  FireStoreChat.generateNewChat(
+                                                    adCreatorUid:
+                                                        adsModel.userId,
+                                                    selectedAdId: adsModel.id,
+                                                    adImgUrl: adsModel
+                                                            .images.isNotEmpty
+                                                        ? adsModel.images.first
+                                                        : '',
+                                                    adTitle: adsModel.adsTitle,
+                                                  ).then((chatConnectionModel) {
+                                                    if (chatConnectionModel !=
+                                                        null) {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                ChatingView(
+                                                                    chatConn:
+                                                                        chatConnectionModel,
+                                                                    isFirstMessage:
+                                                                        true),
+                                                          ));
+                                                    } else {
+                                                      showErrorDialog(context,
+                                                          'Something went wrong');
+                                                    }
+                                                  });
+                                                } else {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ChatingView(
+                                                          chatConn: chatConn,
+                                                        ),
+                                                      ));
+                                                }
+                                              });
+                                            }
+                                          : null,
                                       iconData: Icons.rocket_launch_outlined,
                                       text: "Chat Now",
                                       radius: 10,

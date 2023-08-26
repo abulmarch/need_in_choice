@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:need_in_choice/views/pages/chat_page/widgets/elevated_button.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../utils/colors.dart';
 import '../../../widgets_refactored/dashed_line_generator.dart';
 import '../chating_view.dart';
@@ -10,8 +11,8 @@ class ChatListViewBuilder extends StatelessWidget {
   const ChatListViewBuilder({super.key});
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.size.height;
+    final width = ScreenSize.size.width;
 
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {

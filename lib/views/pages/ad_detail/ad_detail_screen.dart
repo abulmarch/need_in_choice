@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:need_in_choice/config/theme/screen_size.dart';
 import 'package:need_in_choice/utils/constants.dart';
 import 'package:need_in_choice/views/pages/ad_detail/ad_detail_bloc/bloc/ad_detail_bloc.dart';
 import 'package:need_in_choice/views/pages/ad_detail/widgets/image_card.dart';
@@ -25,8 +26,8 @@ class _AdDetailScreenState extends State<AdDetailScreen> {
   Widget build(BuildContext context) {
     int adId = ModalRoute.of(context)!.settings.arguments as int;
    
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = ScreenSize.size.height;
+    final double screenWidth = ScreenSize.size.width;
 
     return SafeArea(
       child: Scaffold(

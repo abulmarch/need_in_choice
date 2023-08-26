@@ -19,7 +19,7 @@ ChatUser({
   final String lastActive;
   final String pushToken;
 
-  factory ChatUser.fromJson(Map<String, dynamic> json) {
+  factory ChatUser.fromJson(Map<String, dynamic> json,) {
     return ChatUser(
       uid: json[kUserUid] ?? '',
       name: json[kUserName] ?? '',

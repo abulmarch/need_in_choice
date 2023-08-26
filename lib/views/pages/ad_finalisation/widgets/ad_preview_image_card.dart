@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../services/repositories/repository_urls.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
@@ -23,7 +24,7 @@ class AdPreviewImageCard extends StatelessWidget {
     final imageList = imageUrlsOrFiles.isNotEmpty
         ? imageUrlsOrFiles
         : ['assets/images/dummy/house_for_rent1.png'];
-    final screenSize = MediaQuery.of(context).size;
+    final screenSize = ScreenSize.size;
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [

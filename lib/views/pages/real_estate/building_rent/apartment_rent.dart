@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../services/model/ad_create_or_update_model.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/dropdown_list_items.dart';
@@ -44,6 +45,7 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
   late TextEditingController _securityDepositController;
   late TextEditingController _ageOfBuildingController;
   late TextEditingController _floorNoController;
+  late TextEditingController _noOfFloorController;
   late TextEditingController _parkingController;
   late TextEditingController _monthlyRentController;
   late TextEditingController _landMarksController;
@@ -75,6 +77,7 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
     _bathroomController = TextEditingController();
     _carpetAreaController = TextEditingController();
     _floorNoController = TextEditingController();
+    _noOfFloorController = TextEditingController();
     _monthlyRentController = TextEditingController();
     _ageOfBuildingController = TextEditingController();
     _parkingController = TextEditingController();
@@ -84,8 +87,8 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.height;
+    final width = ScreenSize.width;
     final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
@@ -587,7 +590,8 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
                                               width: cons.maxWidth * 0.435,
                                               child: CustomTextField(
                                                 hintText: 'Eg 3',
-                                                controller: _floorNoController,
+                                                controller:
+                                                    _noOfFloorController,
                                                 fillColor: kWhiteColor,
                                                 inputFormatters: [
                                                   FilteringTextInputFormatter
@@ -719,7 +723,7 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
                                                 ),
                                                 itemList: RealEstateDropdownList
                                                     .furnishing,
-                                                maxWidth: width * 0.35,
+                                                maxWidth: width * 0.4,
                                                 onChanged: (String? value) {
                                                   furnishing = value!;
                                                 },
@@ -1166,13 +1170,13 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
     carpetArea = 'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
     _parkingController.text = moreInfoData['Parking'];
-    _floorNoController.text = moreInfoData['Floor No'];
-    _ageOfBuildingController.text = moreInfoData['Age Of Building'];
+    _noOfFloorController.text = moreInfoData['No of Floor'];
+    _ageOfBuildingController.text = moreInfoData['Age Of Building']['value'];
     furnishing = moreInfoData['Furnishing'];
     _landMarksController.text = moreInfoData['Landmark'];
     _websiteLinkController.text = moreInfoData['Website Link'];
-
-    selectedAmenities = moreInfoData['Selected Amenities'];
+    selectedAmenities =
+        (moreInfoData['Selected Amenities'] as List).cast<String>();
   }
 
   _saveChangesAndContinue(BuildContext context) {
@@ -1206,7 +1210,7 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
           'value': _carpetAreaController.text,
           'unit': carpetArea,
         },
-        'Floor No': _floorNoController.text,
+        'No of Floor': _noOfFloorController.text,
         'Parking': _parkingController.text,
         'Age Of Building': {
           'value': _ageOfBuildingController.text,
@@ -1255,6 +1259,7 @@ class _ApartmentRentScreenState extends State<ApartmentRentScreen> {
     _securityDepositController.dispose();
     _carpetAreaController.dispose();
     _floorNoController.dispose();
+    _noOfFloorController.dispose();
     _parkingController.dispose();
     _ageOfBuildingController.dispose();
     _landMarksController.dispose();

@@ -48,6 +48,7 @@ class RealEstateDropdownList {
     'semi furnished',
     'unfurnished'
   ];
+  static List<String> bachelorAllowed = ['Yes', 'No'];
 }
 
 class VehicleDropDownList {

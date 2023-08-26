@@ -1,10 +1,10 @@
-
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 
 class NetworkUtility {
-  static Future<String?> fetchUrl(Uri uri, {Map<String, String>? headers}) async{
+  static Future<String?> fetchUrl(Uri uri,
+      {Map<String, String>? headers}) async {
     log(uri.toString());
     try {
       final response = await http.get(uri, headers: headers);
@@ -12,7 +12,19 @@ class NetworkUtility {
         return response.body;
       }
     } catch (e) {
-        log(e.toString());
+      log(e.toString());
+    }
+    return null;
+  }
+
+  static Future<String?> finaPlaceId(Uri uri) async {
+    try {
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        return response.body;
+      }
+    } catch (e) {
+      log(e.toString());
     }
     return null;
   }

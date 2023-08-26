@@ -1,6 +1,6 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 import '../../../widgets_refactored/dashed_line_generator.dart';
@@ -58,7 +58,7 @@ class _DetailsRowState extends State<DetailsRow> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenWidth = ScreenSize.size.width;
  
     return (widget.details.isNotEmpty)
         ? Column(
@@ -97,7 +97,7 @@ class _DetailsRowState extends State<DetailsRow> {
                       child: ValueListenableBuilder(
                           valueListenable: _scrollEnd,
                           builder: (context, isEndOfScroll, _) {
-                            print('${widget.details}');
+                     
                             return !isEndOfScroll
                                 ? const Icon(
                                     Icons.arrow_forward_ios,

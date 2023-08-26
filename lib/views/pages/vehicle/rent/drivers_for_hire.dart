@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/views/widgets_refactored/brand_name_button.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/dropdown_list_items.dart';
 import '../../../../utils/level4_category_data.dart';
@@ -20,8 +21,8 @@ class DriversForHireRent extends StatelessWidget {
   Widget build(BuildContext context) {
     ValueNotifier<bool> addMoreEnabled = ValueNotifier(false);
     ScrollController scrollController = ScrollController();
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.size.height;
+    final width = ScreenSize.size.width;
     String? rent;
     String? listedBy;
     String? salaryPeriod;

@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-import 'package:need_in_choice/services/model/account_model.dart';
 import 'package:need_in_choice/services/model/ads_models.dart';
 import 'package:need_in_choice/views/pages/account/bloc/account_page_bloc.dart';
 import 'package:need_in_choice/views/pages/account/widgets/ad_tiles.dart';
@@ -15,14 +12,22 @@ import '../../../utils/constants.dart';
 import '../../widgets_refactored/search_form_field.dart';
 import 'widgets/address_bar.dart';
 
-class AccountScreen extends StatelessWidget {
+class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
 
   @override
+  State<AccountScreen> createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
+  List<AdsModel> adsData = [];
+  List<AdsModel> filteredAdsData = [];
+  bool isPressed = false;
+  TextEditingController searchController = TextEditingController();
+  bool isSearching = false;
+
+  @override
   Widget build(BuildContext context) {
-    
-    List<AdsModel> adsData = [];
-    bool isPressed = false;
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSignoutState) {
@@ -34,7 +39,7 @@ class AccountScreen extends StatelessWidget {
           body: BlocBuilder<AccountPageBloc, AccountPageState>(
             builder: (context, state) {
               if (state is AccountPageLoading) {
-                return  Center(
+                return Center(
                   child: Lottie.asset(LottieCollections.loading),
                 );
               } else if (state is AccountDataLoaded) {
@@ -45,18 +50,26 @@ class AccountScreen extends StatelessWidget {
                 isPressed = false;
               } else if (state is AccountEditedState) {
                 context.read<AccountPageBloc>().add(AccountLoadingEvent());
+              } else if (state is SearchLoadedState) {
+                isSearching = true;
+                filteredAdsData = state.filteredAdsDataList;
               }
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Stack(
                     alignment: Alignment.bottomCenter,
-                    children: const [
-                      AddressBar(),
+                    children: [
+                      const AddressBar(),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: kpadding20),
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: kpadding20),
                         child: SearchFormField(
                           hintText: 'Search your Ads',
+                          controller: searchController,
+                          onChanged: (value) {
+                            context.read<AccountPageBloc>().add(SearchEvent(adsList: adsData, searchText: value));
+                          },
                         ),
                       ),
                     ],
@@ -65,17 +78,17 @@ class AccountScreen extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: kpadding10),
                       child: isPressed
-                          ?  LottieWidget.comingsoon()
-                          : adsData.isEmpty
-                              ?  LottieWidget.noData()
+                          ? LottieWidget.comingsoon()
+                          : (isSearching ? filteredAdsData : adsData).isEmpty
+                              ? LottieWidget.noData()
                               : ListView.builder(
-                                  padding:
-                                      const EdgeInsetsDirectional.symmetric(
-                                    horizontal: kpadding15 * 2,
-                                  ),
-                                  itemCount: adsData.length,
+                                  padding: const EdgeInsetsDirectional.symmetric(horizontal: kpadding10),
+                                  itemCount: isSearching ? filteredAdsData.length : adsData.length,
                                   itemBuilder: (context, index) {
-                                    return Adtiles(adsData: adsData[index]);
+                                    final ad = isSearching ? filteredAdsData[index] : adsData[index];
+                                    return Adtiles(
+                                      adsData: ad,
+                                    );
                                   },
                                 ),
                     ),

@@ -12,8 +12,11 @@ class ToggleDaySelectionEvent extends WorkTimeEvent {
 
   const ToggleDaySelectionEvent(this.day, this.daysList);
 
+  
+
    @override
   List<Object> get props => [day, daysList];
+  
 }
 
 class SetTimeRangeEvent extends WorkTimeEvent {

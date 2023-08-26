@@ -5,6 +5,7 @@ import 'package:need_in_choice/views/widgets_refactored/dashed_line_generator.da
 import '../../../../utils/constants.dart';
 
 import '../../../../utils/level4_category_data.dart';
+import '../../../config/theme/screen_size.dart';
 import '../../widgets_refactored/circular_back_button.dart';
 import '../../widgets_refactored/condinue_button.dart';
 import '../../widgets_refactored/custom_dropdown_button.dart';
@@ -17,8 +18,8 @@ class MobileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.size.height;
+    final width = ScreenSize.size.width;
     ScrollController scrollController = ScrollController();
 
     return Scaffold(

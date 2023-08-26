@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:need_in_choice/config/theme/screen_size.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/utils/constants.dart';
 
@@ -19,8 +20,8 @@ class AdPreviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = ScreenSize.size.height;
+    final double screenWidth = ScreenSize.size.width;
     return BlocConsumer<AdCreateOrUpdateBloc, AdCreateOrUpdateState>(
       builder: (context, state) {
         bool isAdUloading = false;

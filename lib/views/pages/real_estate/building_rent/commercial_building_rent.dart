@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../services/model/ad_create_or_update_model.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
@@ -79,8 +80,8 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.height;
+    final width = ScreenSize.width;
     final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
@@ -544,7 +545,7 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
                                                 ),
                                                 itemList: RealEstateDropdownList
                                                     .furnishing,
-                                                maxWidth: width * 0.33,
+                                                maxWidth: width * 0.4,
                                                 onChanged: (String? value) {
                                                   furnishing = value!;
                                                 },
@@ -642,6 +643,9 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
     furnishing = moreInfoData['Furnishing'];
     _landMarksController.text = moreInfoData['Landmark'];
     _websiteLinkController.text = moreInfoData['Website Link'];
+    final index = building4saleCommercial.indexWhere((element) =>
+        element['cat_name']?.toLowerCase() == adUpdateModel.level4Sub);
+    _level4Cat.value = index >= 0 ? index : 0;
   }
 
   _saveChangesAndContinue(BuildContext context) {
@@ -694,8 +698,8 @@ class _CommercialBuildingForRentState extends State<CommercialBuildingForRent> {
         },
         adsLevels: {
           "route": commercialBuildingForRentRoot,
-          "sub category":
-              building4saleCommercial[_level4Cat.value]['cat']?.toLowerCase(),
+          "sub category": building4saleCommercial[_level4Cat.value]['cat_name']
+              ?.toLowerCase(),
         },
       );
       Navigator.pushNamed(

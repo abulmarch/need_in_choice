@@ -1,5 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 
+import '../../../../config/theme/screen_size.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/dropdown_list_items.dart';
@@ -17,8 +18,8 @@ class TractorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScrollController scrollController = ScrollController();
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.size.height;
+    final width = ScreenSize.size.width;
     String? fuel;
     String? listedBy;
     String? finance;

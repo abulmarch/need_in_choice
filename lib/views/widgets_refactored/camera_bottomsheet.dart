@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
 
+import '../../config/theme/screen_size.dart';
 import '../../utils/colors.dart';
 import '../../utils/constants.dart';
 
@@ -14,8 +15,8 @@ class CameraBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = ScreenSize.size.height;
+    final double screenWidth = ScreenSize.size.width;
 
     return Container(
       height: screenHeight * .25,

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "843332302613",
-    "project_id": "nic-besocial",
-    "storage_bucket": "nic-besocial.appspot.com"
+    "project_number": "860317646807",
+    "project_id": "need-in-choice",
+    "storage_bucket": "need-in-choice.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:843332302613:android:74e6fe3b5029a93a385b1c",
+        "mobilesdk_app_id": "1:860317646807:android:be53c29be21dd7a4d91592",
         "android_client_info": {
           "package_name": "com.example.need_in_choice"
         }
@@ -15,12 +15,24 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCP7IorU8jlG4NYjKkM8BpHVfQgYre-uj4"
+          "current_key": "AIzaSyDz6m0q_5ilx9PNrHpWlwHsT2EOtWzvXCc"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "860317646807-jlcjpp7ufm80g4dqc0k815danp6kln31.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "860317646807-0pvhjje5ms3e5bqcgc6gf903knhl03t2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.ionic.starternic"
+              }
+            }
+          ]
         }
       }
     }

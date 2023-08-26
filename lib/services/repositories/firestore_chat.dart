@@ -13,6 +13,7 @@ import '../model/chat_user_model.dart';
 import 'firestore_chat_constant.dart';
 import 'key_information.dart';
 
+
 class FireStoreChat{
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
   static User user = FirebaseAuth.instance.currentUser!;
@@ -39,14 +40,19 @@ class FireStoreChat{
     required String creatorId,
     required int selectedAdId,
   }) async{
-    final value = await firestore.collection(kTableChatConnection)
-    .where(kAdId, isEqualTo: selectedAdId)
-    .where(kConnectionGenUid, isEqualTo: user.uid)
-    .where(kAdCreatorUid, isEqualTo: creatorId)
-    .get();
-    if (value.docs.isNotEmpty) {
-      return ChatConnectionModel.fromJson(value.docs.first.data());
-    }else{
+    try{
+      final value = await firestore.collection(kTableChatConnection)
+      .where(kAdId, isEqualTo: selectedAdId)
+      .where(kConnectionGenUid, isEqualTo: user.uid)
+      .where(kAdCreatorUid, isEqualTo: creatorId)
+      .get();
+      if (value.docs.isNotEmpty) {
+        return ChatConnectionModel.fromJson(value.docs.first.data(),value.docs.first.id);
+      }else{
+        return null;
+      }
+    }catch(error){
+      log('ERROR: checkChatAllreadyGenerated()  $error');
       return null;
     }
   }
@@ -61,7 +67,8 @@ class FireStoreChat{
       final docPathTime = DateTime.now().microsecondsSinceEpoch.toString();
       final generatedTime = DateTime.now().millisecondsSinceEpoch.toString();
       final conn = ChatConnectionModel(
-        adId: selectedAdId, adCreatorUid: adCreatorUid, 
+        adId: selectedAdId, 
+        adCreatorUid: adCreatorUid, 
         adsImage: adImgUrl, 
         adTitle: adTitle, 
         connectionGenUid: user.uid, 
@@ -72,6 +79,19 @@ class FireStoreChat{
     } catch (e) {
       log('-----generateNewChat(): $e --------------');
       return null;
+    }
+  }
+  static Future<void> deleteChatConnection({
+    required ChatConnectionModel chatConn,
+  }) async{
+    final conversationId = getConversationID(chatConn.chattingPartnerUid(), chatConn.adId);
+    log('conversationId :   $conversationId');
+    try {
+      // await firestore.collection(kTableChatConnection)
+      // .where(field)
+      // .delete();
+    } catch (e) {
+      log('========  e deleteChatConnection() : $e  ');
     }
   }
 
@@ -113,6 +133,7 @@ class FireStoreChat{
     .orderBy('sent', descending: true)
     .snapshots();
   }
+  
 
 
    // for creating a new user

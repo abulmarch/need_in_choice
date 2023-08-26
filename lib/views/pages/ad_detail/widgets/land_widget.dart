@@ -34,7 +34,6 @@ class LandWidget extends StatelessWidget {
       ]);
     } else if (mapEntry.value is Map) {
       if (mapEntry.value.containsKey('unit')) {
-        print('==========================unit');
         return Row(children: [
           RichText(
             textAlign: TextAlign.center,
@@ -64,13 +63,18 @@ class LandWidget extends StatelessWidget {
           ),
         ]);
       } else if (mapEntry.value.containsKey('groupValue')) {
-        print('==========================groupvalue');
+        var value = mapEntry.value['value'];
+
+        if (value is List) {//  eg:   ['Sun','Mon']
+          value = value.fold<String>('',(previous, current) =>previous + (previous.isNotEmpty ? ', ' : '') + current);
+        } 
         return Row(
           children: [
             RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                text: '${mapEntry.value['value']}\n ',
+                text: '$value\n',
+                //('${mapEntry.value['value']}\n '),
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall!

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../services/model/ad_create_or_update_model.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/dropdown_list_items.dart';
@@ -59,8 +60,8 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.height;
+    final width = ScreenSize.width;
     final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
@@ -78,11 +79,11 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
           state is AdCreateOrUpdateLoading) {
         return _loadingScaffoldWidget(state);
       } else if (state is AdCreateOrUpdateLoaded) {
-          if(state.adUpdateModel != null){
-            _initializeUpdatingAdData(state.adUpdateModel!);
-          }else{
-            _checkValidation = false;
-          }
+        if (state.adUpdateModel != null) {
+          _initializeUpdatingAdData(state.adUpdateModel!);
+        } else {
+          _checkValidation = false;
+        }
       } else if (state is AdCreateOrUpdateValidateState) {
         _checkValidation = true;
       }
@@ -378,6 +379,12 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
     //-----------------------------------------------------------------
     _monthlyRentController.text = adUpdateModel.adPrice['Monthly'];
     _securityDepositController.text = adUpdateModel.adPrice['Security Deposit'];
+    final String subCategory = adUpdateModel.adsLevels['sub category'];
+    final index = land4saleLevel4Cat.indexWhere(
+        (level) => (level['cat_name'] as String).toLowerCase() == subCategory);
+    if (index != -1) {
+      _level4Cat.value = index;
+    }
   }
 
   _saveChangesAndContinue(BuildContext context) {
@@ -391,10 +398,7 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
         _monthlyRentController.text.trim().isNotEmpty &&
         _securityDepositController.text.trim().isNotEmpty) {
       final Map<String, dynamic> primaryInfo = {
-        'Land Area': {
-          "value": _landAreaController.text,
-          "unit": _propertyArea
-        },
+        'Land Area': {"value": _landAreaController.text, "unit": _propertyArea},
         'Listed By': _listedBy!,
         'Facing': facing!,
       };
@@ -411,7 +415,7 @@ class _LandForRentScreenState extends State<LandForRentScreen> {
         adsLevels: {
           "route": landForRentRoot,
           "sub category":
-              land4saleLevel4Cat[_level4Cat.value]['cat']?.toLowerCase(),
+              land4saleLevel4Cat[_level4Cat.value]['cat_name']?.toLowerCase(),
         },
         moreInfo: {},
       );

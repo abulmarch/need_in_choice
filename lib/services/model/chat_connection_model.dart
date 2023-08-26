@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:need_in_choice/services/repositories/firestore_chat.dart';
 
 import '../repositories/firestore_chat_constant.dart';
@@ -17,7 +19,8 @@ class ChatConnectionModel {
     required this.connectionGenUid,
     required this.connectionGenTime,
   });
-  factory ChatConnectionModel.fromJson(Map<String, dynamic> json){
+  factory ChatConnectionModel.fromJson(Map<String, dynamic> json, String chatConnectionId){
+    log('$chatConnectionId:  $json');
     return ChatConnectionModel(
       adId: json[kAdId],
       adCreatorUid: json[kAdCreatorUid],

@@ -28,10 +28,11 @@ class AccountPageBloc extends Bloc<AccountPageEvent, AccountPageState> {
     on<ViewNotPressedEvent>((event, emit) {
       emit(ViewNotPressedState());
     });
+
+    on<SearchEvent>(_updateFilteredAds);
   }
 
-  FutureOr<void> _loadAccountdata(
-      AccountLoadingEvent event, Emitter<AccountPageState> emit) async {
+  FutureOr<void> _loadAccountdata(AccountLoadingEvent event, Emitter<AccountPageState> emit) async {
     emit(AccountPageLoading());
     try {
       final accountdata = AccountSingleton().getAccountModels;
@@ -57,5 +58,18 @@ class AccountPageBloc extends Bloc<AccountPageEvent, AccountPageState> {
     } catch (e) {
       emit(AccountEditErrorState(e.toString()));
     }
+  }
+}
+
+void _updateFilteredAds(SearchEvent event, Emitter<AccountPageState> emit) {
+  emit(AccountEditingState());
+  try {
+    final filter = event.searchText.toLowerCase();
+    final filteredAdsData = event.adsList.where((ad) {
+      return ad.adsTitle.toLowerCase().contains(filter);
+    }).toList();
+    emit(SearchLoadedState(filteredAdsData));
+  } catch (e) {
+    print(e);
   }
 }

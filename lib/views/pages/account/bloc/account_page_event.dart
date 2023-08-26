@@ -20,3 +20,15 @@ class EditingAccount extends AccountPageEvent {
   @override
   List<Object> get props => [accountModal];
 }
+
+
+class SearchEvent extends AccountPageEvent {
+ final String searchText;
+
+ final List<AdsModel> adsList;
+
+  const SearchEvent({required this.searchText, required this.adsList});
+
+  @override
+  List<Object> get props => [searchText];
+}

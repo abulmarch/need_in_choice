@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../services/model/account_model.dart';
 import '../../services/model/ads_models.dart';
 import '../../services/repositories/all_ads_services.dart';
 import '../../services/repositories/repository_urls.dart' show ApiEndpoints;
@@ -20,6 +21,7 @@ class AllAdsBloc extends Bloc<AllAdsEvent, AllAdsState> {
   List<AdsModel> _cachedAdsData = [];
   List<AdsModel> _previousList = [];
   AdsFetchingType _fetchingType = AdsFetchingType.fetchAllAds;
+  String? _serchingWord;
 
   String? _routeForSorting;
   MainCategory? _selectedMainCatForSort;
@@ -28,7 +30,10 @@ class AllAdsBloc extends Bloc<AllAdsEvent, AllAdsState> {
 
     on<FetchAllAds>(_fetchAllAds);
     on<SortAdsByCategory>(_sortAdsByCategory);
+    on<SearchAllAds>(_searchingAd);
+
     on<FetchNextPage>(_fetchNextPage);
+    
     on<BackToFetchAllAds>(_backToFetchAllAds);
     on<RefreshPageAndFetchAds>(_refreshPage);
   
@@ -36,7 +41,8 @@ class AllAdsBloc extends Bloc<AllAdsEvent, AllAdsState> {
 
   FutureOr<void> _fetchAllAds(FetchAllAds event, Emitter<AllAdsState> emit) async {
     _fetchingType = event.typeOfFetching;
-    await _loadAndEmitAds(emit, ApiEndpoints.getAdsUrl(_page));
+    final pincode = AccountSingleton().getAccountModels.placePincode;
+    await _loadAndEmitAds(emit, ApiEndpoints.getAdsUrl(_page, pincode?? ''));
   }
 
   FutureOr<void> _sortAdsByCategory(SortAdsByCategory event, Emitter<AllAdsState> emit) async {
@@ -50,22 +56,43 @@ class AllAdsBloc extends Bloc<AllAdsEvent, AllAdsState> {
       _previousList = [];
       _routeForSorting = event.categoryEndRoute;
       _selectedMainCatForSort = event.selectedMainCat;
-    await _loadAndEmitAds(emit, ApiEndpoints.sortAdsUrl(_routeForSorting, _page));
+      final pincode = AccountSingleton().getAccountModels.placePincode;
+    await _loadAndEmitAds(emit, ApiEndpoints.sortAdsUrl(_routeForSorting, pincode??'',_page));
+  }
+
+  FutureOr<void> _searchingAd(SearchAllAds event, Emitter<AllAdsState> emit) async {
+    emit(InitialLoading());
+    if(_cachedAdsData.isEmpty){// save allready fetched 'all ads' data and its loaded pages
+      _cachedAdsData = _previousList;
+      _cachOfAllAdsLastPage = _page;
+    }
+    _fetchingType = event.typeOfFetching;
+    _page = 1;
+    _previousList = [];
+    _serchingWord = event.searchingWord;
+    final pincode = AccountSingleton().getAccountModels.placePincode;
+    await _loadAndEmitAds(emit, ApiEndpoints.searchAdsUrl(_serchingWord??'', pincode??'',_page));
   }
 
   Future<FutureOr<void>> _fetchNextPage(FetchNextPage event, Emitter<AllAdsState> emit) async {
     emit(NextPageLoading(_previousList));
+    log('*************************');
+    final pincode = AccountSingleton().getAccountModels.placePincode;
     String url = _fetchingType == AdsFetchingType.fetchAllAds 
-        ? ApiEndpoints.getAdsUrl(_page)
+        ? ApiEndpoints.getAdsUrl(_page, pincode?? '')
         : _fetchingType == AdsFetchingType.fetchSortedAds 
-        ? ApiEndpoints.sortAdsUrl(_routeForSorting, _page)
-        : '';
+        ? ApiEndpoints.sortAdsUrl(_routeForSorting, pincode??'',_page)
+        : ApiEndpoints.searchAdsUrl(_serchingWord??'', pincode??'',_page);
     await _loadAndEmitAds(emit, url);
   }
 
   
   Future<FutureOr<void>> _loadAndEmitAds(Emitter<AllAdsState> emit, String url) async {
+    log(url);
     final adsList = await allAdsRepo.fetchAllAdsData(url);
+    adsList.forEach((element) {
+      log(element.toString());
+    });
     _previousList.addAll(adsList);
     emit(AllAdsLoaded(adsList: _previousList));
     if(_page <= AllAdsRepo.lastPage +1){// if AllAdsRepo.lastPage = 5 then _page value can upto 6
@@ -82,18 +109,19 @@ class AllAdsBloc extends Bloc<AllAdsEvent, AllAdsState> {
     _routeForSorting = null;
     _selectedMainCatForSort = null;
     _fetchingType = AdsFetchingType.fetchAllAds;
-    emit(AllAdsLoaded(adsList: _previousList));
+    emit(AllAdsLoaded(adsList: _previousList,backToFetchAllAdsEvent: true));
   }
 
   FutureOr<void> _refreshPage(RefreshPageAndFetchAds event, Emitter<AllAdsState> emit) async{
     emit(InitialLoading());
     _page = 1;
     _previousList = [];
+    final pincode = AccountSingleton().getAccountModels.placePincode;
     String url = _fetchingType == AdsFetchingType.fetchAllAds 
-        ? ApiEndpoints.getAdsUrl(_page)
+        ? ApiEndpoints.getAdsUrl(_page, pincode?? '')
         : _fetchingType == AdsFetchingType.fetchSortedAds 
-        ? ApiEndpoints.sortAdsUrl(_routeForSorting, _page)
-        : '';
+        ? ApiEndpoints.sortAdsUrl(_routeForSorting, pincode??'',_page)
+        : ApiEndpoints.searchAdsUrl(_serchingWord??'', pincode??'',_page);
     await _loadAndEmitAds(emit, url);
   }
 
@@ -103,7 +131,7 @@ class AllAdsBloc extends Bloc<AllAdsEvent, AllAdsState> {
        _selectedMainCatForSort == null ? -1 
        : mainCategories.indexWhere((cat) => cat['MainCategory'] == _selectedMainCatForSort);
 
-
+  AdsFetchingType get fetchingType=> _fetchingType;
   
 }
 

@@ -34,6 +34,8 @@ class AdCreateOrUpdateBloc
     on<PickOtherImageEvent>(_pickOtherImageEvent);
 
     on<UploadAdEvent>(_uploadAdEvent);
+
+    on<SwitchToInitialStateEvent>((event, emit) => emit(AdCreateOrUpdateInitial()),);
   }
 
   AdCreateOrUpdateModel get adCreateOrUpdateModel => _adCreateOrUpdateModel!;
@@ -59,7 +61,7 @@ class AdCreateOrUpdateBloc
       );
       emit(const AdCreateOrUpdateLoaded());
     } else {
-      // ad updateion
+      // ad updation
       emit(AdCreateOrUpdateLoading());
       try {
         log('----------event.id-----------${event.id}------');

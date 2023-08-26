@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../services/model/ad_create_or_update_model.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
@@ -77,8 +78,8 @@ class _PendingProjectScreenState extends State<PendingProjectScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final width = ScreenSize.width;
+    final height = ScreenSize.height;
     final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
@@ -333,7 +334,7 @@ class _PendingProjectScreenState extends State<PendingProjectScreen> {
                                         hideValidationError: saleType != null ||
                                             _checkValidation == false,
                                         hint: Text(
-                                          'sale type',
+                                          'Sale type',
                                           style: TextStyle(
                                               color:
                                                   kWhiteColor.withOpacity(0.7)),
@@ -350,7 +351,7 @@ class _PendingProjectScreenState extends State<PendingProjectScreen> {
                                         hideValidationError: listedBy != null ||
                                             _checkValidation == false,
                                         hint: Text(
-                                          'listed by',
+                                          'Listed by',
                                           style: TextStyle(
                                               color:
                                                   kWhiteColor.withOpacity(0.7)),
@@ -367,7 +368,7 @@ class _PendingProjectScreenState extends State<PendingProjectScreen> {
                                         hideValidationError: facing != null ||
                                             _checkValidation == false,
                                         hint: Text(
-                                          'facing',
+                                          'Facing',
                                           style: TextStyle(
                                               color:
                                                   kWhiteColor.withOpacity(0.7)),
@@ -716,7 +717,7 @@ class _PendingProjectScreenState extends State<PendingProjectScreen> {
     carpetArea = 'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
     _floorNoController.text = moreInfoData['Floor No'];
     _parkingController.text = moreInfoData['Parking'];
-    _ageOfBuildingController.text = moreInfoData['Age Of Building'];
+    _ageOfBuildingController.text = moreInfoData['Age Of Building']['value'];
 
     _landMarksController.text = moreInfoData['Landmark'];
     _websiteLinkController.text = moreInfoData['Website Link'];

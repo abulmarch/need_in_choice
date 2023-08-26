@@ -1,9 +1,11 @@
+import 'dart:developer';
 import 'dart:io' show File;
 import 'package:flutter_svg/svg.dart' show SvgPicture;
 import 'package:image_picker/image_picker.dart' show XFile;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:need_in_choice/config/theme/screen_size.dart';
 import 'package:need_in_choice/views/pages/ad_finalisation/ad_preview_screen.dart';
 import 'package:need_in_choice/views/widgets_refactored/circular_back_button.dart';
 import '../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
@@ -28,9 +30,11 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
   late AdCreateOrUpdateBloc adCreateOrUpdateBloc;
   @override
   Widget build(BuildContext context) {
-    final screnSize = MediaQuery.of(context).size;
+    final screnSize = ScreenSize.size;
     adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
     adCreateOrUpdateBloc.initializeStreamController();
+    log('==================================primary=== ${adCreateOrUpdateBloc.adCreateOrUpdateModel.primaryData}');
+    log('...............moreInfo.................. ${adCreateOrUpdateBloc.adCreateOrUpdateModel.moreInfoData}');
     return SafeArea(
       child: Scaffold(
         backgroundColor: kWhiteColor,

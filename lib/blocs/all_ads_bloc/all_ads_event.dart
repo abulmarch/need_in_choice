@@ -19,8 +19,10 @@ class FetchNextPage extends AllAdsEvent{}
 
 class SearchAllAds extends AllAdsEvent{
   final AdsFetchingType typeOfFetching;
+  final String searchingWord;
   const SearchAllAds({
     required this.typeOfFetching,
+    required this.searchingWord,
   });
 }
 

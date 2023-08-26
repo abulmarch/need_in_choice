@@ -16,6 +16,7 @@ class WorkTimeBloc extends Bloc<WorkTimeEvent, WorkTimeState> {
       }
 
       emit(WorkTimeLoadedState(daysList));
+      print('/////////////////////////$daysList');
     });
     on<SetTimeRangeEvent>((event, emit) {
       final startTime = formatTime(event.selectedRange.startTime);

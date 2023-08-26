@@ -27,6 +27,11 @@ class SendOtpToPhoneEvent extends AuthEvent {
   @override
   List<Object> get props => [phoneNumber];
 }
+class UpdateAccountDataEvent extends AuthEvent {
+  final AccountModels accountData;
+  final XFile? profileImage;
+  const UpdateAccountDataEvent({required this.accountData, this.profileImage});
+}
 
 class VerifySentOtpEvent extends AuthEvent {
   final String otpCode;

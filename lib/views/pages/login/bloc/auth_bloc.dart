@@ -7,6 +7,7 @@ import 'dart:developer' as log show log;
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:need_in_choice/services/model/account_model.dart';
 import 'package:need_in_choice/services/repositories/firestore_chat.dart';
 
@@ -43,6 +44,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<AuthCraetionEvent>(_onCreate);
     on<AuthSigninCheckEvent>(_checksignedIn);
+    on<UpdateAccountDataEvent>(_updateAccountData);
   }
 
   FutureOr<void> _onSendOtp(
@@ -152,24 +154,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthNotLoggedIn());
     }
   }
-  // FutureOr<void> _login(AuthLoginEvent event, Emitter<AuthState> emit) async {
-  //   emit(AuthLoading());
-  //   try {
-  //     final uid = authrepo.firebaseAuth.currentUser!.uid;
-  //     final accountData = await authrepo.fetchAccountsData(uid);
-  //     if (accountData != null) {
-  //       AccountSingleton().setAccountModels = accountData;
-  //       emit(AuthLoggedIn(accountData));
-  //     } else {
-  //       emit(AuthNotLoggedIn());
-  //     }
-  //   } catch (e) {
-  //     emit(AuthNotLoggedIn());
-  //   }
-  // }
-//-------------------------------------------------------------------------------------------------------
-  FutureOr<void> _onCreate(
-      AuthCraetionEvent event, Emitter<AuthState> emit) async {
+  FutureOr<void> _onCreate(AuthCraetionEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
       bool accountCreated =
@@ -196,5 +181,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return false;
     }
   }
+
+  Future<void> _updateAccountData(UpdateAccountDataEvent event, Emitter<AuthState> emit) async{
+    emit(AccountDataUpdating());
+    if (event.profileImage != null) {
+      final updatedData = await authrepo.updateUserProfileImage(event.profileImage!);
+      if (updatedData != null) {
+        emit(AuthLoggedIn(updatedData));
+      }
+    }else{
+      final updatedData = await authrepo.updateAccountDetails(event.accountData);
+      if(updatedData != null){
+        emit(AuthLoggedIn(updatedData));
+      }
+    }
+  }
+
+  
+  
 }
 

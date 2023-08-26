@@ -10,6 +10,8 @@ class AccountModels {
   final String? email;
   final String? createDate;
   final String? profileImage;
+  final String? selectedPlace;
+  final String? placePincode;
 
   AccountModels({
     this.id,
@@ -21,6 +23,8 @@ class AccountModels {
       this.email,
       this.createDate,
       this.profileImage,
+      this.selectedPlace,
+      this.placePincode,
     });
 
   factory AccountModels.fromJson(Map map) {
@@ -33,7 +37,9 @@ class AccountModels {
       phone: map['phone'],
       createDate: map['created_at'],
       email: map['email'],
-      profileImage: map['profile_image']
+      profileImage: map['profile_image'],
+      selectedPlace: map['selected_place'],
+      placePincode: map['place_pincode'],
     );
   }
 
@@ -49,6 +55,8 @@ class AccountModels {
       'phone': accountModels.phone ,
       'email': accountModels.email ,
       'profile_image': profileImage,
+      'selected_place': selectedPlace,
+      'place_pincode': placePincode,
     };
   }
   
@@ -56,6 +64,8 @@ class AccountModels {
     String? address,
     String? whatsapp,
     String? name,
+    String? selectedPlace,
+    String? placePincode,
   }){
     return AccountModels(
       id: id,
@@ -66,12 +76,14 @@ class AccountModels {
       phone: phone,
       createDate: createDate,
       email: email,
-      profileImage: profileImage
+      profileImage: profileImage,
+      selectedPlace: selectedPlace ?? this.selectedPlace,
+      placePincode: placePincode ?? this.placePincode,
     );
   }
   @override
   String toString() {
-    return "Account: {user_id : $userId, name: $name, address: $address, phone: $phone , whatsapp : $whatsapp, profileImage: $profileImage}";
+    return "Account: {user_id : $userId, name: $name, address: $address, phone: $phone , whatsapp : $whatsapp, profileImage: $profileImage, selectedPlace: $selectedPlace, placePincode: $placePincode}";
   }
 }
 
@@ -85,6 +97,9 @@ class AccountSingleton{
   AccountModels? _accountModels;
   set setAccountModels(AccountModels account) {
      _accountModels = account;
+  }
+  void resetAccountModel(){
+    _accountModels = null;
   }
   AccountModels get getAccountModels => _accountModels!;
 

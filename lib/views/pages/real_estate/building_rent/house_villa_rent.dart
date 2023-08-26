@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../services/model/ad_create_or_update_model.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/dropdown_list_items.dart';
@@ -54,7 +55,7 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
   String? facing;
   String carpetArea = RealEstateDropdownList.carpetArea.first;
   String roadWidth = RealEstateDropdownList.carpetArea.first;
-  String? constructionStatus;
+  String? bachelorAllowed;
   String? furnishing;
   bool _checkValidation = false;
 
@@ -82,8 +83,8 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.height;
+    final width = ScreenSize.width;
     final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
@@ -498,13 +499,35 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
                                   ),
                                   child: Column(
                                     children: [
-                                      kHeight20,
+                                      kHeight10,
+                                      CustomTextField(
+                                        hintText: 'Carpet Area',
+                                        controller: _carpetAreaController,
+                                        fillColor: kWhiteColor,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp(r'^\d+\.?\d{0,2}')),
+                                        ],
+                                        keyboardType: TextInputType.number,
+                                        onTapOutside: (event) {
+                                          FocusScope.of(context).unfocus();
+                                        },
+                                        suffixIcon: CustomDropDownButton(
+                                          initialValue: carpetArea,
+                                          itemList:
+                                              RealEstateDropdownList.carpetArea,
+                                          onChanged: (String? value) {
+                                            carpetArea = value!;
+                                          },
+                                        ),
+                                      ),
+                                      kHeight10,
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           SizedBox(
-                                            width: cons.maxWidth * 0.435,
+                                            width: cons.maxWidth * 0.45,
                                             child: CustomTextField(
                                               hintText: 'Road Width',
                                               controller: _roadWidthController,
@@ -525,41 +548,7 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
                                             ),
                                           ),
                                           SizedBox(
-                                            width: cons.maxWidth * 0.435,
-                                            child: CustomTextField(
-                                              hintText: 'Carpet Area',
-                                              controller: _carpetAreaController,
-                                              fillColor: kWhiteColor,
-                                              inputFormatters: [
-                                                FilteringTextInputFormatter
-                                                    .allow(RegExp(
-                                                        r'^\d+\.?\d{0,2}')),
-                                              ],
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              onTapOutside: (event) {
-                                                FocusScope.of(context)
-                                                    .unfocus();
-                                              },
-                                              suffixIcon: CustomDropDownButton(
-                                                initialValue: carpetArea,
-                                                itemList: RealEstateDropdownList
-                                                    .carpetArea,
-                                                onChanged: (String? value) {
-                                                  carpetArea = value!;
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      kHeight15,
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          SizedBox(
-                                            width: cons.maxWidth * 0.35,
+                                            width: cons.maxWidth * 0.45,
                                             child: CustomTextField(
                                               hintText: 'Eg 3',
                                               controller: _parkingController,
@@ -578,19 +567,26 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
                                                   text: 'Parking'),
                                             ),
                                           ),
+                                        ],
+                                      ),
+                                      kHeight15,
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
                                           CustomDropDownButton(
-                                            initialValue: constructionStatus,
+                                            initialValue: bachelorAllowed,
                                             hint: Text(
-                                              "Bachelor's",
+                                              "Bachelor's allowed",
                                               style: TextStyle(
                                                   color: kWhiteColor
                                                       .withOpacity(0.7)),
                                             ),
                                             itemList: RealEstateDropdownList
-                                                .constructionStatus,
-                                            maxWidth: width * 0.26,
+                                                .bachelorAllowed,
+                                            maxWidth: width * 0.44,
                                             onChanged: (String? value) {
-                                              constructionStatus = value!;
+                                              bachelorAllowed = value!;
                                             },
                                           ),
                                           CustomDropDownButton(
@@ -603,7 +599,7 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
                                             ),
                                             itemList: RealEstateDropdownList
                                                 .furnishing,
-                                            maxWidth: width * 0.26,
+                                            maxWidth: width * 0.44,
                                             onChanged: (String? value) {
                                               furnishing = value!;
                                             },
@@ -688,7 +684,7 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
     _carpetAreaController.text = moreInfoData['Carpet Area']['value'];
     carpetArea = 'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
     _parkingController.text = moreInfoData['Parking'];
-    constructionStatus = moreInfoData['Construction Status'];
+    bachelorAllowed = moreInfoData['Bachelor Allowed'];
     furnishing = moreInfoData['Furnishing'];
     _landMarksController.text = moreInfoData['Landmark'];
     _websiteLinkController.text = moreInfoData['Website Link'];
@@ -729,7 +725,7 @@ class _HouseVillaRentScreenState extends State<HouseVillaRentScreen> {
           'unit': carpetArea,
         },
         'Parking': _parkingController.text,
-        'Construction Status': constructionStatus,
+        'Bachelor Allowed': bachelorAllowed,
         'Furnishing': furnishing,
         'Landmark': _landMarksController.text,
         'Website Link': _websiteLinkController.text,

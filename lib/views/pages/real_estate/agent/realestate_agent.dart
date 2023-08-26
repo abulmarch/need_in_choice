@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../services/model/ad_create_or_update_model.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/level4_category_data.dart';
@@ -36,7 +37,6 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
   late TextEditingController _areaCoveredController;
   late TextEditingController _landMarksController;
   late TextEditingController _websiteLinkController;
-  late TextEditingController _timeRangeController;
 
   String? _selectedStartTime;
   String? _selectedEndTime;
@@ -44,7 +44,6 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
   late List<String> _selectedDays = [];
   bool _checkValidation = false;
 
-  final workTimeBloc = WorkTimeBloc();
   final List<String> daysList = [
     'Mon',
     'Tue',
@@ -65,13 +64,12 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
     _areaCoveredController = TextEditingController();
     _landMarksController = TextEditingController();
     _websiteLinkController = TextEditingController();
-    _timeRangeController = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.height;
+    final width = ScreenSize.width;
     final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
@@ -261,7 +259,7 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
                         maxHeight: double.infinity,
                       ),
                       child: BlocProvider(
-                        create: (context) => workTimeBloc,
+                        create: (context) => WorkTimeBloc(),
                         child: BlocBuilder<WorkTimeBloc, WorkTimeState>(
                             builder: (context, state) {
                           if (state is WorkTimeLoadedState) {
@@ -269,8 +267,6 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
                           } else if (state is WorkTimeSelectedState) {
                             _selectedStartTime = state.startTime;
                             _selectedEndTime = state.endTime;
-                            _timeRangeController.text =
-                                '$_selectedStartTime - $_selectedEndTime';
                           }
 
                           return Column(
@@ -380,24 +376,12 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
                                   hintText: 'Landmarks near your Agent',
                                   fillColor: kWhiteColor,
                                   controller: _landMarksController,
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return 'Please enter Landmarks near your Agent';
-                                    }
-                                    return null;
-                                  },
                                 ),
                                 kHeight10,
                                 CustomTextField(
                                   fillColor: kWhiteColor,
                                   hintText: 'Website link of your Agent',
                                   controller: _websiteLinkController,
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return 'Please enter Website link of your Agent';
-                                    }
-                                    return null;
-                                  },
                                 ),
                                 kHeight20
                               ]);
@@ -440,18 +424,23 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
   void _initializeUpdatingAdData(AdCreateOrUpdateModel adUpdateModel) {
     final primaryData = adUpdateModel.primaryData;
 
-    final daysListed =
-        primaryData['Time Range']['value'].toString().split(', ');
-    daysListed.removeLast();
-    log(daysListed.toString());
+    final daysListed = primaryData['Time Range']['value'];
+    if (daysListed is List) {
+      _selectedDays = List<String>.from(daysListed);
+    } else if (daysListed is String) {
+      _selectedDays = [daysListed];
+    }
+
     _titleController.text = adUpdateModel.adsTitle;
     _descriptionController.text = adUpdateModel.description;
-    _workExperienceController.text = primaryData['Work Experience'];
-    _areaCoveredController.text = primaryData['Area Covered'];
+    _workExperienceController.text = primaryData['Work Experience']['value'];
+    _areaCoveredController.text = primaryData['Area Covered']['value'];
     _landMarksController.text = primaryData['Landmark'];
     _websiteLinkController.text = primaryData['Website Link'];
-    _timeRangeController.text = primaryData['Time Range'];
-    _selectedDays = daysListed;
+
+    final groupValue = primaryData['Time Range']['groupValue'].split(' - ');
+    _selectedStartTime = groupValue[0];
+    _selectedEndTime = groupValue[1];
   }
 
   _saveChangesAndContinue(BuildContext context) {
@@ -459,7 +448,9 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
     context
         .read<AdCreateOrUpdateBloc>()
         .add(AdCreateOrUpdateCheckDropDownValidattionEvent());
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() &&
+        _selectedDays.isNotEmpty &&
+        _selectedStartTime!.isNotEmpty) {
       final Map<String, dynamic> primaryInfo = {
         'Work Experience': {
           'value': _workExperienceController.text,
@@ -472,9 +463,8 @@ class _RealEstateAgentScreenState extends State<RealEstateAgentScreen> {
         'Landmark': _landMarksController.text,
         'Website Link': _websiteLinkController.text,
         'Time Range': {
-          "value": _selectedDays.join(', '),
-         
-          'groupValue': _timeRangeController.text,
+          "value": _selectedDays,
+          'groupValue': '$_selectedStartTime - $_selectedEndTime',
         },
       };
 

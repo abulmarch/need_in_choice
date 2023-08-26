@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:need_in_choice/utils/colors.dart';
 
+import '../../../../config/theme/screen_size.dart';
+
 class StartButton extends StatelessWidget {
   const StartButton({
     super.key,
@@ -28,8 +30,8 @@ class StartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = ScreenSize.size.height;
+    final double screenWidth = ScreenSize.size.width;
 
     return InkWell(
       onTap: ontap,

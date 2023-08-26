@@ -1,3 +1,4 @@
+import '../../../../config/theme/screen_size.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/level4_category_data.dart';
@@ -14,8 +15,8 @@ class ServiceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScrollController scrollController = ScrollController();
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.size.height;
+    final width = ScreenSize.size.width;
 
     return Scaffold(
       backgroundColor: kWhiteColor,

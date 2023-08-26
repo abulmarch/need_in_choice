@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../services/model/ad_create_or_update_model.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/dropdown_list_items.dart';
@@ -43,7 +44,7 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
   late TextEditingController _roadWidthController;
   late TextEditingController _startPriceController;
   late TextEditingController _preBidPriceController;
-  late TextEditingController _startEndDateController;
+
   late TextEditingController _carpetAreaController;
   late TextEditingController _floorNoController;
   late TextEditingController _parkingController;
@@ -69,7 +70,6 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
     _bankNameController = TextEditingController();
     _branchNameController = TextEditingController();
 
-    _startEndDateController = TextEditingController();
     _propertyAreaController = TextEditingController();
     _buildupAreaController = TextEditingController();
     _totalFloorController = TextEditingController();
@@ -86,8 +86,8 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.height;
+    final width = ScreenSize.width;
     final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
@@ -230,7 +230,7 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
                           ConstrainedBox(
                             constraints: BoxConstraints(
                               minHeight: 255,
-                              maxHeight: height * 0.56,
+                              maxHeight: height * 0.54,
                             ),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -427,8 +427,6 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
                                         } else {
                                           bidEndDate = state.date;
                                         }
-                                        _startEndDateController.text =
-                                            '$bidStartDate - $bidEndDate';
                                       }
 
                                       return Row(
@@ -878,7 +876,10 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
     propertyArea = primaryData['Property Area']['unit'];
     _buildupAreaController.text = primaryData['Buildup Area']['value'];
     buildupArea = primaryData['Buildup Area']['unit'];
-    _startEndDateController.text = primaryData['Date Range'];
+
+    List<String> dateRangeParts = (primaryData['Date Range']).split(' - ');
+    bidStartDate = dateRangeParts[0].trim();
+    bidEndDate = dateRangeParts[1].trim();
 
     //-----------------------------------------------------------------
 
@@ -891,7 +892,7 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
     _totalFloorController.text = moreInfoData['Total Floor'];
     _floorNoController.text = moreInfoData['Floor No'];
     _parkingController.text = moreInfoData['Parking'];
-    _ageOfBuildingController.text = moreInfoData['Age Of Building'];
+    _ageOfBuildingController.text = moreInfoData['Age Of Building']['value'];
 
     _landMarksController.text = moreInfoData['Landmark'];
     _websiteLinkController.text = moreInfoData['Website Link'];
@@ -904,7 +905,9 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
         .add(AdCreateOrUpdateCheckDropDownValidattionEvent());
     if (_formKey.currentState!.validate() &&
         _startPriceController.text.trim().isNotEmpty &&
-        _preBidPriceController.text.trim().isNotEmpty) {
+        _preBidPriceController.text.trim().isNotEmpty &&
+        bidStartDate!.isNotEmpty &&
+        bidEndDate!.isNotEmpty) {
       final Map<String, dynamic> primaryInfo = {
         'Bank Name': _bankNameController.text,
         'Branch Name': _branchNameController.text,
@@ -916,7 +919,7 @@ class _EAuctionPropertyState extends State<EAuctionProperty> {
           "value": _buildupAreaController.text,
           "unit": buildupArea
         },
-        'Date Range': _startEndDateController.text,
+        'Date Range': '$bidStartDate - $bidEndDate',
       };
       final Map<String, dynamic> moreInfo = {
         'Road Width': {

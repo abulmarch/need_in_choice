@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:need_in_choice/services/model/account_model.dart';
 
 import '../../../config/routes/route_names.dart';
+import '../../../config/theme/screen_size.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/constants.dart';
 import '../../widgets_refactored/lottie_widget.dart';
@@ -37,6 +39,7 @@ class _SplashScreenState extends State<SplashScreen>
         curve: Curves.easeInOut,
       ),
     );
+    AccountSingleton().resetAccountModel();
   }
 
   @override
@@ -47,8 +50,9 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
+    ScreenSize.setMediaQuery(context);
+    final double screenHeight = ScreenSize.height;
+    final double screenWidth = ScreenSize.width;
     return Scaffold(
       backgroundColor: kWhiteColor,
       resizeToAvoidBottomInset: true,
@@ -69,7 +73,7 @@ class _SplashScreenState extends State<SplashScreen>
           ),
           Positioned(
             top: screenHeight / 2 - 75,
-            left: MediaQuery.of(context).size.width / 9 - 85,
+            left: ScreenSize.size.width / 9 - 85,
             child: AnimatedBuilder(
               animation: _animation,
               builder: (BuildContext context, Widget? child) {
@@ -120,7 +124,6 @@ class _SplashScreenState extends State<SplashScreen>
             left: 0,
             right: 0,
             child: SvgPicture.asset('assets/images/profile/nic.svg')
-            // Image.asset('assets/images/profile/nic.png'),
           ),
           Positioned(
             top: screenHeight / 1.25,

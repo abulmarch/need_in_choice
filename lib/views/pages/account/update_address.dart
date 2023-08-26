@@ -1,17 +1,15 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
-import 'package:http/http.dart' as http;
-import 'package:need_in_choice/views/pages/home_page/main_navigation_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:need_in_choice/config/theme/screen_size.dart';
+import 'package:need_in_choice/views/pages/login/bloc/auth_bloc.dart';
 import '../../../services/model/account_model.dart';
-import '../../../services/repositories/auth_repo.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/constants.dart';
 import '../login/widgets/start_button.dart';
 
 class UpdateAdress extends StatefulWidget {
-
   const UpdateAdress({
     Key? key,
   }) : super(key: key);
@@ -34,11 +32,13 @@ class _UpdateAdressState extends State<UpdateAdress> {
     whatsappController = TextEditingController();
     accountDataInitilization();
   }
+
   bool validateMobileNumber(String mobileNumber) {
     String pattern = r'^\d{10}$';
     RegExp regex = RegExp(pattern);
     return regex.hasMatch(mobileNumber);
   }
+
   @override
   void dispose() {
     nameController.dispose();
@@ -49,16 +49,15 @@ class _UpdateAdressState extends State<UpdateAdress> {
 
   void accountDataInitilization() {
     nameController.text = AccountSingleton().getAccountModels.name!;
-    addressController.text =
-        AccountSingleton().getAccountModels.address!;
+    addressController.text = AccountSingleton().getAccountModels.address!;
     whatsappController.text =
         AccountSingleton().getAccountModels.whatsapp ?? '';
   }
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = ScreenSize.size.height;
+    final double screenWidth = ScreenSize.size.width;
     return SingleChildScrollView(
       child: Form(
         key: _formKey,
@@ -119,15 +118,15 @@ class _UpdateAdressState extends State<UpdateAdress> {
                   child: TextFormField(
                     controller: whatsappController,
                     inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'^\d{0,10}')),
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d{0,10}')),
                     ],
                     keyboardType: TextInputType.number,
-                    validator:  (value) {
-                        if (!validateMobileNumber(value ?? '')) {
-                          return 'Please enter a valid mobile number';
-                        }
-                        return null;
-                      },
+                    validator: (value) {
+                      if (!validateMobileNumber(value ?? '')) {
+                        return 'Please enter a valid mobile number';
+                      }
+                      return null;
+                    },
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
@@ -183,19 +182,15 @@ class _UpdateAdressState extends State<UpdateAdress> {
                       screenWidth: screenWidth,
                       ontap: () async {
                         if (_formKey.currentState!.validate()) {
-                          updateAccountDetails();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const MainNavigationScreen()),
-                          );
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Account Updated'),
-                            ),
-                          );
+                          final accData = AccountSingleton().getAccountModels;
+                          BlocProvider.of<AuthBloc>(context).add(UpdateAccountDataEvent(
+                            accountData: accData.copyWith(
+                              address: addressController.text,
+                              name: nameController.text,
+                              whatsapp: whatsappController.text,
+                            )
+                          ));
+                          Navigator.pop(context);
                         }
                       },
                       boldText: "Update",
@@ -213,39 +208,4 @@ class _UpdateAdressState extends State<UpdateAdress> {
     );
   }
 
-  Future<void> updateAccountDetails() async {
-    final apiUrl = Uri.parse('https://nic.calletic.com/api/account/update');
-
-    var request = http.MultipartRequest('POST', apiUrl);
-
-    String? userId = AccountSingleton().getAccountModels.userId;
-    if (userId != null) {
-      request.fields["user_id"] = userId;
-    } else {
-      debugPrint("User ID not available");
-      return;
-    }
-    setState(() {
-      request.fields["name"] = nameController.text;
-      request.fields["address"] = addressController.text;
-      request.fields["whatsapp"] = whatsappController.text;
-    });
-
-    try {
-      var response = await request.send();
-      if (response.statusCode == 200) {
-        Authrepo().fetchAccountsData(userId).then((accountmodel) {
-          if (accountmodel != null) {
-            AccountSingleton().setAccountModels = accountmodel;
-          }
-        });
-
-        log('Account details updated successfully');
-      } else {
-        log('Failed to update details. Status code: ${response.request}');
-      }
-    } catch (e) {
-      debugPrint('Error updating details: $e');
-    }
-  }
 }

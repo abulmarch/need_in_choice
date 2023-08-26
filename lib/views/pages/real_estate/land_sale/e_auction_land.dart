@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
 import '../../../../config/routes/route_names.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../services/model/ad_create_or_update_model.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/dropdown_list_items.dart';
@@ -41,7 +42,6 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
   late TextEditingController _preBidPriceController;
   late TextEditingController _landMarksController;
   late TextEditingController _websiteLinkController;
-  late TextEditingController _startEndDateController;
 
   String? bidStartDate;
   String? bidEndDate;
@@ -64,13 +64,12 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
     _preBidPriceController = TextEditingController();
     _landMarksController = TextEditingController();
     _websiteLinkController = TextEditingController();
-    _startEndDateController = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.height;
+    final width = ScreenSize.width;
     final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
@@ -88,6 +87,7 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
         return _loadingScaffoldWidget(state);
       } else if (state is AdCreateOrUpdateLoaded) {
         if (state.adUpdateModel != null) {
+          log('-------------------------------------');
           _initializeUpdatingAdData(state.adUpdateModel!);
         } else {
           _checkValidation = false;
@@ -212,7 +212,7 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
                           ConstrainedBox(
                             constraints: BoxConstraints(
                               minHeight: 255,
-                              maxHeight: height * 0.56,
+                              maxHeight: height * 0.54,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -318,7 +318,7 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
                                             color:
                                                 kWhiteColor.withOpacity(0.7)),
                                       ),
-                                      maxWidth: width * 0.27,
+                                      maxWidth: width * 0.3,
                                       itemList: RealEstateDropdownList.facing,
                                       onChanged: (String? value) {
                                         facing = value!;
@@ -390,8 +390,6 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
                                         } else {
                                           bidEndDate = state.date;
                                         }
-                                        _startEndDateController.text =
-                                            '$bidStartDate - $bidEndDate';
                                       }
 
                                       return Row(
@@ -640,6 +638,7 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
     log(adUpdateModel.toString());
     final primaryData = adUpdateModel.primaryData;
     final moreInfoData = adUpdateModel.moreInfoData;
+
     _titleController.text = adUpdateModel.adsTitle;
     _descriptionController.text = adUpdateModel.description;
     _bankNameController.text =
@@ -649,8 +648,12 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
     _propertyAreaController.text = primaryData['Property Area']['value'];
     propertyArea = primaryData['Property Area']['unit'];
     facing = primaryData['Facing'];
-    _startEndDateController.text = primaryData['Date Range'];
+    // bidStartEnd = primaryData['Date Range'];
 
+    List<String> dateRangeParts = (primaryData['Date Range']).split(' - ');
+
+    bidStartDate = dateRangeParts[0].trim();
+    bidEndDate = dateRangeParts[1].trim();
     //-----------------------------------------------------------------
     _startPriceController.text = adUpdateModel.adPrice['Start Price'];
     _preBidPriceController.text = adUpdateModel.adPrice['Prebid'];
@@ -665,6 +668,8 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
         .add(AdCreateOrUpdateCheckDropDownValidattionEvent());
     if (_formKey.currentState!.validate() &&
         facing != null &&
+        bidStartDate!.isNotEmpty &&
+        bidEndDate!.isNotEmpty &&
         _startPriceController.text.trim().isNotEmpty &&
         _preBidPriceController.text.trim().isNotEmpty) {
       final Map<String, dynamic> primaryInfo = {
@@ -674,7 +679,8 @@ class _EAuctionLandScreenState extends State<EAuctionLandScreen> {
           "value": _propertyAreaController.text,
           "unit": propertyArea
         },
-        'Date Range': _startEndDateController.text,
+        'Facing': facing,
+        'Date Range': '$bidStartDate - $bidEndDate',
       };
       final Map<String, dynamic> moreInfo = {
         'Landmark': _landMarksController.text,

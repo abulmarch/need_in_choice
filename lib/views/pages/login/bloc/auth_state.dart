@@ -15,6 +15,8 @@ class AuthNotLoggedIn extends AuthState {}
 
 class NoInternet extends AuthState {}
 
+class AccountDataUpdating extends AuthState {}
+
 class AuthLoggedIn extends AuthState {
   final AccountModels accountModels;
 

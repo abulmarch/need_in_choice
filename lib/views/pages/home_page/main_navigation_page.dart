@@ -33,7 +33,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     if (WidgetsBinding.instance.lifecycleState != null) {
-      log('----------------  ${WidgetsBinding.instance.lifecycleState}   ---------------');
       FireStoreChat.updateUserActiveStatus(true);
     }
   }
@@ -58,11 +57,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen>
       child: Builder(builder: (context) {
         return WillPopScope(
           onWillPop: () {
-            if (indexChangeNotifier.value == 0 &&
-                HomePageScreen.selectMainCategory.value > -1) {
-              HomePageScreen.selectMainCategory.value = -1;
-              context.read<AllAdsBloc>().add(BackToFetchAllAds());
-              return Future.value(false);
+            if (indexChangeNotifier.value == 0 ) {
+              if (HomePageScreen.selectMainCategory.value > -1 || context.read<AllAdsBloc>().fetchingType != AdsFetchingType.fetchAllAds) {
+                HomePageScreen.selectMainCategory.value = -1;
+                context.read<AllAdsBloc>().add(BackToFetchAllAds());
+                return Future.value(false);
+              }
             } else if (indexChangeNotifier.value != 0) {
               indexChangeNotifier.value = 0;
               return Future.value(false);

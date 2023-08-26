@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
+import 'package:need_in_choice/config/theme/screen_size.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/views/widgets_refactored/dashed_line_generator.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
@@ -52,9 +53,7 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
   String _propertyArea = RealEstateDropdownList.propertyArea.first;
   String _buildupArea = RealEstateDropdownList.buildupArea.first;
 
-  // String? _saleType = RealEstateDropdownList.saleType.first;
-  // String? _listedBy = RealEstateDropdownList.listedBy.first;
-  // String? _facing = RealEstateDropdownList.facing.first;
+  
   String? _saleType;
   String? _listedBy;
   String? _facing;
@@ -89,7 +88,7 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
   @override
   Widget build(BuildContext context) {
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
-    final width = MediaQuery.of(context).size.width;
+    final width = ScreenSize.width;
     final id = ModalRoute.of(context)!.settings.arguments as int?;
     adCreateOrUpdateBloc.add(AdCreateOrUpdateInitialEvent(
       id: id,
@@ -303,7 +302,7 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
                                       SizedBox(
                                         width: cons.maxWidth * 0.435,
                                         child: CustomTextField(
-                                          hintText: 'Buildup Area',
+                                          hintText: 'Building Area',
                                           controller: _buildupAreaController,
                                           inputFormatters: [
                                             FilteringTextInputFormatter.allow(
@@ -348,7 +347,7 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
                                               _saleType != null ||
                                                   _checkValidation == false,
                                           hint: Text(
-                                            'sale type',
+                                            'Sale type',
                                             style: TextStyle(
                                                 color: kWhiteColor
                                                     .withOpacity(0.7)),
@@ -366,7 +365,7 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
                                               _listedBy != null ||
                                                   _checkValidation == false,
                                           hint: Text(
-                                            'listed by',
+                                            'Listed by',
                                             style: TextStyle(
                                                 color: kWhiteColor
                                                     .withOpacity(0.7)),
@@ -384,7 +383,7 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
                                               _facing != null ||
                                                   _checkValidation == false,
                                           hint: Text(
-                                            'facing',
+                                            'Facing',
                                             style: TextStyle(
                                                 color: kWhiteColor
                                                     .withOpacity(0.7)),
@@ -701,7 +700,7 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
                                                 ),
                                                 itemList: RealEstateDropdownList
                                                     .furnishing,
-                                                maxWidth: 130,
+                                                maxWidth: 160,
                                                 onChanged: (String? value) {
                                                   _furnishing = value!;
                                                 },
@@ -774,7 +773,7 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
   }
 
   void _initializeUpdatingAdData(AdCreateOrUpdateModel adUpdateModel) {
-    log(adUpdateModel.toString());
+    
     final primaryData = adUpdateModel.primaryData;
     final moreInfoData = adUpdateModel.moreInfoData;
     _titleController.text = adUpdateModel.adsTitle;
@@ -797,7 +796,7 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
     _carpetArea = 'sq.feet'; //moreInfoData['Carpet Area']['unit'];//    ERROR
     _floorNoController.text = moreInfoData['Floor No'];
     _parkingController.text = moreInfoData['Parking'];
-    _ageOfBuildingController.text = moreInfoData['Age Of Building'];
+    _ageOfBuildingController.text = moreInfoData['Age Of Building']['value'];
     _constructionStatus = moreInfoData['Construction Status'];
     _furnishing = moreInfoData['Furnishing'];
     _landMarksController.text = moreInfoData['Landmark'];
@@ -857,8 +856,9 @@ class _CommercialBuildingForSaleState extends State<CommercialBuildingForSale> {
           level4Sub: building4saleCommercial[_level4Cat.value]['cat_name'],
           adsLevels: {
             "route": commercialBuildingForSaleRoot,
-            "sub category":
-                building4saleCommercial[_level4Cat.value]['cat']?.toLowerCase(),
+            "sub category": building4saleCommercial[_level4Cat.value]
+                    ['cat_name']
+                ?.toLowerCase(),
           },
           adPrice: _adsPriceController.text);
       Navigator.pushNamed(

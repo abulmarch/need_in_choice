@@ -5,6 +5,8 @@ import 'package:need_in_choice/config/routes/route_names.dart';
 import 'package:need_in_choice/views/pages/login/bloc/auth_bloc.dart';
 import 'package:need_in_choice/views/pages/login/widgets/signin_modelsheet.dart';
 
+import '../../../config/theme/screen_size.dart';
+
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -28,8 +30,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = ScreenSize.size.height;
+    final double screenWidth = ScreenSize.size.width;
     return SafeArea(
       child: Scaffold(
         body: BlocListener<AuthBloc, AuthState>(

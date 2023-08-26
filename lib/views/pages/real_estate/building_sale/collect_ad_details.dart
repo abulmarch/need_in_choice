@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/views/widgets_refactored/dashed_line_generator.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/dropdown_list_items.dart';
 import '../../../../utils/level4_category_data.dart';
@@ -18,8 +19,8 @@ class CollectAdDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.size.height;
+    final width = ScreenSize.size.width;
     ScrollController scrollController = ScrollController();
     String propertyArea = RealEstateDropdownList.propertyArea.first;
     String buildupArea = RealEstateDropdownList.buildupArea.first;
@@ -113,7 +114,6 @@ class CollectAdDetails extends StatelessWidget {
 
       body: LayoutBuilder(
         builder: (ctx, cons) {
-          // double keyBoardHeight = 0; //MediaQuery.of(context).viewInsets.bottom;
           return SingleChildScrollView(
             controller: scrollController,
             physics: const BouncingScrollPhysics(),

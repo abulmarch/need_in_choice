@@ -10,6 +10,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/utils/constants.dart';
 import 'package:need_in_choice/views/pages/login/widgets/start_button.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../widgets_refactored/dashed_line_generator.dart';
 import '../bloc/auth_bloc.dart';
 import 'address_modelsheet.dart';
@@ -43,8 +44,8 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = ScreenSize.size.height;
+    final double screenWidth = ScreenSize.size.width;
 
     return Form(
       key: _phoneNumberFormKey,

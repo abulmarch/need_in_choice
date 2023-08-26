@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
 import '../../../../blocs/ad_create_or_update_bloc/ad_create_or_update_bloc.dart';
+import '../../../../config/theme/screen_size.dart';
 import '../../../../services/model/ad_create_or_update_model.dart';
 import '../../../../utils/colors.dart';
 import '../../../../utils/constants.dart';
@@ -57,8 +58,8 @@ class _LandForSaleScreenState extends State<LandForSaleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = ScreenSize.height;
+    final width = ScreenSize.width;
     final id = ModalRoute.of(context)!.settings.arguments as int?;
 
     final adCreateOrUpdateBloc = BlocProvider.of<AdCreateOrUpdateBloc>(context);
@@ -76,11 +77,11 @@ class _LandForSaleScreenState extends State<LandForSaleScreen> {
           state is AdCreateOrUpdateLoading) {
         return _loadingScaffoldWidget(state);
       } else if (state is AdCreateOrUpdateLoaded) {
-          if(state.adUpdateModel != null){
-            _initializeUpdatingAdData(state.adUpdateModel!);
-          }else{
-            _checkValidation = false;
-          }
+        if (state.adUpdateModel != null) {
+          _initializeUpdatingAdData(state.adUpdateModel!);
+        } else {
+          _checkValidation = false;
+        }
       } else if (state is AdCreateOrUpdateValidateState) {
         _checkValidation = true;
       }
@@ -331,6 +332,8 @@ class _LandForSaleScreenState extends State<LandForSaleScreen> {
                 padding: const EdgeInsets.only(
                     left: 20, right: 20, bottom: 20, top: 10),
                 child: ButtonWithRightSideIcon(onPressed: () {
+                  print(
+                      '=============================${land4saleLevel4Cat[_level4Cat.value]['cat_name']?.toLowerCase()}');
                   _saveChangesAndContinue(context);
                 }),
               )));
@@ -359,9 +362,14 @@ class _LandForSaleScreenState extends State<LandForSaleScreen> {
     _listedBy = primaryData['Listed By'];
     _facing = primaryData['Facing'];
 
-     //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
     _adsPriceController.text = adUpdateModel.adPrice;
-   
+    final String subCategory = adUpdateModel.adsLevels['sub category'];
+    final index = land4saleLevel4Cat.indexWhere(
+        (level) => (level['cat_name'] as String).toLowerCase() == subCategory);
+    if (index != -1) {
+      _level4Cat.value = index;
+    }
   }
 
   _saveChangesAndContinue(BuildContext context) {
@@ -374,10 +382,7 @@ class _LandForSaleScreenState extends State<LandForSaleScreen> {
         _facing != null &&
         _adsPriceController.text.trim().isNotEmpty) {
       final Map<String, dynamic> primaryInfo = {
-        'Land Area': {
-          "value": _landAreaController.text,
-          "unit": _propertyArea
-        },
+        'Land Area': {"value": _landAreaController.text, "unit": _propertyArea},
         'Listed By': _listedBy!,
         'Facing': _facing!,
       };
@@ -391,7 +396,7 @@ class _LandForSaleScreenState extends State<LandForSaleScreen> {
         adsLevels: {
           "route": landForSaleRoot,
           "sub category":
-              land4saleLevel4Cat[_level4Cat.value]['cat']?.toLowerCase(),
+              land4saleLevel4Cat[_level4Cat.value]['cat_name']?.toLowerCase(),
         },
         moreInfo: {},
       );

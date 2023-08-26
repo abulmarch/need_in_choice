@@ -49,3 +49,12 @@ class AccountEditErrorState extends AccountPageState {
   @override
   List<Object> get props => [error];
 }
+
+class SearchLoadedState extends AccountPageState {
+
+   final List<AdsModel> filteredAdsDataList;
+
+  const SearchLoadedState( this.filteredAdsDataList);
+  @override
+  List<Object> get props => [filteredAdsDataList];
+}
