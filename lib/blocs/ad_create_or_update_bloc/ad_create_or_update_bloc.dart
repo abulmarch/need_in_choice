@@ -202,12 +202,12 @@ class AdCreateOrUpdateBloc
     _notifyImageStreamController();
   }
 
-  Future<String> getCurrentLocation() async {
+  Future<Map<String, dynamic>> getCurrentLocation() async {
     try {
       final position = await determinePosition();
-      return await getAddressFromLatLon(position);
+       return await getAddressFromLatLon(position);
     } catch (e) {
-      log('::::::   $e');
+     
       throw '$e';
     }
   }

@@ -14,12 +14,11 @@ class FireBaseApi {
     messageId : ${message.messageId}
     senderId : ${message.senderId}
     messageType : ${message.messageType}
-
-    
     message.notification.toString() : ${message.notification.toString()}
     ''');
   }
-  Future<void> initNotification() async{
+  Future<void> 
+  initNotification() async{
     try {
       await _fireBaseMessaging.requestPermission();
       final fCMToken = await _fireBaseMessaging.getToken();

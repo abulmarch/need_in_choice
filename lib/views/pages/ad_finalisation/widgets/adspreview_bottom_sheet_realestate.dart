@@ -60,7 +60,7 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontSize: 15),
+                        .copyWith(fontSize: 14),
                   ),
                   TextSpan(
                     text: "prebid",
@@ -131,7 +131,7 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontSize: 15),
+                        .copyWith(fontSize: 14),
                   ),
                   TextSpan(
                     text: "m",
@@ -196,7 +196,7 @@ class AdPreviewBottomSheetRealEstate extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .titleLarge!
-                  .copyWith(fontSize: 15),
+                  .copyWith(fontSize: 14),
             ),
           ],
         ),

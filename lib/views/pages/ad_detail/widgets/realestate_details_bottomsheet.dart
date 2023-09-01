@@ -31,6 +31,11 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String phoneMessengerPhoneNumber = adsModel.phoneNo;
+    String? whatsappPhoneNumber = adsModel.whatsappNo;
+    String messageText =
+        'Hello, I am ${adsModel.userName}.I saw your advertisement on the NIC app. Could you please provide me with more details? Thank you!"';
+
     Widget adPriceWidget = const SizedBox();
 
     if (adsModel.adPrice is Map) {
@@ -44,28 +49,28 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge!
-                    .copyWith(fontSize: 19),
+                    .copyWith(fontSize: 16),
                 children: [
                   TextSpan(
                     text: adsModel.adPrice['Start Price'].toString(),
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontSize: 28),
+                        .copyWith(fontSize: 22),
                   ),
                   TextSpan(
                     text: "/",
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontSize: 18),
+                        .copyWith(fontSize: 14),
                   ),
                   TextSpan(
                     text: "prebid",
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontSize: 14, color: kPrimaryColor),
+                        .copyWith(fontSize: 10, color: kPrimaryColor),
                   ),
                 ],
               ),
@@ -112,28 +117,28 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge!
-                    .copyWith(fontSize: 19),
+                    .copyWith(fontSize: 16),
                 children: [
                   TextSpan(
                     text: adsModel.adPrice['Monthly'].toString(),
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontSize: 28),
+                        .copyWith(fontSize: 22),
                   ),
                   TextSpan(
                     text: "/",
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontSize: 18),
+                        .copyWith(fontSize: 14),
                   ),
                   TextSpan(
                     text: "m",
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
-                        .copyWith(fontSize: 14, color: kPrimaryColor),
+                        .copyWith(fontSize: 10, color: kPrimaryColor),
                   ),
                 ],
               ),
@@ -174,21 +179,21 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
       adPriceWidget = RichText(
         text: TextSpan(
           text: "₹",
-          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 19),
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 16),
           children: [
             TextSpan(
               text: adsModel.adPrice,
               style: Theme.of(context)
                   .textTheme
                   .titleLarge!
-                  .copyWith(fontSize: 28),
+                  .copyWith(fontSize: 22),
             ),
             TextSpan(
               text: "/-",
               style: Theme.of(context)
                   .textTheme
                   .titleLarge!
-                  .copyWith(fontSize: 18),
+                  .copyWith(fontSize: 14),
             ),
           ],
         ),
@@ -460,10 +465,12 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Expanded(
-                                      child: RichText(
-                                        text: TextSpan(
-                                          text: _getWebsiteLink(adsModel),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          _getLandmark(adsModel),
                                           //"Near PRS Hospital",
                                           style: Theme.of(context)
                                               .textTheme
@@ -472,22 +479,21 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                                   fontSize: 13,
                                                   color:
                                                       const Color(0XFF878181)),
-                                          children: [
-                                            TextSpan(
-                                              text:
-                                                  "\n${_getWebsiteLink(adsModel)}",
-                                              //"\nwww.calletic.com",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headlineSmall!
-                                                  .copyWith(fontSize: 16),
-                                            ),
-                                          ],
                                         ),
-                                      ),
+                                        GestureDetector(
+                                          onTap: () => _launchURL(
+                                              "https://${_getWebsiteLink(adsModel)}"),
+                                          child: Text(
+                                            _getWebsiteLink(adsModel),
+                                            //"www.calletic.com",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall!
+                                                .copyWith(fontSize: 16),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    //  kWidth20,
-
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment: MainAxisAlignment.end,
@@ -589,7 +595,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                               IconWithButtonBottom(
                                 color: kWhiteColor,
                                 onpressed: () {
-                                  launch("tel://9876543210");
+                                  launch("tel://${adsModel.phoneNo}");
                                 },
                                 text: "Give a Call",
                                 iconData: Icons.phone,
@@ -624,15 +630,10 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                                     color: kWhiteColor),
                                               ),
                                               onTap: () {
-                                                const phoneNumber =
-                                                    '9876543210';
-                                                const message =
-                                                    'Your message goes here';
+                                                launch(
+                                                    'sms:$phoneMessengerPhoneNumber?body=$messageText');
 
-                                                const url =
-                                                    'sms:$phoneNumber?body=$message';
-
-                                                launch(url);
+                                                Navigator.pop(context);
                                               },
                                             ),
                                             ListTile(
@@ -644,14 +645,15 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                                     color: kWhiteColor),
                                               ),
                                               onTap: () {
-                                                const phoneNumber =
-                                                    '9876543210';
-                                                const message =
-                                                    'Your message goes here';
-
-                                                const url =
-                                                    'whatsapp://send?phone=$phoneNumber&text=$message';
-                                                launch(url);
+                                                if (whatsappPhoneNumber !=
+                                                    null) {
+                                                  launch(
+                                                      'https://wa.me/+91$whatsappPhoneNumber/?text=$messageText');
+                                                } else {
+                                                  launch(
+                                                      'https://wa.me/+91$phoneMessengerPhoneNumber/?text=$messageText');
+                                                }
+                                                Navigator.pop(context);
                                               },
                                             ),
                                           ],
@@ -676,6 +678,14 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   String _getLandmark(AdsModel) {

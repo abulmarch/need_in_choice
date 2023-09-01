@@ -292,7 +292,7 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                               final String address = snapshot.data ?? "";
                               return RichText(
                                 text: TextSpan(
-                                    text: "Ads Address\n",
+                                    text: "Ad Location\n",
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelMedium!

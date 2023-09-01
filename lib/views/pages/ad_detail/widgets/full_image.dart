@@ -4,32 +4,36 @@ import '../../../../utils/colors.dart';
 
 class FullImageView extends StatelessWidget {
   const FullImageView({super.key, required this.imageUrls, this.initialIndex});
-   final List<String> imageUrls;
+  final List<String> imageUrls;
   final int? initialIndex;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          elevation: 0,
-          backgroundColor: kBlackColor,
-          leading: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: const Icon(Icons.arrow_back_ios_new),
-          ),
+        elevation: 0,
+        backgroundColor: kBlackColor,
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: const Icon(Icons.arrow_back_ios_new),
         ),
-      backgroundColor: kBlackColor, 
+      ),
+      backgroundColor: kBlackColor,
       body: PageView.builder(
         controller: PageController(initialPage: initialIndex!),
         itemCount: imageUrls.length,
         itemBuilder: (context, index) {
           return Center(
             child: InteractiveViewer(
-              child: Image.network(
-                '$imageUrlEndpoint${imageUrls[index]}',
-                fit: BoxFit.contain,
+              child: SizedBox(
+                height: double.infinity,
+                width: double.infinity,
+                child: Image.network(
+                  '$imageUrlEndpoint${imageUrls[index]}',
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           );
@@ -38,8 +42,6 @@ class FullImageView extends StatelessWidget {
     );
   }
 }
-
-
 
 class FullImageScreen extends StatelessWidget {
   const FullImageScreen({super.key, required this.imageUrl});
@@ -69,18 +71,23 @@ class FullImageScreen extends StatelessWidget {
   }
 
   Widget _buildImageWidget() {
-    return Image.network(
-      '$imageUrlEndpoint$imageUrl',
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-        return const CircularProgressIndicator();
-      },
-      errorBuilder: (context, error, stackTrace) {
-        return Image.asset(
-        imageUrl,
-        errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
-      );
-      },
+    return SizedBox(
+      height: double.infinity,
+      width: double.infinity,
+      child: Image.network(
+        '$imageUrlEndpoint$imageUrl',
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return const CircularProgressIndicator();
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return Image.asset(
+            imageUrl,
+            errorBuilder: (context, error, stackTrace) =>
+                const Icon(Icons.error),
+          );
+        },
+      ),
     );
   }
 }

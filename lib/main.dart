@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:need_in_choice/services/repositories/firebase_api.dart';
 import 'config/routes/page_routes.dart';
 import 'config/theme/theme_data_class.dart';
 import 'views/pages/login/bloc/auth_bloc.dart';
@@ -12,7 +13,7 @@ import 'views/pages/login/splash_screen_new.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  // await FireBaseApi().initNotification();
+  await FireBaseApi().initNotification();
   runApp(const MyApp());
 }
 

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,12 +30,6 @@ class _UpdateAdressState extends State<UpdateAdress> {
     addressController = TextEditingController();
     whatsappController = TextEditingController();
     accountDataInitilization();
-  }
-
-  bool validateMobileNumber(String mobileNumber) {
-    String pattern = r'^\d{10}$';
-    RegExp regex = RegExp(pattern);
-    return regex.hasMatch(mobileNumber);
   }
 
   @override
@@ -122,8 +115,10 @@ class _UpdateAdressState extends State<UpdateAdress> {
                     ],
                     keyboardType: TextInputType.number,
                     validator: (value) {
-                      if (!validateMobileNumber(value ?? '')) {
-                        return 'Please enter a valid mobile number';
+                      if (value != null && value.isNotEmpty) {
+                        if (value.length != 10 || int.tryParse(value) == null) {
+                          return "Invalid phone number";
+                        }
                       }
                       return null;
                     },
@@ -183,13 +178,13 @@ class _UpdateAdressState extends State<UpdateAdress> {
                       ontap: () async {
                         if (_formKey.currentState!.validate()) {
                           final accData = AccountSingleton().getAccountModels;
-                          BlocProvider.of<AuthBloc>(context).add(UpdateAccountDataEvent(
-                            accountData: accData.copyWith(
-                              address: addressController.text,
-                              name: nameController.text,
-                              whatsapp: whatsappController.text,
-                            )
-                          ));
+                          BlocProvider.of<AuthBloc>(context)
+                              .add(UpdateAccountDataEvent(
+                                  accountData: accData.copyWith(
+                            address: addressController.text,
+                            name: nameController.text,
+                            whatsapp: whatsappController.text,
+                          )));
                           Navigator.pop(context);
                         }
                       },
@@ -207,5 +202,4 @@ class _UpdateAdressState extends State<UpdateAdress> {
       ),
     );
   }
-
 }
