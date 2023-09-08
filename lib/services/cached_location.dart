@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart' show BuildContext;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http show post;
 import 'package:need_in_choice/services/model/account_model.dart';
 import 'package:need_in_choice/views/pages/login/bloc/auth_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../views/pages/home_page/network_util.dart';
 import 'model/autocomplete_prediction.dart';
 import 'repositories/key_information.dart';
-import 'repositories/repository_urls.dart';
 
 class CacheLocation {
   late final SharedPreferences _prefs;
@@ -38,7 +36,7 @@ class CacheLocation {
     try {
       final Map<String, dynamic> address = jsonDecode(currentAddress!);
 
-      print('--------------------current: $currentAddress');
+    
       return address;
     } catch (e) {
       log("Error decoding address from local storage: $e");
@@ -52,9 +50,8 @@ class CacheLocation {
     try {
       String jsonString = jsonEncode(addressData);
       await preference.setString('currentAddress', jsonString);
-      print('Saved address locally: $jsonString');
     } catch (e) {
-      print('Error saving address locally: $e');
+      log('Error saving address locally: $e');
     }
   }
 
@@ -89,7 +86,7 @@ class CacheLocation {
           CachedLocationData(prediction: prediction, placeDetails: result);
       await saveDataToUserProfile(cachedLocationData, context);
       saveAddressLocally(cachedLocationData);
-      log('ppppppppppppppppppp');
+  
     }
     return true;
   }

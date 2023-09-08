@@ -1,11 +1,9 @@
 import 'dart:math';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:need_in_choice/config/routes/route_names.dart';
-import 'package:need_in_choice/views/pages/ad_detail/widgets/realestate_details_bottomsheet.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:need_in_choice/utils/colors.dart';
 import 'package:need_in_choice/utils/constants.dart';
@@ -239,7 +237,7 @@ class _SigninModalSheetState extends State<SigninModalSheet> {
                     child: BlocBuilder<AuthBloc, AuthState>(
                       builder: (context, state) {
                         if (state is AuthError) {
-                          print(" AUTH ${state.error}");
+                         
                           Future.delayed(Duration.zero, () {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(

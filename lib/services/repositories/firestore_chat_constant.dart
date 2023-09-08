@@ -1,6 +1,3 @@
-
-
-
 const kTableChatConnection = 'chatConnection';
 const kAdCreatorUid = 'adCreatorUid';
 const kAdId = 'adId';
@@ -8,7 +5,7 @@ const kAdsImage = 'adsImage';
 const kAdTitle = 'adTitle';
 const kConnectionGenUid = 'connectionGenUid';
 const kConnectionGenTime = 'connectionGenTime';
-
+const kIsChatDeleted = 'isChatDeleted';
 
 const kTableChats = 'chats';
 const kChatToId = 'toId';
@@ -17,7 +14,6 @@ const kChatRead = 'read';
 const kChatType = 'type';
 const kChatFromId = 'fromId';
 const kChatSent = 'sent';
-
 
 const kTableUsers = 'users';
 const kUserUid = 'uid';

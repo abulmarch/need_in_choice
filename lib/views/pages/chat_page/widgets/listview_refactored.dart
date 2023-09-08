@@ -3,7 +3,7 @@ import 'package:need_in_choice/views/pages/chat_page/widgets/elevated_button.dar
 import '../../../../config/theme/screen_size.dart';
 import '../../../../utils/colors.dart';
 import '../../../widgets_refactored/dashed_line_generator.dart';
-import '../chating_view.dart';
+
 
 bool isYes = true;
 

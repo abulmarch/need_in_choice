@@ -20,6 +20,14 @@ class Adtiles extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = ScreenSize.size.width;
     List imageList = adsData.images;
+
+    //  DateTime creationDate = DateTime.parse(adsData.createdDate);
+    //  DateTime expirationDate = creationDate.add(const Duration(days: 30));
+
+    DateTime expirationDate = DateTime.parse(adsData.expiratedDate);
+    bool isExpired = expirationDate.isBefore(DateTime.now());
+   
+
     return Card(
       color: kadBox,
       shape: RoundedRectangleBorder(
@@ -70,12 +78,12 @@ class Adtiles extends StatelessWidget {
                     height: 20,
                     width: 80,
                     decoration: BoxDecoration(
-                      color: kPrimaryColor,
+                      color: isExpired ? Colors.red : kPrimaryColor,
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Center(
                       child: Text(
-                        'Active',
+                        isExpired ? 'Expired' : 'Active',
                         style: Theme.of(context)
                             .textTheme
                             .titleLarge!
@@ -91,14 +99,22 @@ class Adtiles extends StatelessWidget {
                             .headlineSmall!
                             .copyWith(
                                 fontSize: 9,
-                                color: kPrimaryColor.withOpacity(.42)),
+                                color: isExpired
+                                    ? Colors.red.withOpacity(.42)
+                                    : kPrimaryColor.withOpacity(.42)),
                         children: [
                           TextSpan(
-                              text: "\ncurrently live",
+                              text: isExpired
+                                  ? "\ncurrently expired"
+                                  : "\ncurrently live",
                               style: Theme.of(context)
                                   .textTheme
                                   .headlineSmall!
-                                  .copyWith(fontSize: 9))
+                                  .copyWith(
+                                      fontSize: 9,
+                                      color: isExpired
+                                          ? Colors.red
+                                          : kPrimaryColor))
                         ]),
                     textAlign: TextAlign.center,
                   ),
@@ -164,8 +180,10 @@ class Adtiles extends StatelessWidget {
                             boxcolor: kadBox,
                             height: 23,
                             width: 71,
-                            text: "Edit Ad",
-                            textcolor: kPrimaryColor,
+                            text: isExpired ? "Renew" : "Edit Ad",
+                            textcolor: isExpired
+                                ? kDarkGreyColor.withOpacity(.8)
+                                : kPrimaryColor,
                             ontap: () {
                               BlocProvider.of<AdCreateOrUpdateBloc>(context)
                                   .add(SwitchToInitialStateEvent());

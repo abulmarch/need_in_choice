@@ -146,13 +146,13 @@ class _LocationSheetState extends State<LocationSheet> {
                               kWidth10,
                               InkWell(
                                 onTap: () async {
-                                  print("Tapped on Current Location");
+                                
                                   try {
                                     addressFetch = await BlocProvider.of<
                                             AdCreateOrUpdateBloc>(context)
                                         .getCurrentLocation()
                                         .then((addressFetch) {
-                                      print("Got location data: $addressFetch");
+                                     
                                       final account =
                                           AccountSingleton().getAccountModels;
                                       BlocProvider.of<AuthBloc>(context)
@@ -168,9 +168,10 @@ class _LocationSheetState extends State<LocationSheet> {
                                           .then((value) {
                                         Navigator.of(context).pop();
                                       });
+                                      return null;
                                     });
                                   } catch (e) {
-                                    print("Error: ${e.toString()}");
+                                    log("Error: ${e.toString()}");
                                   }
                                 },
                                 child: Text(

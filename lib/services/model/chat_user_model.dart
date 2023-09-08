@@ -43,4 +43,10 @@ ChatUser({
     };
     return data;
   }
+  @override
+  String toString() {
+    return '''uid:$uid, name:$name, image:$image,
+    isOnline:$isOnline, lastActive:$lastActive, pushToken:$pushToken
+     ''';
+  }
 }

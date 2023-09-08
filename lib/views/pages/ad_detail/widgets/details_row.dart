@@ -26,7 +26,7 @@ class _DetailsRowState extends State<DetailsRow> {
 
   @override
   void initState() {
-    // TODO: implement initState
+   
     super.initState();
     _scrollController = ScrollController();
     _scrollEnd = ValueNotifier(false);
@@ -117,7 +117,7 @@ class _DetailsRowState extends State<DetailsRow> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    
     _scrollController.dispose();
     _scrollEnd.dispose();
     super.dispose();

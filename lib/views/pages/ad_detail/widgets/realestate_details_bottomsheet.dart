@@ -1,8 +1,9 @@
-import 'dart:developer';
+
 import 'package:extended_text/extended_text.dart'
     show ExtendedText, TextOverflowWidget;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:need_in_choice/services/model/chat_connection_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../services/model/ads_models.dart';
 import '../../../../services/repositories/firestore_chat.dart';
@@ -307,7 +308,6 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                                   .instance.currentUser!.uid !=
                                               adsModel.userId
                                           ? () async {
-                                              log('******---------------****');
                                               await FireStoreChat
                                                       .checkChatAllreadyGenerated(
                                                           creatorId:
@@ -325,19 +325,28 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                                         ? adsModel.images.first
                                                         : '',
                                                     adTitle: adsModel.adsTitle,
-                                                  ).then((chatConnectionModel) {
+                                                  ).then(
+                                                      (chatConnectionModel) async {
                                                     if (chatConnectionModel !=
                                                         null) {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                ChatingView(
-                                                                    chatConn:
-                                                                        chatConnectionModel,
-                                                                    isFirstMessage:
-                                                                        true),
-                                                          ));
+                                                      /*06/09/2023*/
+                                                      FireStoreChat.findCurrentChatUser(
+                                                              chatConnectionModel
+                                                                  .chattingPartnerUid())
+                                                          .then((chatUser) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  ChatingView(
+                                                                      chatConn:
+                                                                          chatConnectionModel,
+                                                                      isFirstMessage:
+                                                                          true,
+                                                                      user:
+                                                                          chatUser),
+                                                            ));
+                                                      });
                                                     } else {
                                                       showErrorDialog(context,
                                                           'Something went wrong');
@@ -688,7 +697,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
     }
   }
 
-  String _getLandmark(AdsModel) {
+  String _getLandmark(adsModel) {
     String? landmark = adsModel.moreInfoData['Landmark'];
     if (landmark == null || landmark.isEmpty) {
       landmark = adsModel.primaryData['Landmark'];
@@ -697,7 +706,7 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
     return landmark ?? '';
   }
 
-  String _getWebsiteLink(AdsModel) {
+  String _getWebsiteLink(adsModel) {
     String? websiteLink = adsModel.moreInfoData['Website Link'];
     if (websiteLink == null || websiteLink.isEmpty) {
       websiteLink = adsModel.primaryData['Website Link'];

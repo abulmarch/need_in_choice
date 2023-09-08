@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io' show InternetAddress;
-import 'dart:isolate' show Isolate, ReceivePort, SendPort;
 import 'dart:math';
 import 'dart:developer' as log show log;
 
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:need_in_choice/services/model/account_model.dart';
@@ -119,7 +119,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final accountData = await authrepo.fetchAccountsData(event.uid);
+
+      await FirebaseMessaging.instance.deleteToken();
+
+      final token = await FirebaseMessaging.instance.getToken();
       if (accountData != null) {
+        if (token != null) {
+          await FireStoreChat.updateTokenInDatabase(token);
+        
+        }
         emit(AuthLoggedIn(accountData));
       } else {
         emit(AuthNotLoggedIn());
@@ -133,7 +141,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final uid = authrepo.firebaseAuth.currentUser!.uid;
-      await _checkInternetAvailable().then((isInternetAvailable) async{
+      await _checkInternetAvailable().then((isInternetAvailable) async {
         if (isInternetAvailable) {
           final accountData = await authrepo.fetchAccountsData(uid);
           if (accountData != null) {
@@ -141,12 +149,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             emit(AuthLoggedIn(accountData));
           } else {
             emit(AuthNotLoggedIn());
-          }  
+          }
         } else {
           emit(NoInternet());
-        }      
+        }
       });
-    } on UserDataNotFoundException{
+    } on UserDataNotFoundException {
       String ph = authrepo.firebaseAuth.currentUser!.phoneNumber!;
       emit(UserDataNotFound(ph.replaceFirst('+91', '')));
     } catch (e) {
@@ -154,7 +162,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthNotLoggedIn());
     }
   }
-  FutureOr<void> _onCreate(AuthCraetionEvent event, Emitter<AuthState> emit) async {
+
+  FutureOr<void> _onCreate(
+      AuthCraetionEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
       bool accountCreated =
@@ -172,32 +182,32 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthCreatedfailed(e.toString()));
     }
   }
-  Future<bool> _checkInternetAvailable() async{
+
+  Future<bool> _checkInternetAvailable() async {
     try {
       await InternetAddress.lookup('google.com');
       return true;
-    }catch (e){
+    } catch (e) {
       log.log('checkInternetAvailable  error: $e');
       return false;
     }
   }
 
-  Future<void> _updateAccountData(UpdateAccountDataEvent event, Emitter<AuthState> emit) async{
+  Future<void> _updateAccountData(
+      UpdateAccountDataEvent event, Emitter<AuthState> emit) async {
     emit(AccountDataUpdating());
     if (event.profileImage != null) {
-      final updatedData = await authrepo.updateUserProfileImage(event.profileImage!);
+      final updatedData =
+          await authrepo.updateUserProfileImage(event.profileImage!);
       if (updatedData != null) {
         emit(AuthLoggedIn(updatedData));
       }
-    }else{
-      final updatedData = await authrepo.updateAccountDetails(event.accountData);
-      if(updatedData != null){
+    } else {
+      final updatedData =
+          await authrepo.updateAccountDetails(event.accountData);
+      if (updatedData != null) {
         emit(AuthLoggedIn(updatedData));
       }
     }
   }
-
-  
-  
 }
-

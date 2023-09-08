@@ -90,9 +90,9 @@ class AllAdsBloc extends Bloc<AllAdsEvent, AllAdsState> {
   Future<FutureOr<void>> _loadAndEmitAds(Emitter<AllAdsState> emit, String url) async {
     log(url);
     final adsList = await allAdsRepo.fetchAllAdsData(url);
-    adsList.forEach((element) {
+    for (var element in adsList) {
       log(element.toString());
-    });
+    }
     _previousList.addAll(adsList);
     emit(AllAdsLoaded(adsList: _previousList));
     if(_page <= AllAdsRepo.lastPage +1){// if AllAdsRepo.lastPage = 5 then _page value can upto 6

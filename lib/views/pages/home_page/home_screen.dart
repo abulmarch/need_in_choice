@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:need_in_choice/services/model/ads_models.dart';
 import 'package:need_in_choice/utils/constants.dart';
 import '../../../blocs/all_ads_bloc/all_ads_bloc.dart';
 import '../../../config/theme/screen_size.dart';
+import '../../../services/repositories/notification_service.dart';
 import '../../../services/repositories/repository_urls.dart';
 import '../../../utils/category_data.dart';
 import '../../../utils/colors.dart';
@@ -32,12 +34,18 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
+
+NotificationServices notificationServices = NotificationServices();
+
   late FocusNode _secondTextFieldFocus;
   late ScrollController _scrollController;
   late ValueNotifier<bool> _searchbarNotifier;
   late ValueNotifier<ScrollPhysics> _physicsNotifier;
   late TextEditingController _searchTextController;
   AccountModels accountModels = AccountSingleton().getAccountModels;
+  
+  
+  
   @override
   void initState() {
     super.initState();
@@ -48,6 +56,18 @@ class _HomePageScreenState extends State<HomePageScreen> {
     _searchTextController = TextEditingController();
     _secondTextFieldFocus = FocusNode();
     scrollControllerListener();
+    notificationServices.requestNotificationPermission();
+    notificationServices.firebaseInit(context);
+    notificationServices.forgroundMessage();
+    notificationServices.setupInteractMessage(context);
+    notificationServices.isTokenRefresh();
+
+    notificationServices.getDeviceToken().then((value) {
+      if (kDebugMode) {
+        print('device token');
+        print(value);
+      }
+    });
   }
 
   scrollControllerListener() {

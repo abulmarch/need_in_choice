@@ -1,6 +1,7 @@
-import 'package:bloc/bloc.dart';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'work_time_event.dart';
 part 'work_time_state.dart';
@@ -16,7 +17,7 @@ class WorkTimeBloc extends Bloc<WorkTimeEvent, WorkTimeState> {
       }
 
       emit(WorkTimeLoadedState(daysList));
-      print('/////////////////////////$daysList');
+    
     });
     on<SetTimeRangeEvent>((event, emit) {
       final startTime = formatTime(event.selectedRange.startTime);

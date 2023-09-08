@@ -11,6 +11,7 @@ class AdsModel {
   final String mainCategory;
   final String createdDate;
   final String? profileImage;
+  final String expiratedDate;
 
   final List<String> images;
   final List otherimages;
@@ -27,7 +28,7 @@ class AdsModel {
 
   final String routeName;
 
-  AdsModel({
+  AdsModel( {
     required this.id,
     required this.userId,
     required this.adsTitle,
@@ -47,6 +48,7 @@ class AdsModel {
     required this.otherimages,
     this.adPrice,
     required this.routeName,
+    required this.expiratedDate,
   });
   factory AdsModel.fromJson(Map map) {
     log(map.toString());
@@ -61,6 +63,8 @@ class AdsModel {
         isPremium: map['is_premium'] == 1 ? true : false, // is_premium : 1, 0
         mainCategory: map['main_category'],
         createdDate: map['created_at'],
+        expiratedDate:map['ads_expiry_date'],
+
         profileImage: map['profile_image'],
         images: (map['images'] as List)
             .map((img) => img['url'] as String)

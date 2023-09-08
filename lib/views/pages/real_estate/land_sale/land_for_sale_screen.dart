@@ -332,8 +332,7 @@ class _LandForSaleScreenState extends State<LandForSaleScreen> {
                 padding: const EdgeInsets.only(
                     left: 20, right: 20, bottom: 20, top: 10),
                 child: ButtonWithRightSideIcon(onPressed: () {
-                  print(
-                      '=============================${land4saleLevel4Cat[_level4Cat.value]['cat_name']?.toLowerCase()}');
+                  
                   _saveChangesAndContinue(context);
                 }),
               )));

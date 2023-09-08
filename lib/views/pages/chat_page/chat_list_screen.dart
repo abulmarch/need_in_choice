@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:need_in_choice/config/theme/screen_size.dart';
 import '../../../services/model/chat_connection_model.dart';
+import '../../../services/model/chat_message.dart';
 import '../../../services/model/chat_user_model.dart';
 import '../../../services/repositories/firestore_chat.dart';
 import '../../../services/repositories/repository_urls.dart'
@@ -10,7 +12,6 @@ import '../../../services/repositories/repository_urls.dart'
 import '../../../utils/colors.dart';
 import '../../../utils/constants.dart';
 import '../../widgets_refactored/dashed_line_generator.dart';
-import '../../widgets_refactored/search_form_field.dart';
 import 'chating_view.dart';
 
 class ChatListScreen extends StatefulWidget {
@@ -23,10 +24,12 @@ class ChatListScreen extends StatefulWidget {
 class _ChatListScreenState extends State<ChatListScreen> {
   List<ChatConnectionModel> _chatConnList = [];
 
+  bool hasViewedMessages = false;
+
   @override
   Widget build(BuildContext context) {
     final height = ScreenSize.height;
-    log('=========:::::::::::==============');
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SafeArea(
@@ -113,7 +116,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
             _chatConnList = snapshot.data!.docs
-                .map((querySnap) => ChatConnectionModel.fromJson(querySnap.data(), querySnap.id))
+                .map((querySnap) => ChatConnectionModel.fromJson(
+                    querySnap.data(), querySnap.id))
                 .toList();
             return StreamBuilder(
                 stream: FireStoreChat.filterUsersFromChar(_chatConnList),
@@ -128,31 +132,36 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       padding: const EdgeInsets.all(8.0),
                       itemCount: _chatConnList.length,
                       itemBuilder: (context, index) {
-                        String chattingPartnerUid = _chatConnList[index].chattingPartnerUid();
+                        String chattingPartnerUid =
+                            _chatConnList[index].chattingPartnerUid();
                         ChatUser? user;
                         try {
-                          user = usersList.firstWhere((element) => element.uid == chattingPartnerUid);
-                        } catch (e) { log('user = usersList.firstWhere :  $e'); }
+                          user = usersList.firstWhere(
+                              (element) => element.uid == chattingPartnerUid);
+                        } catch (e) {
+                          log('user = usersList.firstWhere :  $e');
+                        }
                         return _chatCard(
                           height: height,
                           context: context,
                           constraints: constraints,
                           chatConn: _chatConnList[index],
-                          user: user, //usersList.any((element) => element.uid == chattingPartnerUid ? element.isOnline : false),
+                          user:
+                              user, //usersList.any((element) => element.uid == chattingPartnerUid ? element.isOnline : false),
                         );
                       });
                 });
           } else {
             _chatConnList = [];
             return Center(
-                    child: Text(
-                      'No chat available',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
-                          ?.copyWith(color: kLightGreyColor),
-                    ),
-                  );
+              child: Text(
+                'No chat available',
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(color: kLightGreyColor),
+              ),
+            );
           }
         });
   }
@@ -183,6 +192,17 @@ class _ChatListScreenState extends State<ChatListScreen> {
     required ChatConnectionModel chatConn,
     ChatUser? user,
   }) {
+    StreamController<int> countStreamController = StreamController();
+
+    if (!hasViewedMessages) {
+      getUnreadMsgCount(
+        chatConn: chatConn,
+        countStreamController: countStreamController,
+      );
+    } else {
+      countStreamController.add(0);
+    }
+
     return Column(
       children: [
         SizedBox(
@@ -199,25 +219,31 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     height: height * 0.08,
                     width: 60,
                     padding: const EdgeInsets.all(4.0),
-                    child: Image.network(
-                      '$imageUrlEndpoint/${chatConn.adsImage}',
-                      fit: BoxFit.cover,
-                    ),
+                    child: chatConn.adsImage.isNotEmpty
+                        ? const SizedBox()
+                        : Image.network(
+                            '$imageUrlEndpoint/${chatConn.adsImage}',
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
                 kWidth10,
                 InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ChatingView(
-                              chatConn: chatConn,
-                            )));
+                  onTap: () async {
+                    await Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      hasViewedMessages = true;
+                      return ChatingView(
+                        chatConn: chatConn,
+                      );
+                    }));
+                    countStreamController.add(0);
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        user?.name ?? '',//'Anjitha',
+                        user?.name ?? '', //'Anjitha',
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                             color: kBlackColor,
                             fontWeight: FontWeight.w700,
@@ -237,12 +263,34 @@ class _ChatListScreenState extends State<ChatListScreen> {
                             color: kDottedBorder,
                           )),
                       kHeight5,
-                      Text(
-                        '',//'we agreed on Rs 353453',
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: kPrimaryColor,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 9),
+                      SizedBox(
+                        width: constraints.maxWidth - 200,
+                        child: StreamBuilder(
+                            stream: FireStoreChat.getUserLastChatMessage(
+                                receiverUid: chatConn.chattingPartnerUid(),
+                                adId: chatConn.adId),
+                            builder: (context, snapshot) {
+                              String lastMessage = '';
+                              if (snapshot.hasData) {
+                                final data = snapshot.data?.docs
+                                    .map((e) => ChatMessage.fromJson(e.data()))
+                                    .toList();
+                                if (data != null && data.isNotEmpty) {
+                                  lastMessage = data.last.msg;
+                                }
+                              }
+                              return Text(
+                                lastMessage, //'we agreed on Rs 353453',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleSmall
+                                    ?.copyWith(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 9),
+                                overflow: TextOverflow.ellipsis,
+                              );
+                            }),
                       ),
                     ],
                   ),
@@ -255,18 +303,43 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   children: [
                     InkWell(
                         onTap: () {
-                          // _show(
-                          //   ctx: context,
-                          //   chatConn: chatConn,
-                          // );
+                          _show(
+                            ctx: context,
+                            chatConn: chatConn,
+                          );
                         },
                         child: Image.asset('assets/images/icons/Burger.png')),
                     kHeight10,
-                    Icon(
-                      Icons.circle,
-                      size: 15,
-                      color: (user?.isOnline ?? false) ? kGreenColor : Colors.transparent,
-                    )
+                    StreamBuilder<int>(
+                        stream: countStreamController.stream,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            int count = snapshot.data ?? 0;
+                            log('count:     $count');
+                            if (count > 0) {
+                              return Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.circle,
+                                    size: 25,
+                                    color: kGreenColor,
+                                  ),
+                                  Text(
+                                    '$count',
+                                    style: const TextStyle(
+                                        color: kWhiteColor, fontSize: 11),
+                                  )
+                                ],
+                              );
+                            }
+                          }
+                          return const Icon(
+                            Icons.circle,
+                            size: 25,
+                            color: Colors.transparent,
+                          );
+                        })
                   ],
                 )
               ],
@@ -284,7 +357,17 @@ class _ChatListScreenState extends State<ChatListScreen> {
     );
   }
 
-  void _show({required BuildContext ctx, required ChatConnectionModel chatConn}) {
+  void getUnreadMsgCount({
+    required ChatConnectionModel chatConn,
+    required StreamController<int> countStreamController,
+  }) async {
+    final count = await FireStoreChat.getUserUnreadChatCount(
+        receiverUid: chatConn.chattingPartnerUid(), adId: chatConn.adId);
+    countStreamController.add(count);
+  }
+
+  void _show(
+      {required BuildContext ctx, required ChatConnectionModel chatConn}) {
     final double height = ScreenSize.height;
     final double width = ScreenSize.width;
 
@@ -348,7 +431,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   const Spacer(),
                   GestureDetector(
                     onTap: () {
-                      FireStoreChat.deleteChatConnection(chatConn: chatConn);
+                        FireStoreChat.deleteChatConnection(chatConn: chatConn);
                       Navigator.pop(context);
                     },
                     child: Container(

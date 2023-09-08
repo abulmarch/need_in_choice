@@ -8,7 +8,6 @@ import '../../../../utils/level4_category_data.dart';
 import '../../../widgets_refactored/circular_back_button.dart';
 import '../../../widgets_refactored/custom_text_field.dart';
 import '../../../widgets_refactored/dashed_line_generator.dart';
-import '../../real_estate/building_sale/commercial_building_sale.dart';
 import '../../../widgets_refactored/condinue_button.dart';
 import '../../../widgets_refactored/custom_dropdown_button.dart';
 
