@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io' show File;
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/svg.dart' show SvgPicture;
 import 'package:image_picker/image_picker.dart' show XFile;
 
@@ -204,20 +205,13 @@ class _AdConfirmScreenState extends State<AdConfirmScreen> {
                                                 BorderRadius.circular(10)),
                                         clipBehavior:
                                             Clip.antiAliasWithSaveLayer,
-                                        child: adImages[index].runtimeType ==
-                                                String
-                                            ? Image.network(
-                                                '$imageUrlEndpoint${adImages[index]}',
+                                        child: adImages[index].runtimeType == String
+                                            ? CachedNetworkImage(
+                                                imageUrl: "$imageUrlEndpoint${adImages[index]}",
+                                                placeholder: (context, url) => Icon(Icons.image,color: kLightGreyColor.withOpacity(0.5),size: 80),
+                                                errorWidget: (context, url, error) => Icon(Icons.image,color: kLightGreyColor.withOpacity(0.5),size: 80),
                                                 fit: BoxFit.cover,
-                                                width: 70,
-                                                height: 70,
-                                                errorBuilder: (context, error,
-                                                        stackTrace) =>
-                                                    const Icon(Icons.image),
-                                                // loadingBuilder: (context, child, loadingProgress) {
-                                                //   if(loadingProgress == null) return child;
-                                                //     return const Center(child: CircularProgressIndicator(color: kBlackColor,));
-                                                // },
+                                                height: 70,width: 70,
                                               )
                                             : Image.file(
                                                 File((adImages[index] as XFile)

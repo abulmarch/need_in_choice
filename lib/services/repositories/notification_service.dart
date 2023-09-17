@@ -1,10 +1,17 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:need_in_choice/config/routes/route_names.dart';
+import 'package:need_in_choice/services/repositories/firestore_chat.dart';
 import '../../views/pages/chat_page/chating_view.dart';
+import '../../views/pages/home_page/widgets.dart/bottom_navigation_bar.dart';
+
+
+
 
 class NotificationServices {
   final messaging = FirebaseMessaging.instance;
@@ -60,7 +67,7 @@ class NotificationServices {
     FirebaseMessaging.onMessage.listen((message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification!.android;
-
+      MessageCount.mesgCount.value = !MessageCount.mesgCount.value;
       if (kDebugMode) {
         print("notifications title:${notification!.title}");
         print("notifications body:${notification.body}");
@@ -133,20 +140,18 @@ class NotificationServices {
   }
 
   void handleMessage(BuildContext context, RemoteMessage message) {
-    if (message.data['type'] == 'chat notification') {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ChatingView(
-                    chatConnectionId: message.data['chatConnectionId'],
-                  )));
-     
+    if (FirebaseAuth.instance.currentUser!= null) {
+      FireStoreChat.init();
+      if (message.data['type'] == 'chat notification') {
+        Navigator.push(context,MaterialPageRoute(builder: (context) => ChatingView(chatConnectionId: message.data['chatConnectionId'],)));
+      }      
+    }else{
+      Navigator.popAndPushNamed(context, splashScreen);
     }
   }
 
   Future forgroundMessage() async {
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,

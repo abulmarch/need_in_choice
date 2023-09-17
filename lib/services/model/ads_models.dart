@@ -27,8 +27,9 @@ class AdsModel {
   final dynamic adPrice;
 
   final String routeName;
+  final String adStatus;
 
-  AdsModel( {
+  AdsModel({
     required this.id,
     required this.userId,
     required this.adsTitle,
@@ -49,9 +50,9 @@ class AdsModel {
     this.adPrice,
     required this.routeName,
     required this.expiratedDate,
+    required this.adStatus,
   });
   factory AdsModel.fromJson(Map map) {
-    log(map.toString());
     try {
       final mainCategory = map['main_category'];
       return AdsModel(
@@ -80,6 +81,7 @@ class AdsModel {
             .removeEmptyValue(), //map[mainCategory]['more_info'],//
         adPrice: map['ad_price'],
         routeName: map['route_name'],
+        adStatus: map['ads_status'],
       );
     } catch (e) {
       log(e.toString());
@@ -98,6 +100,36 @@ class AdsModel {
       'images': adsModel.images,
       'realestate': adsModel.categoryInfo,
     };
+  }
+  AdsModel copyWith({
+    bool? isPremium,
+    String? expiratedDate,
+    String? adStatus,
+  }){
+    return AdsModel(
+      id: id, 
+      userId: userId, 
+      adsTitle: adsTitle, 
+      description: description, 
+      mainCategory: mainCategory, 
+      createdDate: createdDate, 
+      images: images, 
+      categoryInfo: categoryInfo, 
+      timeAgo: timeAgo, 
+      phoneNo: phoneNo, 
+      userName: userName, 
+      primaryData: primaryData, 
+      moreInfoData: moreInfoData, 
+      otherimages: otherimages, 
+      routeName: routeName,
+      adPrice: adPrice,
+      profileImage: profileImage,
+      whatsappNo: whatsappNo,
+
+      isPremium: isPremium ?? this.isPremium, 
+      expiratedDate: expiratedDate ?? this.expiratedDate,
+      adStatus: adStatus ?? this.adStatus,
+    );
   }
 
   @override
@@ -119,7 +151,8 @@ class AdsModel {
     categoryInfo : $categoryInfo
 
     userName : $userName
-    
+    adStatus: $adStatus
+    expiratedDate: $expiratedDate
 
     ''';
   }

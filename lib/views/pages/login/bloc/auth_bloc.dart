@@ -71,8 +71,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  FutureOr<void> _onVerifyOtp(
-      VerifySentOtpEvent event, Emitter<AuthState> emit) async {
+  FutureOr<void> _onVerifyOtp( VerifySentOtpEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
@@ -92,6 +91,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           .signInWithCredential(event.credential)
           .then((user) {
         if (user.user != null) {
+          FireStoreChat.init();
           emit(AuthVerified(user.user));
         } else {
           emit(AuthNotVerified());
@@ -107,6 +107,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   FutureOr<void> _signout(SignOutEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
+      
+      await FireStoreChat.clearFirestoreInstance();
+      FireStoreChat.dispose();
       await authrepo.signOut();
       emit(AuthSignoutState());
     } catch (e) {
@@ -145,7 +148,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (isInternetAvailable) {
           final accountData = await authrepo.fetchAccountsData(uid);
           if (accountData != null) {
-            log.log(accountData.toString());
+            FireStoreChat.init();
             emit(AuthLoggedIn(accountData));
           } else {
             emit(AuthNotLoggedIn());
@@ -167,8 +170,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       AuthCraetionEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      bool accountCreated =
-          await authrepo.createAccount(postData: event.accountModels);
+      log.log(event.accountModels.toString());
+      bool accountCreated = await authrepo.createAccount(postData: event.accountModels);
       if (accountCreated) {
         AccountSingleton().setAccountModels = event.accountModels;
         //create user data in firebase for chating feature

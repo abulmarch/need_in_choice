@@ -202,6 +202,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     } else {
       countStreamController.add(0);
     }
+    log('$imageUrlEndpoint${chatConn.adsImage}');
 
     return Column(
       children: [
@@ -219,10 +220,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     height: height * 0.08,
                     width: 60,
                     padding: const EdgeInsets.all(4.0),
-                    child: chatConn.adsImage.isNotEmpty
+                    child: chatConn.adsImage.isEmpty
                         ? const SizedBox()
                         : Image.network(
-                            '$imageUrlEndpoint/${chatConn.adsImage}',
+                            '$imageUrlEndpoint${chatConn.adsImage}',
                             fit: BoxFit.cover,
                           ),
                   ),

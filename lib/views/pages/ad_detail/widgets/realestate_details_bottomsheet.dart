@@ -34,14 +34,12 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     String phoneMessengerPhoneNumber = adsModel.phoneNo;
     String? whatsappPhoneNumber = adsModel.whatsappNo;
-    String messageText =
-        'Hello, I am ${adsModel.userName}.I saw your advertisement on the NIC app. Could you please provide me with more details? Thank you!"';
+    String messageText = 'Hello, I am ${adsModel.userName}.I saw your advertisement on the NIC app. Could you please provide me with more details? Thank you!"';
 
     Widget adPriceWidget = const SizedBox();
 
     if (adsModel.adPrice is Map) {
-      if (adsModel.adPrice.containsKey('Start Price') &&
-          adsModel.adPrice.containsKey('Prebid')) {
+      if (adsModel.adPrice.containsKey('Start Price') && adsModel.adPrice.containsKey('Prebid')) {
         adPriceWidget = Column(
           children: [
             RichText(
@@ -304,63 +302,22 @@ class RealEstateDetailsBottomSheet extends StatelessWidget {
                                 children: [
                                   adPriceWidget,
                                   IconWithButton(
-                                      onpressed: FirebaseAuth
-                                                  .instance.currentUser!.uid !=
-                                              adsModel.userId
+                                      onpressed: FirebaseAuth.instance.currentUser!.uid != adsModel.userId
                                           ? () async {
-                                              await FireStoreChat
-                                                      .checkChatAllreadyGenerated(
-                                                          creatorId:
-                                                              adsModel.userId,
-                                                          selectedAdId:
-                                                              adsModel.id)
-                                                  .then((chatConn) async {
+                                              await FireStoreChat.checkChatAllreadyGenerated(creatorId:adsModel.userId,selectedAdId:adsModel.id).then((chatConn) async {
                                                 if (chatConn == null) {
                                                   FireStoreChat.generateNewChat(
-                                                    adCreatorUid:
-                                                        adsModel.userId,
-                                                    selectedAdId: adsModel.id,
-                                                    adImgUrl: adsModel
-                                                            .images.isNotEmpty
-                                                        ? adsModel.images.first
-                                                        : '',
-                                                    adTitle: adsModel.adsTitle,
-                                                  ).then(
-                                                      (chatConnectionModel) async {
-                                                    if (chatConnectionModel !=
-                                                        null) {
-                                                      /*06/09/2023*/
-                                                      FireStoreChat.findCurrentChatUser(
-                                                              chatConnectionModel
-                                                                  .chattingPartnerUid())
-                                                          .then((chatUser) {
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  ChatingView(
-                                                                      chatConn:
-                                                                          chatConnectionModel,
-                                                                      isFirstMessage:
-                                                                          true,
-                                                                      user:
-                                                                          chatUser),
-                                                            ));
-                                                      });
+                                                    adsModel: adsModel
+                                                  ).then((chatConnectionModel) async {
+                                                    if (chatConnectionModel != null) {
+                                                        Navigator.push(context,MaterialPageRoute(builder: (context) =>ChatingView(chatConn:chatConnectionModel,isFirstMessage:true,),));
+
                                                     } else {
-                                                      showErrorDialog(context,
-                                                          'Something went wrong');
+                                                      showErrorDialog(context,'Something went wrong');
                                                     }
                                                   });
                                                 } else {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ChatingView(
-                                                          chatConn: chatConn,
-                                                        ),
-                                                      ));
+                                                  Navigator.push(context,MaterialPageRoute(builder: (context) =>ChatingView(chatConn: chatConn,),));
                                                 }
                                               });
                                             }

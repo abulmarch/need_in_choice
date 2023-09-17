@@ -8,9 +8,11 @@ import 'package:need_in_choice/views/pages/home_page/home_screen.dart';
 import 'package:need_in_choice/views/pages/home_page/show_category_bottomsheet.dart';
 import 'package:need_in_choice/views/pages/home_page/widgets.dart/bottom_navigation_bar.dart';
 import '../../../blocs/all_ads_bloc/all_ads_bloc.dart';
+import '../../../blocs/bottom_navigation_cubit/bottom_navigation_cubit.dart';
 import '../../../services/repositories/all_ads_services.dart';
 import '../../../services/repositories/firestore_chat.dart';
 import '../chat_page/chat_list_screen.dart';
+
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key, this.selectIndex = 0});
@@ -20,14 +22,13 @@ class MainNavigationScreen extends StatefulWidget {
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
-class _MainNavigationScreenState extends State<MainNavigationScreen>
-    with WidgetsBindingObserver {
+class _MainNavigationScreenState extends State<MainNavigationScreen> with WidgetsBindingObserver {
   final _pages = const <Widget>[
     HomePageScreen(),
     ChatListScreen()
     // ChatView()
   ];
-
+  Map<String, dynamic>? paymentIntent;
   @override
   void initState() {
     super.initState();
@@ -49,22 +50,29 @@ class _MainNavigationScreenState extends State<MainNavigationScreen>
 
   @override
   Widget build(BuildContext context) {
-    log('------------******-----------');
-    indexChangeNotifier.value = widget.selectIndex;
-    return BlocProvider(
-      create: (context) => AllAdsBloc(AllAdsRepo())
-        ..add(const FetchAllAds(typeOfFetching: AdsFetchingType.fetchAllAds)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AllAdsBloc(AllAdsRepo())
+            ..add(
+                const FetchAllAds(typeOfFetching: AdsFetchingType.fetchAllAds)),
+        ),
+        BlocProvider(
+          create: (context) => BottomNavigationCubit(),
+        ),
+      ],
       child: Builder(builder: (context) {
         return WillPopScope(
           onWillPop: () {
-            if (indexChangeNotifier.value == 0 ) {
+            int currentTab = BlocProvider.of<BottomNavigationCubit>(context).state.props.first as int;
+            if (currentTab == 0) {
               if (HomePageScreen.selectMainCategory.value > -1 || context.read<AllAdsBloc>().fetchingType != AdsFetchingType.fetchAllAds) {
                 HomePageScreen.selectMainCategory.value = -1;
                 context.read<AllAdsBloc>().add(BackToFetchAllAds());
                 return Future.value(false);
               }
-            } else if (indexChangeNotifier.value != 0) {
-              indexChangeNotifier.value = 0;
+            } else {
+              BlocProvider.of<BottomNavigationCubit>(context).changeTab(0);
               return Future.value(false);
             }
             return Future.value(true);
@@ -73,9 +81,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen>
               resizeToAvoidBottomInset: false,
               backgroundColor: const Color(0xFFFFFFFF),
               body: SafeArea(
-                child: ValueListenableBuilder<int>(
-                  valueListenable: indexChangeNotifier,
-                  builder: (context, currentIndex, _) => _pages[currentIndex],
+                child: BlocBuilder<BottomNavigationCubit, BottomNavigationState>(
+                  builder: (context, state) {
+                    final index = state.props.first as int;
+                    return _pages[index];
+                  },
                 ),
               ),
               floatingActionButton: Container(
@@ -109,6 +119,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen>
                     ),
                   ]),
                   onPressed: () {
+                    // makePayment();
                     showModalBottomSheet(
                       context: context,
                       builder: (context) => const ShowCatogoryBottomSheet(

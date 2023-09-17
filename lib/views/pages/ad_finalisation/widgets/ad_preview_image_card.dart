@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -39,40 +40,55 @@ class AdPreviewImageCard extends StatelessWidget {
               height: screenSize.width,
               width: screenSize.width,
               child: imageList[index].runtimeType == String
-                  ? Image.network(
-                      '$imageUrlEndpoint${imageList[index]}',
-                      fit: BoxFit.cover,
-                      loadingBuilder: (BuildContext context, Widget child,
-                          ImageChunkEvent? loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        }
-                        return SizedBox(
-                          width: double.infinity,
-                          height: screenSize.width,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
-                            ),
-                          ),
-                        );
-                      },
-                      errorBuilder: (BuildContext context, Object error,
-                              StackTrace? stackTrace) =>
-                          DecoratedBox(
+                  ? CachedNetworkImage(
+                    imageUrl: "$imageUrlEndpoint${imageList[index]}.33",
+                    placeholder: (context, url) => Icon(Icons.image,color: kLightGreyColor.withOpacity(0.5),size: 80),
+                    errorWidget: (context, url, error) => DecoratedBox(
                         decoration: BoxDecoration(
                             border: Border.all(color: kGreyColor),
-                            color: kLightGreyColor.withOpacity(0.6)),
+                            color: kLightGreyColor.withOpacity(0.5)),
                         child: const Icon(
                           Icons.image,
                           size: 80,
                           color: kGreyColor,
                         ),
                       ),
-                    )
+                    fit: BoxFit.cover,
+                  )
+                  // Image.network(
+                  //     '$imageUrlEndpoint${imageList[index]}',
+                  //     fit: BoxFit.cover,
+                  //     loadingBuilder: (BuildContext context, Widget child,
+                  //         ImageChunkEvent? loadingProgress) {
+                  //       if (loadingProgress == null) {
+                  //         return child;
+                  //       }
+                  //       return SizedBox(
+                  //         width: double.infinity,
+                  //         height: screenSize.width,
+                  //         child: Center(
+                  //           child: CircularProgressIndicator(
+                  //             value: loadingProgress.expectedTotalBytes != null
+                  //                 ? loadingProgress.cumulativeBytesLoaded /
+                  //                     loadingProgress.expectedTotalBytes!
+                  //                 : null,
+                  //           ),
+                  //         ),
+                  //       );
+                  //     },
+                  //     errorBuilder: (BuildContext context, Object error,
+                  //             StackTrace? stackTrace) =>
+                  //         DecoratedBox(
+                  //       decoration: BoxDecoration(
+                  //           border: Border.all(color: kGreyColor),
+                  //           color: kLightGreyColor.withOpacity(0.6)),
+                  //       child: const Icon(
+                  //         Icons.image,
+                  //         size: 80,
+                  //         color: kGreyColor,
+                  //       ),
+                  //     ),
+                  //   )
                   : Image.file(
                       File((imageList[index] as XFile).path),
                       fit: BoxFit.cover,

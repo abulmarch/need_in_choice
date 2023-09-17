@@ -139,7 +139,6 @@ class _SplashScreenState extends State<SplashScreen>
                 kHeight20,
                 BlocConsumer<AuthBloc, AuthState>(
                   listener: (context, state) {
-                    log('*****----$state---**********');
                     if (state is NoInternet) {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(

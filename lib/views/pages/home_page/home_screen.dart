@@ -1,6 +1,5 @@
 import 'dart:developer';
-
-import 'package:flutter/foundation.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +23,10 @@ import 'location_select.dart';
 import 'show_category_bottomsheet.dart';
 import 'widgets.dart/advertisement_card_widget.dart';
 import 'widgets.dart/scrolling_category.dart';
+
+
+
+
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
@@ -61,12 +64,9 @@ NotificationServices notificationServices = NotificationServices();
     notificationServices.forgroundMessage();
     notificationServices.setupInteractMessage(context);
     notificationServices.isTokenRefresh();
-
+    
     notificationServices.getDeviceToken().then((value) {
-      if (kDebugMode) {
-        print('device token');
-        print(value);
-      }
+        log('device token $value');
     });
   }
 
@@ -290,6 +290,7 @@ NotificationServices notificationServices = NotificationServices();
               imageSize: imageSize,
               adsImageUrlList: adsModel.images,
               timeAgo: adsModel.timeAgo,
+              isPremium: adsModel.isPremium,
             ),
           ),
 
@@ -384,24 +385,15 @@ NotificationServices notificationServices = NotificationServices();
                       child: CircleAvatar(
                         maxRadius: 13,
                         child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(15)),
-                            child: Image.network(
-                              '$imageUrlEndpoint${adsModel.profileImage}',
-                              height: 26,
-                              width: 26,
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Image.asset(
-                                    'assets/images/profile/no_profile_img.png');
-                              },
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Image.asset(
-                                      'assets/images/profile/no_profile_img.png'),
+                            borderRadius: const BorderRadius.all(Radius.circular(15)),
+                            child: CachedNetworkImage(
+                              imageUrl: "$imageUrlEndpoint${adsModel.profileImage}",
+                              placeholder: (context, url) => Image.asset('assets/images/profile/no_profile_img.png'),
+                              errorWidget: (context, url, error) => Image.asset('assets/images/profile/no_profile_img.png'),
                               fit: BoxFit.cover,
-                            ) //(adsModel.profileImage ?? '').isNotEmpty ? : Image.asset('assets/images/profile/no_profile_img.png',fit: BoxFit.cover),
+                              height: 26,width: 26,
                             ),
+                        ),
                       ),
                     ),
                   ],
@@ -533,23 +525,15 @@ NotificationServices notificationServices = NotificationServices();
                         child: CircleAvatar(
                           maxRadius: 30,
                           child: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(30)),
-                              child: Image.network(
-                                '$imageUrlEndpoint${accountModels.profileImage??""}',
-                                fit: BoxFit.cover,
-                                width: 60,
-                                height: 60,
-                                loadingBuilder:
-                                    (context, child, loadingProgress) {
-                                  if (loadingProgress == null) return child;
-                                  return Image.asset(
-                                      'assets/images/profile/no_profile_img.png');
-                                },
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Image.asset(
-                                        'assets/images/profile/no_profile_img.png'),
-                              )),
+                            borderRadius: const BorderRadius.all(Radius.circular(30)),
+                            child: CachedNetworkImage(
+                              imageUrl: "$imageUrlEndpoint${accountModels.profileImage}",
+                              placeholder: (context, url) => Image.asset('assets/images/profile/no_profile_img.png'),
+                              errorWidget: (context, url, error) => Image.asset('assets/images/profile/no_profile_img.png'),
+                              fit: BoxFit.cover,
+                              height: 60,width: 60,
+                            ),
+                          ),
                         ),
                       ),
                       RichText(
@@ -725,11 +709,10 @@ NotificationServices notificationServices = NotificationServices();
   }
 
   void _searchFieldClicked() {
-    log('llllllllllllllllll');
     log('loglog   _scrollController.positions.first.maxScrollExtent : ${_scrollController.positions.first.maxScrollExtent}');
     _scrollController
         .animateTo(_scrollController.positions.first.maxScrollExtent,
-            duration: const Duration(milliseconds: 200), curve: Curves.bounceIn)
+            duration: const Duration(milliseconds: 400), curve: Curves.easeInCubic)
         .then((value) {
       log('loglog   _scrollController.positions.first.pixels : ${_scrollController.positions.first.pixels}');
       _secondTextFieldFocus.requestFocus();

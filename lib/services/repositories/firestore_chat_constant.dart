@@ -6,6 +6,7 @@ const kAdTitle = 'adTitle';
 const kConnectionGenUid = 'connectionGenUid';
 const kConnectionGenTime = 'connectionGenTime';
 const kIsChatDeleted = 'isChatDeleted';
+const kConversationId = 'conversationId';
 
 const kTableChats = 'chats';
 const kChatToId = 'toId';

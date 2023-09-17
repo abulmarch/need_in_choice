@@ -21,12 +21,9 @@ class ChatingViewCubit extends Cubit<ChatingViewState> {
       // sending first message if it is new connection
       if (isFirstMessage) {
         FireStoreChat.sendMessage(
-          msg:
-              'Hai, I am interested in this ad. Can you share me more details?',
-          toId: chatConn.chattingPartnerUid(),
-          adId: chatConn.adId,
-          fCMToken: chatUser?.pushToken??'', chatConnId: chatConn.connectionDocId??'',
-
+          msg: 'Hai, I am interested in this ad. Can you share me more details?',
+          fCMToken: chatUser?.pushToken??'',
+          chatConn: chatConn
         );
       }
       emit(ShowChatMessageState());

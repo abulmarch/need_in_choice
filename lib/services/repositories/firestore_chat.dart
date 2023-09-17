@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../model/account_model.dart';
+import '../model/ads_models.dart';
 import '../model/chat_connection_model.dart';
 import '../model/chat_message.dart';
 import '../model/chat_user_model.dart';
@@ -14,8 +15,27 @@ import 'firestore_chat_constant.dart';
 import 'key_information.dart';
 
 class FireStoreChat {
-  static FirebaseFirestore firestore = FirebaseFirestore.instance;
-  static User user = FirebaseAuth.instance.currentUser!;
+  static FirebaseFirestore? firestoreInstance;
+  static User? userData;
+
+  static FirebaseFirestore get firestore => firestoreInstance!;
+  static User get user => userData!;
+
+  static init(){
+    FireStoreChat.firestoreInstance = FirebaseFirestore.instance;
+    FireStoreChat.userData = FirebaseAuth.instance.currentUser!;
+  }
+  static dispose(){
+    FireStoreChat.firestoreInstance = null;
+    FireStoreChat.userData = null;
+  }
+  static clearFirestoreInstance() async {
+    try {
+      await FirebaseFirestore.instance.clearPersistence();
+    } catch (e) {
+      log('FirebaseFirestore.instance.clearPersistence : $e');
+    }
+  }
 
   Future<void> createChatUser({
     required String uid,
@@ -54,24 +74,23 @@ class FireStoreChat {
     }
   }
 
-  static Future<ChatConnectionModel?> generateNewChat(
-      {required String adCreatorUid,
-      required int selectedAdId,
-      required String adImgUrl,
-      required String adTitle}) async {
+  static Future<ChatConnectionModel?> generateNewChat({
+    required AdsModel adsModel,
+  }) async {
     try {
       final docPathTime = DateTime.now().microsecondsSinceEpoch.toString();
       final generatedTime = DateTime.now().millisecondsSinceEpoch.toString();
       final conn = ChatConnectionModel(
-        adId: selectedAdId,
-        adCreatorUid: adCreatorUid,
-        adsImage: adImgUrl,
-        adTitle: adTitle,
+        adId: adsModel.id,
+        adCreatorUid: adsModel.userId,
+        adsImage: adsModel.images.isNotEmpty? adsModel.images.first: '',
+        adTitle: adsModel.adsTitle,
         connectionGenUid: user.uid,
         connectionGenTime: generatedTime,
         isChatDeleted: false,
+        conversationId: getConversationID(chatingPartnerUid: adsModel.userId, adId: adsModel.id)
       );
-      log(conn.toJson().toString());
+      log("conn.toJson() : ${conn.toJson()}");
       await firestore
           .collection(kTableChatConnection)
           .doc(docPathTime)
@@ -86,8 +105,6 @@ class FireStoreChat {
   static Future<void> deleteChatConnection({
     required ChatConnectionModel chatConn,
   }) async {
-    final conversationId =
-        getConversationID(chatConn.chattingPartnerUid(), chatConn.adId);
     try {
       await firestore
           .collection(kTableChatConnection)
@@ -109,8 +126,7 @@ class FireStoreChat {
         .snapshots();
   }
 
-  static Future<ChatConnectionModel?> getChatConnectionFromId(
-      String chatConnectionId) async {
+  static Future<ChatConnectionModel?> getChatConnectionFromId(String chatConnectionId) async {
     try {
       final chatConnectiondata = await firestore
           .collection(kTableChatConnection)
@@ -124,6 +140,7 @@ class FireStoreChat {
       }
       return null;
     } catch (e) {
+      log('getChatConnectionFromId: $e');
       return null;
     }
   }
@@ -131,15 +148,13 @@ class FireStoreChat {
   static Future<void> sendMessage({
     required String msg,
     Type type = Type.text,
-    required String toId,
-    required int adId,
     required String fCMToken,
-    required String chatConnId,
+    required ChatConnectionModel chatConn,
   }) async {
     //message sending time (also used as id)
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     final ChatMessage message = ChatMessage(
-        toId: toId,
+        toId: chatConn.chattingPartnerUid(),
         msg: msg,
         read: '',
         type: type,
@@ -147,19 +162,18 @@ class FireStoreChat {
         sent: ChatTime(time));
 
     final ref = firestore
-        .collection('$kTableChats/${getConversationID(toId, adId)}/messages/');
+        .collection('$kTableChats/${chatConn.conversationId}/messages/');
     await ref.doc(time).set(message.toJson()).then((value) =>
-        FireStoreChat.sendMessageNotification(
-            fcmToken: fCMToken, chatConnId: chatConnId));
+        FireStoreChat.sendMessageNotification(fcmToken: fCMToken, chatConnId: chatConn.connectionDocId??''));
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getSelectedUserChats({
-    required String receiverUid,
-    required int adId,
+    required String conversationId,
+    // required int adId,
   }) {
     return firestore
         .collection(
-            '$kTableChats/${getConversationID(receiverUid, adId)}/messages/')
+            '$kTableChats/$conversationId/messages/')
         .orderBy('sent', descending: true)
         .snapshots();
   }
@@ -170,7 +184,7 @@ class FireStoreChat {
   }) {
     return firestore
         .collection(
-            '$kTableChats/${getConversationID(receiverUid, adId)}/messages/')
+            '$kTableChats/${getConversationID(chatingPartnerUid:receiverUid, adId:adId)}/messages/')
         .orderBy(kChatSent, descending: true)
         .limit(1)
         .snapshots();
@@ -183,7 +197,7 @@ class FireStoreChat {
     try {
       final countQuery = await firestore
           .collection(
-              '$kTableChats/${getConversationID(receiverUid, adId)}/messages/')
+              '$kTableChats/${getConversationID(chatingPartnerUid: receiverUid,adId: adId)}/messages/')
           .where(kChatRead, isEqualTo: '')
           .where(kChatToId, isEqualTo: user.uid)
           .count()
@@ -195,8 +209,35 @@ class FireStoreChat {
     }
   }
 
+  // static Future<List<ChatConnectionModel>> getAllChatConn() async {
+  //   try {
+  //     final result = await firestore.collection(kTableChatConnection)
+  //     .where(kConversationId, isGreaterThanOrEqualTo: user.uid).get();
+  //       final chatConnList = result.docs.map((chatCon) => ChatConnectionModel.fromJson(chatCon.data(), chatCon.id)).toList();
+  //       return chatConnList;
+  //   } catch (e) {
+  //     return [];
+  //   }
+  // }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllChatConn(){
+    return firestore.collection(kTableChatConnection)
+    .where(kConversationId, isGreaterThanOrEqualTo: user.uid)
+    .snapshots();
+  }
+
+  static Future<int> isThereNewMessage(List<ChatConnectionModel> chatConn) async{
+    int num = 0;
+    for (var conn in chatConn) {
+      final count = await firestore.collection('$kTableChats/${conn.conversationId}/messages').where(kChatRead,isEqualTo: '').where(kChatToId, isEqualTo: user.uid).count().get();
+      num = num + count.count;
+    }
+    return num;
+  }
+
   // for creating a new user
   static Future<void> createUser() async {
+    log('===============${user.uid}==== createUser ');
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     final token = await FirebaseMessaging.instance.getToken();
     String nammme = '';
@@ -215,7 +256,7 @@ class FireStoreChat {
         pushToken: token ?? '');
     log('-------------------------------->>>>');
     return await firestore
-        .collection('users')
+        .collection(kTableUsers)
         .doc(user.uid)
         .set(chatUser.toJson());
   }
@@ -242,7 +283,6 @@ class FireStoreChat {
   }
 
   static Future<ChatUser?> findCurrentChatUser(String uid) async {
-    /*06/09/2023*/
     try {
       final snapshotData = await firestore
           .collection(kTableUsers)
@@ -263,18 +303,21 @@ class FireStoreChat {
   }
 
   static Future<void> updateUserActiveStatus(bool isOnline) async {
-    firestore.collection(kTableUsers).doc(user.uid).update({
-      kUserIsOnline: isOnline,
-      kUserLastActive: DateTime.now().millisecondsSinceEpoch.toString(),
-    });
+    try {
+      log('======> ${user.uid} ');
+      firestore.collection(kTableUsers).doc(user.uid).update({
+        kUserIsOnline: isOnline,
+        kUserLastActive: DateTime.now().millisecondsSinceEpoch.toString(),
+      }).onError((error, stackTrace) => log("updateUserActiveStatus errroer: $error"));
+    } catch (e) {
+      log('updateUserActiveStatus: $e');
+    }
   }
 
   static Future<void> updateMessageReadStatus(
       {required ChatMessage message, required int adId}) async {
-    firestore
-        .collection(
-            '$kTableChats/${getConversationID(message.fromId, adId)}/messages/')
-        .doc(message.sent.toString())
+    firestore.collection('$kTableChats/${getConversationID(chatingPartnerUid: message.fromId, adId: adId)}/messages/')
+      .doc(message.sent.toString())
         .update({kChatRead: DateTime.now().millisecondsSinceEpoch.toString()});
   }
 
@@ -299,10 +342,10 @@ class FireStoreChat {
         });
   }
 
-  static String getConversationID(String id, int adId) =>
-      user.uid.hashCode <= id.hashCode
-          ? '${user.uid}_${adId}_$id'
-          : '${id}_${adId}_${user.uid}';
+  static String getConversationID({required String chatingPartnerUid, required int adId}) =>
+      user.uid.hashCode <= chatingPartnerUid.hashCode
+          ? '${user.uid}_${adId}_$chatingPartnerUid'
+          : '${chatingPartnerUid}_${adId}_${user.uid}';
 }
 
 enum ChatUserList { buying, selling }

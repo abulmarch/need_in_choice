@@ -38,14 +38,15 @@ class _ChatingViewState extends State<ChatingView> {
   ChatConnectionModel? chatConn;
   ChatUser? user;
   String? chatConnectionId;
-
+  late final FocusNode _secondTextFieldFocus;
   @override
   void initState() {
     super.initState();
     chatConn = widget.chatConn;
     chatConnectionId = widget.chatConnectionId;
     user = widget.user;
-    findChatUser();
+    _secondTextFieldFocus = FocusNode();
+    if( user== null) findChatUser();
   }
 
   findChatUser() async {
@@ -75,7 +76,8 @@ class _ChatingViewState extends State<ChatingView> {
                 chatConn: chatConn,
                 chatUser: user,
                 chatConnectionId: chatConnectionId,
-                isFirstMessage: widget.isFirstMessage),
+                isFirstMessage: widget.isFirstMessage,
+            ),
         ),
       ],
       child: Column(children: [
@@ -251,18 +253,10 @@ class _ChatingViewState extends State<ChatingView> {
               } else if (state is ChatConnectionFetchedState) {
                 chatConn = state.chatConnection;
               }
-              BlocProvider.of<ChatAppBarAdCubit>(context)
-                  .fetchAdDataOfSelectedChat(adId: chatConn!.adId);
+              BlocProvider.of<ChatAppBarAdCubit>(context).fetchAdDataOfSelectedChat(adId: chatConn!.adId);
               return StreamBuilder(
-                  stream: FireStoreChat.getSelectedUserChats(
-                    adId: chatConn!.adId,
-                    receiverUid: chatConn!.chattingPartnerUid(),
-                  ),
+                  stream: FireStoreChat.getSelectedUserChats(conversationId: chatConn!.conversationId),
                   builder: (context, snapshot) {
-                    // if (snapshot.connectionState == ConnectionState.waiting ||
-                    //     snapshot.connectionState == ConnectionState.none) {
-                    //   return LottieWidget.loading();
-                    // }
                     if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                       chatMsgList = snapshot.data!.docs
                           .map(
@@ -328,6 +322,7 @@ class _ChatingViewState extends State<ChatingView> {
           ),
           child: TextFormField(
             controller: textMessageController,
+            focusNode: _secondTextFieldFocus,
             decoration: InputDecoration(
               hintText: "Type your Message here",
               contentPadding: const EdgeInsets.all(10),
@@ -361,13 +356,11 @@ class _ChatingViewState extends State<ChatingView> {
                       if (textMessageController.text.trim().isEmpty) return;
                       FireStoreChat.sendMessage(
                         msg: textMessageController.text,
-                        toId: chatConn!.chattingPartnerUid(),
-                        adId: chatConn!.adId,
+                        chatConn: chatConn!,
                         fCMToken: user?.pushToken ?? '',
-                        chatConnId: chatConn?.connectionDocId ?? '',
                       );
                       textMessageController.clear();
-                     
+                     _secondTextFieldFocus.requestFocus();
                     },
                   ),
                 ),
@@ -451,5 +444,11 @@ class _ChatingViewState extends State<ChatingView> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _secondTextFieldFocus.dispose();
+    super.dispose();
   }
 }

@@ -11,16 +11,19 @@ class ChatConnectionModel {
   final String connectionGenTime;
   final String? connectionDocId;
   final bool isChatDeleted;
+  final String conversationId;
 
-  ChatConnectionModel(
-      {required this.adId,
-      required this.adCreatorUid,
-      required this.adsImage,
-      required this.adTitle,
-      required this.connectionGenUid,
-      required this.connectionGenTime,
-      this.connectionDocId,
-      required this.isChatDeleted});
+  ChatConnectionModel({
+    required this.adId,
+    required this.adCreatorUid,
+    required this.adsImage,
+    required this.adTitle,
+    required this.connectionGenUid,
+    required this.connectionGenTime,
+    this.connectionDocId,
+    required this.isChatDeleted,
+    required this.conversationId,
+  });
   factory ChatConnectionModel.fromJson(
       Map<String, dynamic> json, String? chatConnectionId) {
     return ChatConnectionModel(
@@ -31,7 +34,9 @@ class ChatConnectionModel {
         connectionGenUid: json[kConnectionGenUid],
         connectionGenTime: json[kConnectionGenTime],
         connectionDocId: chatConnectionId,
-        isChatDeleted: json[kIsChatDeleted]);
+        isChatDeleted: json[kIsChatDeleted],
+        conversationId: json[kConversationId]??""
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -42,7 +47,8 @@ class ChatConnectionModel {
       kAdTitle: adTitle,
       kConnectionGenUid: connectionGenUid,
       kConnectionGenTime: connectionGenTime,
-      kIsChatDeleted: isChatDeleted
+      kIsChatDeleted: isChatDeleted,
+      kConversationId: conversationId,
     };
   }
 }

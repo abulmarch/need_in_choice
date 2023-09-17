@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -11,12 +12,14 @@ class AdvertisementWidget extends StatelessWidget {
     required this.imageSize,
     required this.adsImageUrlList,
     required this.timeAgo,
+    required this.isPremium,
   });
 
   final double imageSize;
   final List<String> adsImageUrlList;
   final String timeAgo;
   final PageController controller = PageController();
+  final bool isPremium;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -30,15 +33,12 @@ class AdvertisementWidget extends StatelessWidget {
                   controller: controller,
                   itemCount: adsImageUrlList.length,
                   itemBuilder: (context, index) => ClipRRect(
-                    borderRadius:
-                        const BorderRadius.all(Radius.circular(kpadding10)),
-                    child: Image.network(
-                      '$imageUrlEndpoint${adsImageUrlList[index]}',
+                    borderRadius: const BorderRadius.all(Radius.circular(kpadding10)),
+                    child: CachedNetworkImage(
+                      imageUrl: "$imageUrlEndpoint${adsImageUrlList[index]}",
+                      placeholder: (context, url) => const SizedBox(),
+                      errorWidget: (context, url, error) => const Icon(Icons.image,color: kLightGreyColor,size: 75),
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Image.asset(
-                        kNoAdImage,
-                        fit: BoxFit.cover,
-                      ),
                     ),
                   ),
                 )
@@ -110,6 +110,11 @@ class AdvertisementWidget extends StatelessWidget {
                         ))),
               )
             : const SizedBox(),
+            isPremium? const Positioned(
+              top: 5,
+              left: 5,
+              child: Icon(Icons.verified,size: 20,color: kPrimaryColor,)
+            ) : const SizedBox(),
       ],
     );
   }

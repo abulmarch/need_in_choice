@@ -19,9 +19,9 @@ class LottieWidget extends StatelessWidget {
     required this.lottiePathName,
     required this.size,
   });
-  LottieWidget.loading({super.key, this.size = 200}) : lottiePathName = LottieCollections.loading;
-  LottieWidget.noData({super.key, this.size = 200}) : lottiePathName = LottieCollections.noData;
-  LottieWidget.comingsoon({super.key, this.size = 200}) : lottiePathName = LottieCollections.comingsoon;
+  LottieWidget.loading({super.key, this.size = 180}) : lottiePathName = LottieCollections.loading;
+  LottieWidget.noData({super.key, this.size = 180}) : lottiePathName = LottieCollections.noData;
+  LottieWidget.comingsoon({super.key, this.size = 180}) : lottiePathName = LottieCollections.comingsoon;
 
   final double size;
   final String lottiePathName;

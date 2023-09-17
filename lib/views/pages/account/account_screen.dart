@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:need_in_choice/services/model/ads_models.dart';
+import 'package:need_in_choice/views/pages/account/ad_card_cubit/ad_card_cubit.dart';
 import 'package:need_in_choice/views/pages/account/bloc/account_page_bloc.dart';
 import 'package:need_in_choice/views/pages/account/widgets/ad_tiles.dart';
 import 'package:need_in_choice/views/pages/login/bloc/auth_bloc.dart';
@@ -68,7 +69,8 @@ class _AccountScreenState extends State<AccountScreen> {
                           hintText: 'Search your Ads',
                           controller: searchController,
                           onChanged: (value) {
-                            context.read<AccountPageBloc>().add(SearchEvent(adsList: adsData, searchText: value));
+                            context.read<AccountPageBloc>().add(SearchEvent(
+                                adsList: adsData, searchText: value));
                           },
                         ),
                       ),
@@ -82,12 +84,21 @@ class _AccountScreenState extends State<AccountScreen> {
                           : (isSearching ? filteredAdsData : adsData).isEmpty
                               ? LottieWidget.noData()
                               : ListView.builder(
-                                  padding: const EdgeInsetsDirectional.symmetric(horizontal: kpadding10),
-                                  itemCount: isSearching ? filteredAdsData.length : adsData.length,
+                                  padding:
+                                      const EdgeInsetsDirectional.symmetric(
+                                          horizontal: kpadding10),
+                                  itemCount: isSearching
+                                      ? filteredAdsData.length
+                                      : adsData.length,
                                   itemBuilder: (context, index) {
-                                    final ad = isSearching ? filteredAdsData[index] : adsData[index];
-                                    return Adtiles(
-                                      adsData: ad,
+                                    final ad = isSearching
+                                        ? filteredAdsData[index]
+                                        : adsData[index];
+                                    return BlocProvider(
+                                      create: (context) => AdCardCubit(),
+                                      child: Adtiles(
+                                        adsModel: ad,
+                                      ),
                                     );
                                   },
                                 ),
